@@ -6,6 +6,7 @@ import torch.optim as optim
 # from torch.optim import lr_scheduler
 from torch.autograd import Variable
 from torchvision import datasets, models, transforms
+from torch.nn import CrossEntropyLoss
 
 
 from config import Config as config
@@ -28,17 +29,28 @@ if use_gpu:
     net = nn.DataParallel(net).cuda()
 
 """
-Initialize Optimizers and Schedulers
+Initialize Optimizers, Loss, Loss Schedulers
 """
 optimizer_ft = optim.Adam(net.parameters(), lr=0.001)
+exp_lr_scheduler = optim.lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
+criterion = CrossEntropyLoss()
 
-for _idx, (images, labels) in enumerate(train_data_loader):
-    print(images.shape)
-    print(labels)
+"""
+Train
+"""
+for epoch in range(config.epochs):
+    for _idx, (images, labels) in enumerate(train_data_loader):
 
-    images = Variable(images)
-    labels = Variable(labels)
+        """
+            Prepare Data
+        """
+        if use_gpu:
+            images = Variable(images).cuda()
+            labels = Variable(labels).cuda()
+        else:
+            images = Variable(images)
+            labels = Variable(labels)
 
-    output = net(images)
-    print(output)
-    print(output.shape)
+        # Predict
+        output = net(images)
+        print(output)

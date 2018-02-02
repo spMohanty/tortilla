@@ -35,6 +35,6 @@ train_dataset = datasets.ImageFolder(
                     )
 train_data_loader = torch.utils.data.DataLoader(
                 train_dataset,
-                32,
+                config.batch_size,
                 True,
-                num_workers=2)
+                num_workers=10)
