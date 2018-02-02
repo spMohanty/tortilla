@@ -74,6 +74,13 @@ for epoch in range(config.epochs):
         net.zero_grad()
         loss.backward()
 
-
         #Update weights
         optimizer_ft.step()
+
+    """
+    Compute Stats for validation set
+    """
+
+    """
+    Save model checkpoint
+    """
