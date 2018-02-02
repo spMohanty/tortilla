@@ -5,6 +5,10 @@ from torchvision import datasets, models, transforms
 
 from config import Config as config
 
+"""
+Define transforms
+"""
+
 data_transforms = {
     'train': transforms.Compose([
         transforms.RandomSizedCrop(224),
@@ -20,6 +24,9 @@ data_transforms = {
     ]),
 }
 
+"""
+Define dataloaders
+"""
 train_dataset = datasets.ImageFolder(
                     config.data_dir,
                     data_transforms["train"],
@@ -30,6 +37,7 @@ train_data_loader=torch.utils.data.DataLoader(
                 True,
                 num_workers=2)
 
-for item in train_data_loader:
-    print(item[0].shape)
+for images, labels in train_data_loader:
+    print(images.shape)
+    print(labels)
     break
