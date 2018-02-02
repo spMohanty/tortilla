@@ -39,6 +39,9 @@ criterion = CrossEntropyLoss()
 Train
 """
 for epoch in range(config.epochs):
+    running_loss = 0.0
+    running_corrects = 0
+
     for _idx, (images, labels) in enumerate(train_data_loader):
 
         """
@@ -52,5 +55,22 @@ for epoch in range(config.epochs):
             labels = Variable(labels)
 
         # Predict
-        output = net(images)
-        print(output)
+        outputs = net(images)
+        _, preds = torch.max(outputs.data, 1)
+
+        # Compute Loss
+        loss = criterion(outputs, labels)
+
+        #Prepare and print stats
+        running_loss += loss.data[0] * images.size(0)
+        running_corrects += torch.sum(preds == labels.data)
+        if _idx % 10 == 0:
+            print("Epoch : %d Iteration %d Loss %.3f" % (epoch, _idx, loss.data[0]))
+
+        # Backpropagate
+        net.zero_grad()
+        loss.backward()
+
+
+        #Update weights
+        optimizer_ft.step()
