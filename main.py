@@ -8,9 +8,10 @@ from torch.autograd import Variable
 from torchvision import datasets, models, transforms
 from torch.nn import CrossEntropyLoss
 
-
 from config import Config as config
 from data_loaders import train_dataset, train_data_loader
+
+from plotter import Plotter
 
 """
 Initliaze params
@@ -34,6 +35,8 @@ Initialize Optimizers, Loss, Loss Schedulers
 optimizer_ft = optim.Adam(net.parameters(), lr=0.001)
 exp_lr_scheduler = optim.lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
 criterion = CrossEntropyLoss()
+
+plotter = Plotter()
 
 """
 Train
@@ -84,8 +87,6 @@ for epoch in range(config.epochs):
         """
         net.zero_grad()
         loss.backward()
-
-        #Update weights
         optimizer_ft.step()
 
     """
