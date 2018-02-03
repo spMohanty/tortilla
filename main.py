@@ -54,23 +54,34 @@ for epoch in range(config.epochs):
             images = Variable(images)
             labels = Variable(labels)
 
-        # Predict
+        """
+            Predict
+        """
         outputs = net(images)
         _, preds = torch.max(outputs.data, 1)
 
-        # Compute Loss
+        """
+            Compute Loss
+        """
         loss = criterion(outputs, labels)
 
-        #Prepare and print stats
+        """
+            Prepare and print stats
+        """
         batch_corrects = torch.sum(preds == labels.data)
         batch_accuracy = batch_corrects*1.0/config.batch_size
 
         running_loss += loss.data[0] * images.size(0)
         running_corrects += batch_corrects
         if _idx % 10 == 0:
-            print("Epoch : %d Iteration %d Accuracy : %.3f Loss %.3f" % (epoch, _idx, batch_accuracy, loss.data[0]))
+            print(
+                "Epoch : %d Iteration %d Accuracy : %.3f Loss %.3f" %
+                    (epoch, _idx, batch_accuracy, loss.data[0])
+                )
 
-        # Backpropagate
+        """
+            Backpropagate and update weights
+        """
         net.zero_grad()
         loss.backward()
 
