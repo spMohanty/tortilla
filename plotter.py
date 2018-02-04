@@ -54,7 +54,7 @@ class Plotter:
             xlabel = "Epochs",
             ylabel = "Loss",
             xtickmin = 0,
-            xtickmax = 100,
+            # xtickmax = 100,
             marginbottom = 50,
             marginleft = 50
         )
@@ -80,9 +80,9 @@ class Plotter:
             xlabel = "Epochs",
             ylabel = "Accuracy",
             xtickmin = 0,
-            xtickmax = 100,
-            ytickmin = 0,
-            ytickmax = 100,
+            # xtickmax = 100,
+            # ytickmin = 0,
+            # ytickmax = 100,
             marginbottom = 50,
             marginleft = 50
         )
