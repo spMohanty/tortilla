@@ -1,6 +1,7 @@
 # tortilla
 
 ![tortilla](static/images/tortilla_logo_large.jpg)
+
 `tortilla` is a python library for wrapping up all the nuts and bolts of image
 classification using Deep Convolutional Neural Networks in a single package.
 
