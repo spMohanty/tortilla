@@ -8,12 +8,12 @@
                   images in the training set.   
                   Format :    
                   `<image_path> class_idx \n`   
-                  **NOTE** The image path is relative the document root
+                  **NOTE:** The image path is relative the document root
   - `val.txt` : A text file with each line containing information about
                   images in the validation set.   
                   Format :    
                   `<image_path> class_idx \n`   
-                  **NOTE** The image path is relative the document root
+                  **NOTE:** The image path is relative the document root
 
   - `classes.txt` : A text file containing the name of all the classes in the
                   dataset. The line number of the class_name is the `class_idx`
