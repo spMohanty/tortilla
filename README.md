@@ -11,7 +11,7 @@ which helps us have powerful visualisations to monitor the training, and also pu
 
 As always, contributions welcome. :D
 
-**NOTE** This is a work in progress :construction:, and will take a few more weeks before its production ready.
+**NOTE** This is a work in progress :construction:, and will take a few more weeks before it is production ready.
 
 # Usage
 
