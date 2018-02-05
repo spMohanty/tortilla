@@ -1,4 +1,4 @@
-#Data Prepartion
+# Data Prepartion
 
 `tortilla` expects a data folder to have the following structure :
 
@@ -18,3 +18,6 @@
   - `classes.txt` : A text file containing the name of all the classes in the
                   dataset. The line number of the class_name is the `class_idx`
                   used in `train.txt` and `val.txt`
+
+# Author
+Sharada Mohanty <sharada.mohanty@epfl.ch>
