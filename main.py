@@ -28,18 +28,6 @@ net = models.resnet50(pretrained=True)
 num_ftrs = net.fc.in_features
 net.fc = nn.Linear(num_ftrs, len(class_names))
 
-# net = models.alexnet(pretrained=True)
-# net.classifier  = nn.Sequential(
-#             nn.Dropout(),
-#             nn.Linear(256 * 6 * 6, 4096),
-#             nn.ReLU(inplace=True),
-#             nn.Dropout(),
-#             nn.Linear(4096, 4096),
-#             nn.ReLU(inplace=True),
-#             nn.Linear(4096, len(class_names)),
-#             nn.Softmax()
-# )
-
 # Make net use parallel gpu
 if use_gpu:
     net = nn.DataParallel(net).cuda()
