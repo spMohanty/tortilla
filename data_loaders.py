@@ -106,18 +106,21 @@ class TortillaDataset:
 		self.len_val_images = self.val_dataset.total_images
 
 	def get_next_batch(self, train=True, gpu=False):
+		end_of_epoch = False
 		if train:
 			try:
 				images, labels = next(self.train_iter)
 			except StopIteration:
 				# return (images, labels, end_of_epoch?)
-				return (False, False, True)
+				end_of_epoch = True
+				return (False, False, end_of_epoch)
 		else:
 			try:
 				images, labels = next(self.val_iter)
 			except StopIteration:
 				# return (images, labels, end_of_epoch?)
-				return (False, False, True)
+				end_of_epoch = True
+				return (False, False, end_of_epoch)
 
 		images = Variable(images)
 		labels = Variable(labels)
@@ -127,13 +130,19 @@ class TortillaDataset:
 			labels = labels.cuda()
 
 		# return (images, labels, end_of_epoch?)
-		return (images, labels, False)
+		return (images, labels, end_of_epoch)
 
 if __name__ == "__main__":
 	dataset = TortillaDataset(	"datasets/food-101",
 								batch_size=128,
 								num_cpu_workers=10
 								)
-	for (images, labels) in dataset.train:
-		print(images.shape, labels.shape)
-		exit(0)
+
+	# Example iteration using `.get_next_batch`
+	_idx = 0
+	while True:
+		_idx += 1
+		images, labels, end_of_epoch = dataset.get_next_batch(train=True)
+		if end_of_epoch:
+			break
+		print(_idx, images.shape, labels.shape, end_of_epoch)
