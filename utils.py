@@ -1,3 +1,20 @@
+from PIL import Image
+
+def default_loader(path):
+	return Image.open(path).convert('RGB')
+
+def default_flist_reader(flist):
+	"""
+	flist format: impath label\nimpath label\n ...(same to caffe's filelist)
+	"""
+	imlist = []
+	with open(flist, 'r') as rf:
+		for line in rf.readlines():
+			impath, imlabel = line.strip().split()
+			imlist.append( (impath, int(imlabel)) )
+
+	return imlist
+
 def accuracy(output, target, topk=(1,)):
     """Computes the precision@k for the specified values of k"""
     maxk = max(topk)
