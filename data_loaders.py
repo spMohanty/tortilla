@@ -113,10 +113,12 @@ class TortillaDataset:
 			except StopIteration:
 				# return (images, labels, end_of_epoch?)
 				end_of_epoch = True
+				self.train_iter = iter(self.train)
 				return (False, False, end_of_epoch)
 		else:
 			try:
 				images, labels = next(self.val_iter)
+				self.val_iter = iter(self.val)
 			except StopIteration:
 				# return (images, labels, end_of_epoch?)
 				end_of_epoch = True

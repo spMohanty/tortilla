@@ -5,7 +5,6 @@ class TortillaTrainer:
             A wrapper class for all the training requirements of tortilla.
         """
         self.dataset = dataset
-        self.dataset_iter = iter(self.dataset)
         self.epochs = 0
 
         self.model = model
@@ -18,4 +17,4 @@ class TortillaTrainer:
         """
             Do a single step of training
         """
-        images, labels = next(self.dataset_iter)
+        images, labels, end_of_epoch = self.dataset.get_next_batch(train=True)
