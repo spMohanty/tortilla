@@ -61,7 +61,7 @@ class Plotter:
 
         self.vis.line(
             X = np.zeros(1),
-            Y = np.zeros((1,2)),
+            Y = np.zeros((1,len(self.loss_plot_opts["legend"]))),
             name = self.window_map["loss_plot"],
             win = self.window_map["loss_plot"],
             opts = self.loss_plot_opts
@@ -80,7 +80,7 @@ class Plotter:
             xlabel = "Epochs",
             ylabel = "Accuracy",
             xtickmin = 0,
-            # xtickmax = 100,
+            xtickmax = 100,
             # ytickmin = 0,
             # ytickmax = 100,
             marginbottom = 50,
@@ -88,16 +88,16 @@ class Plotter:
         )
         self.vis.line(
             X = np.zeros(1),
-            Y = np.zeros((1,4)),
+            Y = np.zeros((1,len(self.accuracy_plot_opts["legend"]))),
             name = self.window_map["accuracy_plot"],
             win = self.window_map["accuracy_plot"],
             opts = self.accuracy_plot_opts
         )
 
     def update_loss(self, epoch, loss, train=True):
-        y = np.zeros((1,2))
+        y = np.zeros((1,len(self.loss_plot_opts["legend"])))
         y[:] = np.nan
-        x = np.zeros((1,2))
+        x = np.zeros((1,len(self.loss_plot_opts["legend"])))
         x[:] = epoch
         if train:
             y[0][0] = loss
@@ -113,9 +113,9 @@ class Plotter:
         )
 
     def update_accuracy(self, epoch, top_1, top_5, train=True):
-        y = np.zeros((1,4))
+        y = np.zeros((1,len(self.accuracy_plot_opts["legend"])))
         y[:] = np.nan
-        x = np.zeros((1,4))
+        x = np.zeros((1,len(self.accuracy_plot_opts["legend"])))
         x[:] = epoch
         if train:
             y[0][0] = top_1

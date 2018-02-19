@@ -93,6 +93,7 @@ class TortillaDataset:
 		)
 		self.train = self.train_data_loader
 		self.train_iter = iter(self.train)
+		self.train_iter_pointer = 0
 		self.len_train_images = self.train_dataset.total_images
 
 		self.val_data_loader = torch.utils.data.DataLoader(
@@ -103,31 +104,42 @@ class TortillaDataset:
 		)
 		self.val = self.val_data_loader
 		self.val_iter = iter(self.val)
+		self.val_iter_pointer = 0
 		self.len_val_images = self.val_dataset.total_images
 
-	def get_next_batch(self, train=True, gpu=False):
+	def get_current_pointer(self, train=False):
+		if train:
+			return float(self.train_iter_pointer)/self.len_train_images
+		else:
+			return float(self.val_iter_pointer)/self.len_val_images
+
+	def get_next_batch(self, train=True, use_gpu=False):
 		end_of_epoch = False
 		if train:
 			try:
 				images, labels = next(self.train_iter)
+				self.train_iter_pointer += 1
 			except StopIteration:
 				# return (images, labels, end_of_epoch?)
 				end_of_epoch = True
 				self.train_iter = iter(self.train)
+				self.train_iter_pointer = 0
 				return (False, False, end_of_epoch)
 		else:
 			try:
 				images, labels = next(self.val_iter)
-				self.val_iter = iter(self.val)
+				self.val_iter_pointer += 1
 			except StopIteration:
 				# return (images, labels, end_of_epoch?)
 				end_of_epoch = True
+				self.val_iter = iter(self.val)
+				self.val_iter_pointer = 0
 				return (False, False, end_of_epoch)
 
 		images = Variable(images)
 		labels = Variable(labels)
 
-		if gpu:
+		if use_gpu:
 			images = images.cuda()
 			labels = labels.cuda()
 

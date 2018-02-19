@@ -10,6 +10,7 @@ from torch.nn import CrossEntropyLoss
 
 from config import Config as config
 from data_loaders import TortillaDataset
+from trainer import TortillaTrainer
 
 from plotter import Plotter
 
@@ -27,14 +28,12 @@ dataset = TortillaDataset(	"datasets/food-101",
 							batch_size=128,
 							num_cpu_workers=10
 							)
-dataset = train_dataset.classes
-
 """
 Initialize Model
 """
 net = models.resnet50(pretrained=True)
 num_ftrs = net.fc.in_features
-net.fc = nn.Linear(num_ftrs, len(class_names))
+net.fc = nn.Linear(num_ftrs, len(dataset.classes))
 
 # Make net use parallel gpu
 if use_gpu:
@@ -53,11 +52,20 @@ plotter = Plotter(experiment_name="exp1", logdir="experiments/exp1")
 Train
 """
 trainer = TortillaTrainer(
+            dataset = dataset,
             model = net,
             loss = criterion,
             optimizer = optimizer_ft,
             plotter = plotter
             )
+
+for epoch in range(10):
+    end_of_epoch = False
+    while not end_of_epoch:
+        loss, images, labels, \
+        outputs, end_of_epoch \
+		= trainer.train_step(use_gpu=use_gpu)
+
 
 # for epoch in range(config.epochs):
 
@@ -137,10 +145,3 @@ trainer = TortillaTrainer(
         # loss.backward()
         # optimizer_ft.step()
         #
-    """
-    Compute Stats for validation set
-    """
-
-    """
-    Save model checkpoint
-    """

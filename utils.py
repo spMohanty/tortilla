@@ -29,3 +29,11 @@ def accuracy(output, target, topk=(1,)):
         correct_k = correct[:k].view(-1).float().sum(0, keepdim=True)
         res.append(correct_k.mul_(100.0 / batch_size))
     return res
+
+def append_val(var, key, value):
+    try:
+        foo = var[key]
+    except:
+        var[key] = []
+    #
+	# var[key].append(value)
