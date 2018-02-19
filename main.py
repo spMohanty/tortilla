@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+	#!/usr/bin/env python
 
 import torch
 import torch.nn as nn
@@ -59,14 +59,15 @@ trainer = TortillaTrainer(
             plotter = plotter
             )
 
-for epoch in range(10):
-    end_of_epoch = False
-    while not end_of_epoch:
-        loss, images, labels, \
-        outputs, end_of_epoch \
-		= trainer.train_step(use_gpu=use_gpu)
-
-
+# for epoch in range(10):
+#     end_of_epoch = False
+#     while not end_of_epoch:
+#         loss, images, labels, \
+#         outputs, end_of_epoch \
+# 		= trainer.train_step(use_gpu=use_gpu)
+# 		print(loss, images)
+# 		break
+#
 # for epoch in range(config.epochs):
 
 
