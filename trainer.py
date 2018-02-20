@@ -1,6 +1,4 @@
 
-from utils import accuracy, append_val
-
 class TortillaTrainer:
     def __init__(self,  dataset, model, loss,
                         optimizer=None, monitor=None,
@@ -17,19 +15,24 @@ class TortillaTrainer:
         self.monitor = monitor
         self.verbose = verbose
 
-    def _predict(self, inputs):
-        outputs = self.model(inputs)
-        return outputs
-
-    def _compute_and_log_stats(self, outputs, labels, loss, train=True):
+    def _compute_and_register_stats(self, outputs, labels, loss, train=True):
         epoch_pointer = self.dataset.get_current_pointer(train=train)
         if train:
             epoch_pointer += self.epochs
 
-        _accuracy = accuracy(outputs, labels, topk=(1,2,3,4,5,6,7,8,9,10,))
-        _accuracy = [x.data[0] for x in _accuracy]
+        if self.monitor:
+            self.monitor._compute_and_register_stats(
+                epoch_pointer,
+                outputs,
+                labels,
+                loss,
+                train=train)
+        else:
+            raise("TortillaMonitor not defined")
 
-        print(_accuracy)
+    def _predict(self, inputs):
+        outputs = self.model(inputs)
+        return outputs
 
     def _step(self, train=True, use_gpu=False):
         """
@@ -46,7 +49,7 @@ class TortillaTrainer:
         _loss = self.loss(outputs, labels)
 
         # Compute and log/plot stats
-        self._compute_and_log_stats(outputs, labels, _loss, train=train)
+        self._compute_and_register_stats(outputs, labels, _loss, train=train)
 
         if train:
             # Adjust weights

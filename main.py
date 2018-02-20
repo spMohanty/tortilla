@@ -12,7 +12,7 @@ from config import Config as config
 from data_loaders import TortillaDataset
 from trainer import TortillaTrainer
 
-from plotter import Plotter
+from monitor import TortillaMonitor
 
 from utils import accuracy
 
@@ -49,7 +49,7 @@ def main():
 	criterion = CrossEntropyLoss()
 
 	# plotter = Plotter(experiment_name="exp1", logdir="experiments/exp1")
-
+	monitor = TortillaMonitor(topk=(1,2,3,4,5,6,7,8,9,10))
 	"""
 	Train
 	"""
@@ -58,7 +58,7 @@ def main():
 				model = net,
 				loss = criterion,
 				optimizer = optimizer_ft,
-				monitor = None
+				monitor = monitor
 				)
 
 	for epoch in range(10):
