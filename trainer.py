@@ -3,7 +3,7 @@ from utils import accuracy, append_val
 
 class TortillaTrainer:
     def __init__(self,  dataset, model, loss,
-                        optimizer=None, plotter=None,
+                        optimizer=None, monitor=None,
                         verbose=True):
         """
             A wrapper class for all the training requirements of tortilla.
@@ -14,15 +14,8 @@ class TortillaTrainer:
         self.model = model
         self.loss = loss
         self.optimizer = optimizer
-        self.plotter = plotter
+        self.monitor = monitor
         self.verbose = verbose
-
-        self.running_stats = {
-            "train" : {
-            },
-            "val" : {
-            }
-        }
 
     def _predict(self, inputs):
         outputs = self.model(inputs)
@@ -33,19 +26,10 @@ class TortillaTrainer:
         if train:
             epoch_pointer += self.epochs
 
-        _accuracy = accuracy(outputs, labels, topk=(1,5,))
+        _accuracy = accuracy(outputs, labels, topk=(1,2,3,4,5,6,7,8,9,10,))
         _accuracy = [x.data[0] for x in _accuracy]
 
-        if train:
-            stats = self.running_stats["train"]
-        else:
-            stats = self.running_stats["val"]
-
-        stats = append_val(stats, "top_1", _accuracy[0])
-        stats = append_val(stats, "top_5", _accuracy[1])
-        stats = append_val(stats, "loss", loss.data[0])
-
-        print(stats)
+        print(_accuracy)
 
     def _step(self, train=True, use_gpu=False):
         """
