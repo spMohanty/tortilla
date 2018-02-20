@@ -1,7 +1,13 @@
 from PIL import Image
 
 def default_loader(path):
-	return Image.open(path).convert('RGB')
+	try:
+		im = Image.open(path).convert('RGB')
+	except:
+		print("Unable to load file at path :", path)
+	if im == None:
+		print("Unable to load file at path : ", path)
+	return im
 
 def default_flist_reader(flist):
 	"""

@@ -45,6 +45,8 @@ class TortillaDataset:
 
 		self.classes = open(os.path.join(self.dataset_folder,
 										"classes.txt")).readlines()
+		self.classes = [x.strip() for x in self.classes]
+
 		"""
 		Define transforms
 		"""
@@ -82,9 +84,13 @@ class TortillaDataset:
 								transform=self.data_transforms["val"]
 								)
 
-		"""
-		Define dataloaders
-		"""
+		self.reset_train_data_loaders()
+		self.reset_val_data_loaders()
+
+	"""
+	Define dataloaders
+	"""
+	def reset_train_data_loaders(self):
 		self.train_data_loader = torch.utils.data.DataLoader(
 				dataset=self.train_dataset,
 				batch_size=self.batch_size,
@@ -96,6 +102,7 @@ class TortillaDataset:
 		self.train_iter_pointer = 0
 		self.len_train_images = self.train_dataset.total_images
 
+	def reset_val_data_loaders(self):
 		self.val_data_loader = torch.utils.data.DataLoader(
 				dataset=self.val_dataset,
 				batch_size=self.batch_size,
@@ -122,8 +129,7 @@ class TortillaDataset:
 			except StopIteration:
 				# return (images, labels, end_of_epoch?)
 				end_of_epoch = True
-				self.train_iter = iter(self.train)
-				self.train_iter_pointer = 0
+				# self.reset_train_data_loaders()
 				return (False, False, end_of_epoch)
 		else:
 			try:
@@ -132,8 +138,7 @@ class TortillaDataset:
 			except StopIteration:
 				# return (images, labels, end_of_epoch?)
 				end_of_epoch = True
-				self.val_iter = iter(self.val)
-				self.val_iter_pointer = 0
+				# self.reset_val_data_loaders()
 				return (False, False, end_of_epoch)
 
 		images = Variable(images)
@@ -146,10 +151,10 @@ class TortillaDataset:
 		# return (images, labels, end_of_epoch?)
 		return (images, labels, end_of_epoch)
 
-if __name__ == "__main__":
+def main():
 	dataset = TortillaDataset(	"datasets/food-101",
 								batch_size=128,
-								num_cpu_workers=10
+								num_cpu_workers=1
 								)
 
 	# Example iteration using `.get_next_batch`
@@ -158,5 +163,9 @@ if __name__ == "__main__":
 		_idx += 1
 		images, labels, end_of_epoch = dataset.get_next_batch(train=True)
 		if end_of_epoch:
+			print(_idx, end_of_epoch)
 			break
 		print(_idx, images.shape, labels.shape, end_of_epoch)
+
+if __name__ == "__main__":
+	main()
