@@ -14,8 +14,6 @@ from trainer import TortillaTrainer
 
 from monitor import TortillaMonitor
 
-from utils import accuracy
-
 """
 Initliaze params
 """
@@ -26,7 +24,7 @@ def main():
 	Initialize Dataset
 	"""
 	dataset = TortillaDataset(	"datasets/food-101",
-								batch_size=128,
+								batch_size=config.batch_size,
 								num_cpu_workers=10
 								)
 
@@ -49,7 +47,7 @@ def main():
 	criterion = CrossEntropyLoss()
 
 	# plotter = Plotter(experiment_name="exp1", logdir="experiments/exp1")
-	monitor = TortillaMonitor(topk=(1,2,3,4,5,6,7,8,9,10))
+	monitor = TortillaMonitor(topk=(1,2,3,4,5,6,7,8,9,10), classes=dataset.classes)
 	"""
 	Train
 	"""
@@ -61,13 +59,14 @@ def main():
 				monitor = monitor
 				)
 
-	for epoch in range(10):
+	for epoch in range(config.epochs):
 		end_of_epoch = False
 		while not end_of_epoch:
 			_loss, images, labels, \
 			outputs, end_of_epoch = trainer.train_step(use_gpu=use_gpu)
-			print(_loss, images.shape)
-			break
+			if end_of_epoch:
+				break
+			# print(epoch+trainer.dataset.get_current_pointer(train=True), _loss, images.shape)
 
 
 if __name__ == "__main__":

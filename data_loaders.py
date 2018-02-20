@@ -7,12 +7,16 @@ import os
 import os.path
 
 from utils import default_flist_reader, default_loader
+from config import Config as config
 
 class ImageFilelist(data.Dataset):
 	def __init__(self, root, flist, transform=None, target_transform=None,
 			flist_reader=default_flist_reader, loader=default_loader):
 		self.root   = root
 		self.imlist = flist_reader(flist)
+		if config.debug:
+			self.imlist = self.imlist[:config.images_per_epoch]
+
 		self.total_images = len(self.imlist)
 		self.transform = transform
 		self.target_transform = target_transform
@@ -129,7 +133,7 @@ class TortillaDataset:
 			except StopIteration:
 				# return (images, labels, end_of_epoch?)
 				end_of_epoch = True
-				# self.reset_train_data_loaders()
+				self.reset_train_data_loaders()
 				return (False, False, end_of_epoch)
 		else:
 			try:
@@ -138,7 +142,7 @@ class TortillaDataset:
 			except StopIteration:
 				# return (images, labels, end_of_epoch?)
 				end_of_epoch = True
-				# self.reset_val_data_loaders()
+				self.reset_val_data_loaders()
 				return (False, False, end_of_epoch)
 
 		images = Variable(images)

@@ -42,6 +42,9 @@ class TortillaTrainer:
                                             train=train,
                                             use_gpu=use_gpu
                                             )
+        if end_of_epoch:
+            return (False, False, False, False, end_of_epoch)
+
         # Predict
         outputs = self._predict(images)
 

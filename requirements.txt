@@ -15,3 +15,4 @@ torchvision==0.2.0
 tornado==4.5.3
 urllib3==1.22
 visdom==0.1.7
+scikit-learn==0.19.1

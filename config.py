@@ -4,3 +4,9 @@ class Config:
     learning_rate = 0.001
     epochs = 100
     batch_size = 128
+
+    debug=True
+    if debug:
+        batch_size = 9
+        epochs = 5
+        images_per_epoch = 103
