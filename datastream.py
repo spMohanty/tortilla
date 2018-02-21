@@ -48,6 +48,9 @@ class TortillaDataStream:
         self.datastream.append(self.buffer)
         self.reset_buffer()
 
+    def get_last(self):
+        return self.datastream[-1]
+
 if __name__ == "__main__":
     ds = TortillaDataStream(name="test", column_names=["a", "b", "c"])
     ds.add_to_buffer(np.array([1,2,3]))
@@ -62,4 +65,4 @@ if __name__ == "__main__":
     ds.flush_buffer()
     print(ds.datastream)
     assert len(ds.datastream) == 1
-    assert ds.datastream[0].all() == np.array([1,2,3]).all()
+    assert ds.get_last().all() == np.array([1,2,3]).all()

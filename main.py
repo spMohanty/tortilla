@@ -47,7 +47,10 @@ def main():
 	criterion = CrossEntropyLoss()
 
 	# plotter = Plotter(experiment_name="exp1", logdir="experiments/exp1")
-	monitor = TortillaMonitor(topk=(1,2,3,4,5,6,7,8,9,10), classes=dataset.classes)
+	monitor = TortillaMonitor(	topk=(1,2,3,4,5,6,7,8,9,10),
+								classes=dataset.classes,
+								use_gpu = use_gpu
+								)
 	"""
 	Train
 	"""
