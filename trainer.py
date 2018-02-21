@@ -2,7 +2,7 @@
 class TortillaTrainer:
     def __init__(self,  dataset, model, loss,
                         optimizer=None, monitor=None,
-                        verbose=True):
+                        config=None, verbose=True):
         """
             A wrapper class for all the training requirements of tortilla.
         """
@@ -14,6 +14,7 @@ class TortillaTrainer:
         self.loss = loss
         self.optimizer = optimizer
         self.monitor = monitor
+        self.config = config
         self.verbose = verbose
 
     def _compute_and_register_stats(self, outputs, labels, loss, train=True):

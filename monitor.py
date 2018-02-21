@@ -5,8 +5,6 @@ from sklearn.metrics import confusion_matrix
 from datastream import TortillaDataStream
 from plotter import TortillaLinePlotter
 
-from config import Config as config
-
 class TortillaMonitor:
     """
     Monitors the
@@ -18,11 +16,12 @@ class TortillaMonitor:
     - Val confusion Matrix
     """
     def __init__(self,  experiment_name, plot=True, topk=(1,5),
-                        classes=[], use_gpu=False):
+                        classes=[], config=None, use_gpu=False):
         self.experiment_name = experiment_name
         self.plot = plot
         self.topk = topk
         self.classes = classes
+        self.config = config
         self.use_gpu = use_gpu
 
         self._init_data_gatherers()
@@ -35,9 +34,9 @@ class TortillaMonitor:
                             experiment_name=self.experiment_name,
                             fields=topklabels,
                             title='train-accuracy',
-                            opts = dict(
+                            opts=dict(
                                         xtickmin = 0,
-                                        xtickmax = config.epochs,
+                                        xtickmax = self.config.epochs,
                                         ytickmin = 0,
                                         ytickmax = 100,
                                         xlabel="Epochs",
@@ -51,13 +50,12 @@ class TortillaMonitor:
                             title='val-accuracy',
                             opts = dict(
                                         xtickmin = 0,
-                                        xtickmax = config.epochs,
+                                        xtickmax = self.config.epochs,
                                         ytickmin = 0,
                                         ytickmax = 100,
                                         xlabel="Epochs",
                                         ylabel="Accuracy"
-                                ),
-                            debug=True
+                                )
                             )
 
         self.loss_plotter = TortillaLinePlotter(
@@ -66,7 +64,7 @@ class TortillaMonitor:
                             title='Loss',
                             opts = dict(
                                         xtickmin = 0,
-                                        xtickmax = config.epochs,
+                                        xtickmax = self.config.epochs,
                                         xlabel="Epochs",
                                         ylabel="Loss"
                                 )

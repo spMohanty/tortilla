@@ -4,7 +4,7 @@ class Config:
     learning_rate = 0.001
     epochs = 100
     batch_size = 128
-
+    topk = (1,2,3,4,5,6,7,8,9,10)
     debug=True
     if debug:
         batch_size = 101

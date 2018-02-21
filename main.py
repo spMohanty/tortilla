@@ -47,10 +47,11 @@ def main():
 	criterion = CrossEntropyLoss()
 
 	monitor = TortillaMonitor(	experiment_name="test-food-101",
-								topk=(1,2,3,4,5,6,7,8,9,10),
+								topk=config.topk,
 								classes=dataset.classes,
 								use_gpu = use_gpu,
-								plot=True
+								plot=True,
+								config=config
 								)
 	"""
 	Train
@@ -60,7 +61,8 @@ def main():
 				model = net,
 				loss = criterion,
 				optimizer = optimizer_ft,
-				monitor = monitor
+				monitor = monitor,
+				config=config
 				)
 
 	for epoch in range(config.epochs):
