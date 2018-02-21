@@ -16,10 +16,8 @@ class TortillaTrainer:
         self.verbose = verbose
 
     def _compute_and_register_stats(self, outputs, labels, loss, train=True):
-        epoch_pointer = self.dataset.get_current_pointer(train=train)
-        if train:
-            epoch_pointer += self.epochs
-
+        epoch_pointer = self.dataset.percent_complete(train=train)
+        epoch_pointer += self.epochs
         if self.monitor:
             self.monitor._compute_and_register_stats(
                 epoch_pointer,
@@ -43,6 +41,7 @@ class TortillaTrainer:
                                             use_gpu=use_gpu
                                             )
         if end_of_epoch:
+            self.epochs += 1
             return (False, False, False, False, end_of_epoch)
 
         # Predict
@@ -53,6 +52,8 @@ class TortillaTrainer:
 
         # Compute and log/plot stats
         self._compute_and_register_stats(outputs, labels, _loss, train=train)
+
+        self.monitor._flush_stats(train=train)
 
         if train:
             # Adjust weights

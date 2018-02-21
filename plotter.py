@@ -7,6 +7,8 @@ import numpy as np
 from visdom import Visdom
 import random
 
+from config import Config as config
+
 """
     Deals with all the logging and plotting
     requirements during the training

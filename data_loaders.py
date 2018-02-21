@@ -118,11 +118,16 @@ class TortillaDataset:
 		self.val_iter_pointer = 0
 		self.len_val_images = self.val_dataset.total_images
 
-	def get_current_pointer(self, train=False):
+	def percent_complete(self, train=True):
+		"""
+			Returns in percentage [0,1] the amount of data that has already
+			been iterated
+		"""
 		if train:
-			return float(self.train_iter_pointer)/self.len_train_images
+			return float(self.train_iter_pointer*config.batch_size)/self.len_train_images
 		else:
-			return float(self.val_iter_pointer)/self.len_val_images
+			return float(self.val_iter_pointer*config.batch_size)/self.len_val_images
+
 
 	def get_next_batch(self, train=True, use_gpu=False):
 		end_of_epoch = False

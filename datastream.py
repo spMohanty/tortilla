@@ -46,6 +46,7 @@ class TortillaDataStream:
         #       as the datastream elements
         self.datastream.append(self.buffer)
         self.reset_buffer()
+        # print(self.name, self.get_last())
 
     def get_last(self):
         return self.datastream[-1]

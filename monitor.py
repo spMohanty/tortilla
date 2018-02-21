@@ -3,6 +3,9 @@ from utils import accuracy
 import numpy as np
 from sklearn.metrics import confusion_matrix
 from datastream import TortillaDataStream
+from plotter import TortillaLinePlotter
+
+from config import Config as config
 
 class TortillaMonitor:
     """
@@ -14,13 +17,60 @@ class TortillaMonitor:
     - Train Confusion Matrix
     - Val confusion Matrix
     """
-    def __init__(self, plotter=None, topk=(1,5), classes=[], use_gpu=False):
-        self.plotter = plotter
+    def __init__(self,  experiment_name, plot=True, topk=(1,5),
+                        classes=[], use_gpu=False):
+        self.experiment_name = experiment_name
+        self.plot = plot
         self.topk = topk
         self.classes = classes
         self.use_gpu = use_gpu
 
         self._init_data_gatherers()
+        if self.plot:
+            self._init_plotters()
+
+    def _init_plotters(self):
+        topklabels = ["top-"+str(x) for x in self.topk]
+        self.train_accuracy_plotter = TortillaLinePlotter(
+                            experiment_name=self.experiment_name,
+                            fields=topklabels,
+                            title='train-accuracy',
+                            opts = dict(
+                                        xtickmin = 0,
+                                        xtickmax = config.epochs,
+                                        ytickmin = 0,
+                                        ytickmax = 100,
+                                        xlabel="Epochs",
+                                        ylabel="Accuracy"
+                                )
+                            )
+
+        self.val_accuracy_plotter = TortillaLinePlotter(
+                            experiment_name=self.experiment_name,
+                            fields=topklabels,
+                            title='val-accuracy',
+                            opts = dict(
+                                        xtickmin = 0,
+                                        xtickmax = config.epochs,
+                                        ytickmin = 0,
+                                        ytickmax = 100,
+                                        xlabel="Epochs",
+                                        ylabel="Accuracy"
+                                )
+                            )
+
+        self.loss_plotter = TortillaLinePlotter(
+                            experiment_name=self.experiment_name,
+                            fields=['train_loss', 'val_loss'],
+                            title='Loss',
+                            opts = dict(
+                                        xtickmin = 0,
+                                        xtickmax = config.epochs,
+                                        xlabel="Epochs",
+                                        ylabel="Loss"
+                                )
+                            )
+
 
     def _init_data_gatherers(self):
         topklabels = ["top-"+str(x) for x in self.topk]
@@ -109,6 +159,34 @@ class TortillaMonitor:
             self.val_epochs.flush_buffer()
             self.val_loss.flush_buffer()
             self.val_confusion_matrix.flush_buffer()
+
+        if self.plot:
+            self._plot(train)
+
+    def _plot(self, train=True):
+        if train:
+            #The actual plot happens on every buffer flush
+            self.train_accuracy_plotter.append_plot(
+                self.train_accuracy.get_last(),
+                self.train_epochs.get_last()
+            )
+            _payload = {}
+            _payload["train_loss"] = self.train_loss.get_last()
+            self.loss_plotter.append_plot_with_dict(
+                _payload,
+                self.train_epochs.get_last()
+            )
+        else:
+            self.val_accuracy_plotter.append_plot(
+                self.val_accuracy.get_last(),
+                self.val_epochs.get_last()
+            )
+            _payload = {}
+            _payload["val_loss"] = self.val_loss.get_last()
+            self.loss_plotter.append_plot_with_dict(
+                _payload,
+                self.val_epochs.get_last()
+            )
 
 
 def main():
