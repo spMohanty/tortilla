@@ -11,144 +11,108 @@ import random
     Deals with all the logging and plotting
     requirements during the training
 """
-class Plotter:
-    def __init__(self, experiment_name, logdir):
+class TortillaBasePlotter:
+    def __init__(self,  experiment_name=None, fields=None, win=None,
+                        opts={}, port=8097, server='localhost'):
         self.experiment_name = experiment_name
-        self.logdir = logdir
-        self.create_logdir()
+        self.fields = fields
+        self.win = win
+        self.env = self.experiment_name
+        self.opts = opts
+        self.default_opts = {}
+        self.port = port
+        self.server = server
+        self.init_visdom_server()
+        self.plot_initalised = False
 
-        self.vis = Visdom()
-        self.window_map = {
-            "accuracy_plot" : self.experiment_name + "::Acc",
-            "loss_plot" : self.experiment_name + "::loss",
-        }
+    def init_visdom_server(self):
+        self.vis = Visdom(server="http://"+self.server, port=self.port)
 
-        self.history = {
-            "accuracy" : {
-                "train": {
-                    "top_1": [],
-                    "top_5": []
-                },
-                "val": {
-                    "top_1": [],
-                    "top_5": []
-                }
-            },
-            "loss" : {
-                "train" : [],
-                "val" : []
-            }
-        }
+    def update_opts(self):
+        self._opts = self.default_opts.copy()
+        self._opts.update(self.opts)
+        self.opts = self._opts
 
-        self.init_accuracy_plot()
-        self.init_loss_plot()
+class TortillaLinePlotter(TortillaBasePlotter):
+    def __init__(   self, experiment_name=None, fields=None,
+                    title=None, opts={}, port=8097, server='localhost'):
+        super(TortillaLinePlotter, self).__init__(
+                    experiment_name=experiment_name, fields=fields,
+                    win=title, opts=opts, port=port, server=server)
 
-    def init_loss_plot(self):
-        self.loss_plot_opts = dict(
-            legend = [
-                "train_loss",
-                "val_loss",
-                ],
+        self.default_opts = dict(
+            legend = self.fields,
             showlegend = True,
-            title = self.window_map["loss_plot"],
-            xlabel = "Epochs",
-            ylabel = "Loss",
-            xtickmin = 0,
-            # xtickmax = 100,
+            title = self.win,
             marginbottom = 50,
             marginleft = 50
         )
+        self.update_opts() #merge supplied opts into default_opts
 
-        self.vis.line(
-            X = np.zeros(1),
-            Y = np.zeros((1,len(self.loss_plot_opts["legend"]))),
-            name = self.window_map["loss_plot"],
-            win = self.window_map["loss_plot"],
-            opts = self.loss_plot_opts
-        )
+    def append_plot(self, y, t):
+        """
+        Args:
+            y : An array or 1D np-array of size 1 x number-of-fields
+            t : A floating point number representing the location along
+                time-axis
+        """
+        y = np.array(y).reshape((1,len(self.fields)))
+        t = np.array([t])
 
-    def init_accuracy_plot(self):
-        self.accuracy_plot_opts = dict(
-            legend = [
-                "train_top_1",
-                "train_top_5",
-                "val_top_1",
-                "val_top_5",
-                ],
-            showlegend = True,
-            title = self.window_map["accuracy_plot"],
-            xlabel = "Epochs",
-            ylabel = "Accuracy",
-            xtickmin = 0,
-            xtickmax = 100,
-            # ytickmin = 0,
-            # ytickmax = 100,
-            marginbottom = 50,
-            marginleft = 50
-        )
-        self.vis.line(
-            X = np.zeros(1),
-            Y = np.zeros((1,len(self.accuracy_plot_opts["legend"]))),
-            name = self.window_map["accuracy_plot"],
-            win = self.window_map["accuracy_plot"],
-            opts = self.accuracy_plot_opts
-        )
-
-    def update_loss(self, epoch, loss, train=True):
-        y = np.zeros((1,len(self.loss_plot_opts["legend"])))
-        y[:] = np.nan
-        x = np.zeros((1,len(self.loss_plot_opts["legend"])))
-        x[:] = epoch
-        if train:
-            y[0][0] = loss
+        if self.plot_initalised:
+            self.vis.line(
+                Y = y,
+                X = t,
+                win = self.win,
+                env=self.env,
+                update = "append",
+                opts = self.opts
+            )
         else:
-            y[0][1] = loss
+            # Instantiate
+            self.vis.line(
+                Y = y,
+                X = t,
+                env=self.env,
+                win = self.win,
+                opts = self.opts
+            )
+            self.plot_initalised = True
 
-        self.vis.line(
-            X = x,
-            Y = y,
-            win = self.window_map["loss_plot"],
-            update = "append",
-            opts = self.loss_plot_opts
-        )
-
-    def update_accuracy(self, epoch, top_1, top_5, train=True):
-        y = np.zeros((1,len(self.accuracy_plot_opts["legend"])))
-        y[:] = np.nan
-        x = np.zeros((1,len(self.accuracy_plot_opts["legend"])))
-        x[:] = epoch
-        if train:
-            y[0][0] = top_1
-            y[0][1] = top_5
-        else:
-            y[0][2] = top_1
-            y[0][3] = top_5
-
-        print("Updating : ", x, y)
-        self.vis.line(
-            X = x,
-            Y = y,
-            win = self.window_map["accuracy_plot"],
-            update = "append",
-            opts = self.accuracy_plot_opts
-        )
-
-    def create_logdir(self):
-        if not os.path.exists(self.logdir):
-            os.mkdir(self.logdir)
+    def append_plot_with_dict(self, d, t):
+        """
+        Args:
+            d:  A dictionary containing scalar values keyed by field names
+                (as specified by self.fields)
+            t : As floating point number representing the location along
+                time-axis
+        """
+        payload = np.zeros((1, len(self.fields)))
+        payload[:] = np.nan
+        for _key in d.keys():
+            _index = self.fields.index(_key)
+            if _index > -1:
+                payload[0, _index] = d[_key]
+        self.append_plot(payload, t)
 
 if __name__ == "__main__":
-    print("Testing")
+    opts = dict(
+        xlabel = "accuracy",
+        ylabel = "epochs",
+    )
+    fields = ['top-1', 'top-2', 'top-3']
+    plotter = TortillaLinePlotter(
+                        experiment_name="test-experiment",
+                        fields=fields,
+                        title='test-plot',
+                        opts = opts
+                        )
+    # for _idx, _t in enumerate(range(100)):
+    #     plotter.append_plot(np.random.randn(len(fields)), _t)
 
-    # experiment_name = "exp1"
-    plotter = Plotter(experiment_name="exp1", logdir="experiments/exp1")
-    # plotter.update_accuracy(10, 11)
-
-
-    # vis = Visdom()
-    #
-    for k in range(1000):
-        print("Update : ", k)
-        plotter.update_accuracy(k*1.0/10, random.randint(0,100), random.randint(0,100))
-        plotter.update_loss(k*1.0/10, random.randint(0, 100)*1.0/100)
-        time.sleep(1.0/10)
+    for _idx, _t in enumerate(range(100)):
+        _d = {}
+        _d["top-1"] = np.random.randn(1)[0]
+        _d["top-2"] = np.random.randn(1)[0]
+        _d["top-3"] = np.random.randn(1)[0]
+        plotter.append_plot_with_dict(_d, _t)
