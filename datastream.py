@@ -32,7 +32,6 @@ class TortillaDataStream:
 
         if not self.buffer_empty:
             assert type(d) == type(self.buffer)
-            assert d.shape == self.buffer.shape
             self.buffer = \
                 (self.buffer_length/(self.buffer_length+1))*(self.buffer) \
                 + (1.0/(self.buffer_length+1))*d

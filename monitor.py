@@ -80,19 +80,19 @@ class TortillaMonitor:
 
         if train:
             accuracy_stream = self.train_accuracy
-            epoch_stream = self.train_epoch
+            epoch_stream = self.train_epochs
             loss_stream = self.train_loss
             confusion_matrix_stream = self.train_confusion_matrix
         else:
             accuracy_stream = self.val_accuracy
-            epoch_stream = self.val_epoch
+            epoch_stream = self.val_epochs
             loss_stream = self.val_loss
             confusion_matrix_stream = self.val_confusion_matrix
 
         accuracy_stream.add_to_buffer(_accuracy)
         epoch_stream.add_to_buffer(epoch)
         loss_stream.add_to_buffer(loss.data[0])
-        confusion_matrix_stream(_batch_confusion_matrix)
+        confusion_matrix_stream.add_to_buffer(_batch_confusion_matrix)
 
     def _flush_stats(self, train=True):
         """
