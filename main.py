@@ -64,13 +64,14 @@ def main():
 				)
 
 	for epoch in range(config.epochs):
-		end_of_epoch = False
-		while not end_of_epoch:
-			_loss, images, labels, \
-			outputs, end_of_epoch = trainer.train_step(use_gpu=use_gpu)
-			if end_of_epoch:
-				break
-			# print(epoch+trainer.dataset.get_current_pointer(train=True), _loss, images.shape)
+		for train in [False, True]:
+			end_of_epoch = False
+			while not end_of_epoch:
+				_loss, images, labels, \
+				outputs, end_of_epoch = trainer._step(use_gpu=use_gpu, train=train)
+				if end_of_epoch:
+					break
+				# print(epoch+trainer.dataset.get_current_pointer(train=True), _loss, images.shape)
 
 
 if __name__ == "__main__":

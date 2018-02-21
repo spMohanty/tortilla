@@ -56,7 +56,8 @@ class TortillaMonitor:
                                         ytickmax = 100,
                                         xlabel="Epochs",
                                         ylabel="Accuracy"
-                                )
+                                ),
+                            debug=True
                             )
 
         self.loss_plotter = TortillaLinePlotter(
@@ -161,7 +162,7 @@ class TortillaMonitor:
             self.val_confusion_matrix.flush_buffer()
 
         if self.plot:
-            self._plot(train)
+            self._plot(train=train)
 
     def _plot(self, train=True):
         if train:

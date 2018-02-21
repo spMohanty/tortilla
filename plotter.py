@@ -15,7 +15,8 @@ from config import Config as config
 """
 class TortillaBasePlotter:
     def __init__(self,  experiment_name=None, fields=None, win=None,
-                        opts={}, port=8097, server='localhost'):
+                        opts={}, port=8097, server='localhost',
+                        debug=False):
         self.experiment_name = experiment_name
         self.fields = fields
         self.win = win
@@ -24,6 +25,8 @@ class TortillaBasePlotter:
         self.default_opts = {}
         self.port = port
         self.server = server
+        self.debug = debug
+
         self.init_visdom_server()
         self.plot_initalised = False
 
@@ -37,10 +40,12 @@ class TortillaBasePlotter:
 
 class TortillaLinePlotter(TortillaBasePlotter):
     def __init__(   self, experiment_name=None, fields=None,
-                    title=None, opts={}, port=8097, server='localhost'):
+                    title=None, opts={}, port=8097, server='localhost',
+                    debug=False):
         super(TortillaLinePlotter, self).__init__(
                     experiment_name=experiment_name, fields=fields,
-                    win=title, opts=opts, port=port, server=server)
+                    win=title, opts=opts, port=port, server=server,
+                    debug=debug)
 
         self.default_opts = dict(
             legend = self.fields,
@@ -62,7 +67,7 @@ class TortillaLinePlotter(TortillaBasePlotter):
         t = np.array([t])
 
         if self.plot_initalised:
-            self.vis.line(
+            win = self.vis.line(
                 Y = y,
                 X = t,
                 win = self.win,
@@ -72,7 +77,7 @@ class TortillaLinePlotter(TortillaBasePlotter):
             )
         else:
             # Instantiate
-            self.vis.line(
+            win = self.vis.line(
                 Y = y,
                 X = t,
                 env=self.env,
@@ -109,6 +114,7 @@ if __name__ == "__main__":
                         title='test-plot',
                         opts = opts
                         )
+    # Example of call for direct update
     # for _idx, _t in enumerate(range(100)):
     #     plotter.append_plot(np.random.randn(len(fields)), _t)
 

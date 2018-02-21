@@ -7,7 +7,8 @@ class TortillaTrainer:
             A wrapper class for all the training requirements of tortilla.
         """
         self.dataset = dataset
-        self.epochs = 0
+        self.train_epochs = 0
+        self.val_epochs = 0
 
         self.model = model
         self.loss = loss
@@ -17,7 +18,11 @@ class TortillaTrainer:
 
     def _compute_and_register_stats(self, outputs, labels, loss, train=True):
         epoch_pointer = self.dataset.percent_complete(train=train)
-        epoch_pointer += self.epochs
+        if train:
+            epoch_pointer += self.train_epochs
+        else:
+            epoch_pointer += self.val_epochs
+
         if self.monitor:
             self.monitor._compute_and_register_stats(
                 epoch_pointer,
@@ -25,6 +30,7 @@ class TortillaTrainer:
                 labels,
                 loss,
                 train=train)
+            self.monitor._flush_stats(train=train)
         else:
             raise("TortillaMonitor not defined")
 
@@ -41,7 +47,10 @@ class TortillaTrainer:
                                             use_gpu=use_gpu
                                             )
         if end_of_epoch:
-            self.epochs += 1
+            if train:
+                self.train_epochs += 1
+            else:
+                self.val_epochs += 1
             return (False, False, False, False, end_of_epoch)
 
         # Predict
@@ -52,8 +61,6 @@ class TortillaTrainer:
 
         # Compute and log/plot stats
         self._compute_and_register_stats(outputs, labels, _loss, train=train)
-
-        self.monitor._flush_stats(train=train)
 
         if train:
             # Adjust weights
