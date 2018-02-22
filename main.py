@@ -46,7 +46,7 @@ def main():
 	exp_lr_scheduler = optim.lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
 	criterion = CrossEntropyLoss()
 
-	monitor = TortillaMonitor(	experiment_name="test-food-101",
+	monitor = TortillaMonitor(	experiment_name=config.experiment_name,
 								topk=config.topk,
 								classes=dataset.classes,
 								use_gpu = use_gpu,

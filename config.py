@@ -1,5 +1,6 @@
 class Config:
-    # data_dir = "/mount/SDE/instagram/new_data_pruned/ebs/downloads_filtered"
+    experiment_name = "test-food-101"
+    experiments_dir = "experiments/"
     data_dir = "/mount/SDE/instagram/food101/food-101/images"
     learning_rate = 0.001
     epochs = 100
