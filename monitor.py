@@ -74,7 +74,7 @@ class TortillaMonitor:
         self.val_confusion_matrix_plotter = TortillaHeatMapPlotter(
                             experiment_name=self.experiment_name,
                             fields=self.classes,
-                            title='Validation Confusion Matrix',
+                            title='Latest Validation Confusion Matrix',
                             opts = dict(
                                     rownames=self.classes,
                                     columnnames=self.classes
@@ -112,10 +112,12 @@ class TortillaMonitor:
                                 )
 
         self.train_confusion_matrix = TortillaDataStream(
-                                name="train-confusion_matrix"
+                                name="train-confusion_matrix",
+                                merge_mode="sum"
                                 )
         self.val_confusion_matrix = TortillaDataStream(
-                                name="val-confusion_matrix"
+                                name="val-confusion_matrix",
+                                merge_mode="sum"
                                 )
 
     def compute_confusion_matrix(self, outputs, labels):
@@ -129,6 +131,9 @@ class TortillaMonitor:
             _preds =  pred_top_1.data.numpy()[0]
 
         _batch_confusion_matrix = confusion_matrix(_labels, _preds, labels=range(len(self.classes)))
+        # Normalize confusion matrix
+        if normalize_confusion_matrix:
+            _batch_confusion_matrix = _batch_confusion_matrix.astype('float')/_batch_confusion_matrix.sum(axis=1)
         return _batch_confusion_matrix
 
     def _compute_and_register_stats(self, epoch, outputs, labels, loss, train=True):

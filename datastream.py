@@ -9,10 +9,13 @@ class TortillaDataStream:
     a max_buffer_length of 1 can be used in the case all the values want to be stored
     """
 
-    def __init__(self, name, column_names=False, max_buffer_length=10**10):
+    def __init__(self, name, column_names=False,
+                merge_mode="weighted_mean",
+                max_buffer_length=10**10):
         self.name = name
         self.column_names = column_names
         self.max_buffer_length = max_buffer_length
+        self.merge_mode = merge_mode
 
         self.datastream = []
 
@@ -26,16 +29,24 @@ class TortillaDataStream:
         self.buffer = False
         self.buffer_length = 0
 
+    def merge_with_buffer(self, d):
+        if self.merge_mode == "weighted_mean":
+            weight_of_buffer = (float(self.buffer_length)/(self.buffer_length+1))
+            weight_of_new_data = 1 - weight_of_buffer
+            return weight_of_buffer*self.buffer + (weight_of_new_data * d)
+        elif self.merge_mode == "sum":
+            return self.buffer + d
+        else:
+            raise("merge_mode `\"{}`\" not implemented !".format(self.merge_mode))
+
     def add_to_buffer(self, d):
         if self.buffer_length >= self.max_buffer_length:
             self.flush_buffer()
 
         if not self.buffer_empty:
             assert type(d) == type(self.buffer)
-            weight_of_buffer = (float(self.buffer_length)/(self.buffer_length+1))
-            weight_of_new_data = 1 - weight_of_buffer
 
-            self.buffer = weight_of_buffer*self.buffer + (weight_of_new_data * d)
+            self.buffer = self.merge_with_buffer(d)
         else:
             self.buffer = d
 
