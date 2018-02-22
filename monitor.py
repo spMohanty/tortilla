@@ -131,9 +131,6 @@ class TortillaMonitor:
             _preds =  pred_top_1.data.numpy()[0]
 
         _batch_confusion_matrix = confusion_matrix(_labels, _preds, labels=range(len(self.classes)))
-        # Normalize confusion matrix
-        if normalize_confusion_matrix:
-            _batch_confusion_matrix = _batch_confusion_matrix.astype('float')/_batch_confusion_matrix.sum(axis=1)
         return _batch_confusion_matrix
 
     def _compute_and_register_stats(self, epoch, outputs, labels, loss, train=True):
@@ -213,6 +210,10 @@ class TortillaMonitor:
                 _payload,
                 self.val_epochs.get_last()
             )
+            last_confusion_matrix = self.val_confusion_matrix.get_last()
+            # Normalize confusion matrix
+            if self.config.normalize_confusion_matrix:
+                last_confusion_matrix = last_confusion_matrix.astype('float')/last_confusion_matrix.sum(axis=1)
             self.val_confusion_matrix_plotter.update_plot(
                 self.val_confusion_matrix.get_last()
             )
