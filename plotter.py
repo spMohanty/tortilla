@@ -64,7 +64,7 @@ class TortillaLinePlotter(TortillaBasePlotter):
         """
         y = np.array(y).reshape((1,len(self.fields)))
         t = np.array([t])
-        
+
         if self.plot_initalised:
             win = self.vis.line(
                 Y = y,
@@ -101,25 +101,72 @@ class TortillaLinePlotter(TortillaBasePlotter):
                 payload[0, _index] = d[_key]
         self.append_plot(payload, t)
 
-if __name__ == "__main__":
-    opts = dict(
-        xlabel = "accuracy",
-        ylabel = "epochs",
-    )
-    fields = ['top-1', 'top-2', 'top-3']
-    plotter = TortillaLinePlotter(
-                        experiment_name="test-experiment",
-                        fields=fields,
-                        title='test-plot',
-                        opts = opts
-                        )
-    # Example of call for direct update
-    # for _idx, _t in enumerate(range(100)):
-    #     plotter.append_plot(np.random.randn(len(fields)), _t)
+class TortillaHeatMapPlotter(TortillaBasePlotter):
+    def __init__(   self, experiment_name=None, fields=None,
+                    title=None, opts={}, port=8097, server='localhost',
+                    debug=False):
+        super(TortillaHeatMapPlotter, self).__init__(
+                    experiment_name=experiment_name, fields=fields,
+                    win=title, opts=opts, port=port, server=server,
+                    debug=debug)
 
-    for _idx, _t in enumerate(range(100)):
-        _d = {}
-        _d["top-1"] = np.random.randn(1)[0]
-        _d["top-2"] = np.random.randn(1)[0]
-        _d["top-3"] = np.random.randn(1)[0]
-        plotter.append_plot_with_dict(_d, _t)
+        self.default_opts = dict(
+            legend = self.fields,
+            showlegend = True,
+            title = self.win,
+            marginbottom = 50,
+            marginleft = 50,
+            connectgaps=True
+        )
+        self.update_opts() #merge supplied opts into default_opts
+
+    def update_plot(self, XY):
+        """
+        Args:
+            XY : A 2D array representing a confusion matrix
+        """
+        if self.plot_initalised:
+            win = self.vis.heatmap(
+                X = XY,
+                win = self.win,
+                env=self.env,
+                update = "append",
+                opts = self.opts
+            )
+        else:
+            # Instantiate
+            win = self.vis.heatmap(
+                X = XY,
+                env=self.env,
+                win = self.win,
+                opts = self.opts
+            )
+            self.plot_initalised = True
+
+
+if __name__ == "__main__":
+    # opts = dict(
+    #     xlabel = "accuracy",
+    #     ylabel = "epochs",
+    # )
+    # fields = ['top-1', 'top-2', 'top-3']
+    # plotter = TortillaLinePlotter(
+    #                     experiment_name="test-experiment",
+    #                     fields=fields,
+    #                     title='test-plot',
+    #                     opts = opts
+    #                     )
+    # # Example of call for direct update
+    # # for _idx, _t in enumerate(range(100)):
+    # #     plotter.append_plot(np.random.randn(len(fields)), _t)
+    #
+    # for _idx, _t in enumerate(range(100)):
+    #     _d = {}
+    #     _d["top-1"] = np.random.randn(1)[0]
+    #     _d["top-2"] = np.random.randn(1)[0]
+    #     _d["top-3"] = np.random.randn(1)[0]
+    #     plotter.append_plot_with_dict(_d, _t)
+
+    XY = np.random.randn(10, 10)
+    plotter = TortillaHeatMapPlotter(experiment_name="test", title="mohanty")
+    plotter.update_plot(XY)
