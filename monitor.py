@@ -3,7 +3,7 @@ from utils import accuracy
 import numpy as np
 from sklearn.metrics import confusion_matrix
 from datastream import TortillaDataStream
-from plotter import TortillaLinePlotter
+from plotter import TortillaLinePlotter, TortillaHeatMapPlotter
 
 class TortillaMonitor:
     """
@@ -71,6 +71,15 @@ class TortillaMonitor:
                                         markers=True
                                 )
                             )
+        self.val_confusion_matrix_plotter = TortillaHeatMapPlotter(
+                            experiment_name=self.experiment_name,
+                            fields=self.classes,
+                            title='Validation Confusion Matrix',
+                            opts = dict(
+                                    rownames=self.classes,
+                                    columnnames=self.classes
+                                )
+                            )
 
 
     def _init_data_gatherers(self):
@@ -112,14 +121,15 @@ class TortillaMonitor:
     def compute_confusion_matrix(self, outputs, labels):
         _, pred_top_1 = outputs.topk(1, 1, True, True)#compute top-1 predictions
         pred_top_1 = pred_top_1.t()
-        pred_top_1 = pred_top_1.eq(labels.view((1,-1)).expand_as(pred_top_1))
-        pred_top_1 = pred_top_1.squeeze(0)
         if self.use_gpu:
             _labels = labels.data.cpu().numpy()
-            _preds =  pred_top_1.data.cpu().numpy()
+            _preds =  pred_top_1.data.cpu().numpy()[0]
         else:
             _labels = labels.data.numpy()
-            _preds =  pred_top_1.data.numpy()
+            _preds =  pred_top_1.data.numpy()[0]
+
+        print(_preds)
+        print(_labels)
 
         _batch_confusion_matrix = confusion_matrix(_labels, _preds, labels=range(len(self.classes)))
         return _batch_confusion_matrix
@@ -144,6 +154,7 @@ class TortillaMonitor:
         epoch_stream.add_to_buffer(epoch)
         loss_stream.add_to_buffer(loss.data[0])
         confusion_matrix_stream.add_to_buffer(_batch_confusion_matrix)
+
 
     def _flush_stats(self, train=True):
         """
@@ -199,6 +210,9 @@ class TortillaMonitor:
             self.loss_plotter.append_plot_with_dict(
                 _payload,
                 self.val_epochs.get_last()
+            )
+            self.val_confusion_matrix_plotter.update_plot(
+                self.val_confusion_matrix.get_last()
             )
 
 

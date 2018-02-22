@@ -130,7 +130,6 @@ class TortillaHeatMapPlotter(TortillaBasePlotter):
                 X = XY,
                 win = self.win,
                 env=self.env,
-                update = "append",
                 opts = self.opts
             )
         else:
