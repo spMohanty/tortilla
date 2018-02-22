@@ -50,7 +50,8 @@ class TortillaLinePlotter(TortillaBasePlotter):
             showlegend = True,
             title = self.win,
             marginbottom = 50,
-            marginleft = 50
+            marginleft = 50,
+            connectgaps=True
         )
         self.update_opts() #merge supplied opts into default_opts
 
