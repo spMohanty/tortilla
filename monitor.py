@@ -128,9 +128,6 @@ class TortillaMonitor:
             _labels = labels.data.numpy()
             _preds =  pred_top_1.data.numpy()[0]
 
-        print(_preds)
-        print(_labels)
-
         _batch_confusion_matrix = confusion_matrix(_labels, _preds, labels=range(len(self.classes)))
         return _batch_confusion_matrix
 
