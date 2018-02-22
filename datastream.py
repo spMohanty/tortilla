@@ -52,7 +52,7 @@ class TortillaDataStream:
 
     def get_last(self):
         return self.datastream[-1]
-        
+
         if not self.buffer_empty:
             return self.datastream[-1]
         else:

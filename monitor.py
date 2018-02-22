@@ -54,7 +54,8 @@ class TortillaMonitor:
                                         ytickmin = 0,
                                         ytickmax = 100,
                                         xlabel="Epochs",
-                                        ylabel="Accuracy"
+                                        ylabel="Accuracy",
+                                        markers=True
                                 )
                             )
 
