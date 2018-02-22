@@ -65,15 +65,20 @@ def main():
 				config=config
 				)
 
+	def _run_one_epoch(train=True):
+		end_of_epoch = False
+		while not end_of_epoch:
+			_loss, images, labels, \
+			outputs, end_of_epoch = trainer._step(use_gpu=use_gpu, train=train)
+			if end_of_epoch:
+				break
+
 	for epoch in range(config.epochs):
+		print("Epoch : ", epoch)
 		for train in [False, True]:
-			end_of_epoch = False
-			while not end_of_epoch:
-				_loss, images, labels, \
-				outputs, end_of_epoch = trainer._step(use_gpu=use_gpu, train=train)
-				if end_of_epoch:
-					break
-				# print(epoch+trainer.dataset.get_current_pointer(train=True), _loss, images.shape)
+			_run_one_epoch(train=train)
+
+	_run_one_epoch(train=False)
 
 
 if __name__ == "__main__":

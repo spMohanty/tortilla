@@ -1,3 +1,4 @@
+import math
 
 class TortillaTrainer:
     def __init__(self,  dataset, model, loss,
@@ -17,12 +18,16 @@ class TortillaTrainer:
         self.config = config
         self.verbose = verbose
 
+        self.train_step_counter = 0
+
     def _compute_and_register_stats(self, outputs, labels, loss, train=True):
         epoch_pointer = self.dataset.percent_complete(train=train)
         if train:
             epoch_pointer += self.train_epochs
         else:
-            epoch_pointer += self.val_epochs
+            # Use a integral epoch value in case of
+            # val set
+            epoch_pointer = float(self.val_epochs)
 
         if self.monitor:
             self.monitor._compute_and_register_stats(
@@ -31,7 +36,18 @@ class TortillaTrainer:
                 labels,
                 loss,
                 train=train)
-            self.monitor._flush_stats(train=train)
+            if train:
+                # Flush every `train_flush_frequency` steps in case of training
+                flush_frequency = \
+                    max(1, \
+                        math.floor((float(self.dataset.train_dataset.total_images) \
+                        /self.config.batch_size) \
+                        /self.config.train_flush_per_epoch))
+
+                if self.train_step_counter % flush_frequency == 0:
+                    self.monitor._flush_stats(train=train)
+                    self.train_step_counter = 0
+                self.train_step_counter += 1
         else:
             raise("TortillaMonitor not defined")
 
@@ -52,6 +68,9 @@ class TortillaTrainer:
                 self.train_epochs += 1
             else:
                 self.val_epochs += 1
+
+            # Flush at the end of the epoch in any case
+            self.monitor._flush_stats(train=train)
             return (False, False, False, False, end_of_epoch)
 
         # Predict

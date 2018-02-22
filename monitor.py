@@ -164,8 +164,14 @@ class TortillaMonitor:
             self._plot(train=train)
 
     def _plot(self, train=True):
+        #The actual plot happens on every buffer flush
         if train:
-            #The actual plot happens on every buffer flush
+            # A check to ensure that it doesnt throw errors when
+            # the buffer is empty
+            if self.train_epochs.get_last() == None:
+                print("Empty Buffer in Train. Ignoring...")
+                return
+
             self.train_accuracy_plotter.append_plot(
                 self.train_accuracy.get_last(),
                 self.train_epochs.get_last()
@@ -177,6 +183,12 @@ class TortillaMonitor:
                 self.train_epochs.get_last()
             )
         else:
+            # A check to ensure that it doesnt throw errors when
+            # the buffer is empty
+            if self.val_epochs.get_last() == None:
+                print("Empty Buffer in Val. Ignoring...")
+                return
+
             self.val_accuracy_plotter.append_plot(
                 self.val_accuracy.get_last(),
                 self.val_epochs.get_last()

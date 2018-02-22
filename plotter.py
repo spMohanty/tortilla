@@ -64,7 +64,7 @@ class TortillaLinePlotter(TortillaBasePlotter):
         """
         y = np.array(y).reshape((1,len(self.fields)))
         t = np.array([t])
-
+        
         if self.plot_initalised:
             win = self.vis.line(
                 Y = y,

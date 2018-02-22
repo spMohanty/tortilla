@@ -22,8 +22,8 @@ class TortillaDataStream:
         # Important to intialize like this,
         # as we want the buffer to be flexible in picking up the data shape
         # with the first addition to the buffer
-        self.buffer_empty=True
-        self.buffer = np.array([False])
+        self.buffer_empty = True
+        self.buffer = False
         self.buffer_length = 0
 
     def add_to_buffer(self, d):
@@ -32,24 +32,31 @@ class TortillaDataStream:
 
         if not self.buffer_empty:
             assert type(d) == type(self.buffer)
-            self.buffer = \
-                (self.buffer_length/(self.buffer_length+1))*(self.buffer) \
-                + (1.0/(self.buffer_length+1))*d
+            weight_of_buffer = (float(self.buffer_length)/(self.buffer_length+1))
+            weight_of_new_data = 1 - weight_of_buffer
+
+            self.buffer = weight_of_buffer*self.buffer + (weight_of_new_data * d)
         else:
             self.buffer = d
-            self.buffer_empty = False
 
+        self.buffer_empty = False
         self.buffer_length += 1
 
     def flush_buffer(self):
         # TODO: Add checks to ensure that the buffer is of the same shape
         #       as the datastream elements
-        self.datastream.append(self.buffer)
+        if not self.buffer_empty:
+            self.datastream.append(self.buffer)
         self.reset_buffer()
         # print(self.name, self.get_last())
 
     def get_last(self):
         return self.datastream[-1]
+        
+        if not self.buffer_empty:
+            return self.datastream[-1]
+        else:
+            return None
 
 if __name__ == "__main__":
     ds = TortillaDataStream(name="test", column_names=["a", "b", "c"])
