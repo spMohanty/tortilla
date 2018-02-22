@@ -66,7 +66,8 @@ class TortillaMonitor:
                                         xtickmin = 0,
                                         xtickmax = self.config.epochs,
                                         xlabel="Epochs",
-                                        ylabel="Loss"
+                                        ylabel="Loss",
+                                        markers=True
                                 )
                             )
 
