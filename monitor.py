@@ -215,7 +215,7 @@ class TortillaMonitor:
             if self.config.normalize_confusion_matrix:
                 last_confusion_matrix = last_confusion_matrix.astype('float')/last_confusion_matrix.sum(axis=1)
             self.val_confusion_matrix_plotter.update_plot(
-                self.val_confusion_matrix.get_last()
+                last_confusion_matrix
             )
 
 
