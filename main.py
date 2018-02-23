@@ -15,6 +15,7 @@ from trainer import TortillaTrainer
 from monitor import TortillaMonitor
 import utils
 import os, shutil
+import pickle
 
 """
 Initliaze params
@@ -22,13 +23,15 @@ Initliaze params
 use_gpu = torch.cuda.is_available()
 
 def main():
+	utils.logo()
 	utils.create_directory_structure(config.experiment_dir_name)
 	"""
 	Initialize Dataset
 	"""
 	dataset = TortillaDataset(	"datasets/food-101",
 								batch_size=config.batch_size,
-								num_cpu_workers=10
+								num_cpu_workers=10,
+								debug=config.debug
 								)
 
 	"""
@@ -75,18 +78,20 @@ def main():
 			outputs, end_of_epoch = trainer._step(use_gpu=use_gpu, train=train)
 			if end_of_epoch:
 				break
-	def _save_checkpoint(model, epoch):
+	def _save_checkpoint(model, optimizer, epoch):
 		path = config.experiment_dir_name+"/checkpoints/snapshot_{}_{}.model".format(epoch, monitor.val_loss.get_last())
 		latest_snapshot_path = config.experiment_dir_name+"/checkpoints/snapshot_latest.model"
+		optimizer_snapshot_path = config.experiment_dir_name+"/checkpoints/optimizer_state.pickle"
 		print("Checkpointing model at : ", path)
 		torch.save(model, path)
 		shutil.copy2(path, latest_snapshot_path)
+		pickle.dump(optimizer.state_dict(), open(optimizer_snapshot_path, "wb"))
 
 	for epoch in range(config.epochs):
 		print("Epoch : ", epoch)
 		for train in [False, True]:
 			_run_one_epoch(train=train)
-		_save_checkpoint(net, epoch)
+		_save_checkpoint(net, optimizer_ft, epoch)
 	_run_one_epoch(train=False)
 
 

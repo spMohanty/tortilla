@@ -12,4 +12,3 @@ class Config:
     if debug:
         batch_size = 101
         epochs = 5
-        images_per_epoch = 1000

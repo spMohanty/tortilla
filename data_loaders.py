@@ -5,22 +5,24 @@ from torch.autograd import Variable
 
 import os
 import os.path
+import json
 
 from utils import default_flist_reader, default_loader
-from config import Config as config
 
 class ImageFilelist(data.Dataset):
 	def __init__(self, root, flist, transform=None, target_transform=None,
-			flist_reader=default_flist_reader, loader=default_loader):
+			flist_reader=default_flist_reader, loader=default_loader,
+			debug=False):
 		self.root   = root
 		self.imlist = flist_reader(flist)
-		if config.debug:
-			self.imlist = self.imlist[:config.images_per_epoch]
-
 		self.total_images = len(self.imlist)
 		self.transform = transform
 		self.target_transform = target_transform
 		self.loader = loader
+		self.debug=debug
+
+		if self.debug:
+			self.imlist[:100]
 
 	def __getitem__(self, index):
 		impath, target = self.imlist[index]
@@ -40,16 +42,20 @@ class TortillaDataset:
 	TortillaDataset is a high level wrapper over the dataset format of Tortilla
 	"""
 	def __init__(self, dataset_folder, data_transforms=None,
-				shuffle=True, batch_size=32, num_cpu_workers=4):
+				shuffle=True, batch_size=32, num_cpu_workers=4,
+				debug=False):
 		self.dataset_folder = dataset_folder
 		self.data_transforms = data_transforms
 		self.shuffle = shuffle
 		self.batch_size = batch_size
 		self.num_cpu_workers = num_cpu_workers
+		self.debug = debug
 
 		self.classes = open(os.path.join(self.dataset_folder,
 										"classes.txt")).readlines()
 		self.classes = [x.strip() for x in self.classes]
+		self.meta = json.loads(open(os.path.join(self.dataset_folder,
+										"meta.json")).read())
 
 		"""
 		Define transforms
@@ -80,17 +86,33 @@ class TortillaDataset:
 		self.train_dataset = ImageFilelist(
 								self.dataset_folder,
 								train_filelist,
-								transform=self.data_transforms["train"]
+								transform=self.data_transforms["train"],
+								debug=self.debug
 								)
 		self.val_dataset = ImageFilelist(
 								self.dataset_folder,
 								val_filelist,
-								transform=self.data_transforms["val"]
+								transform=self.data_transforms["val"],
+								debug=self.debug
 								)
 
 		self.reset_train_data_loaders()
 		self.reset_val_data_loaders()
+		self.describe()
 
+	"""
+	Describe datasets
+	"""
+	def describe(self):
+		print("="*80)
+		print("Dataset description \t ")
+		print("-------------------")
+		print("Dataset Path \t:\t {}".format(self.dataset_folder))
+		print("Classes \t:\t {}".format(self.classes))
+		print("Training Set Percent \t:\t {}".format(self.meta["train_percent"]))
+		print("Images in training set \t:\t {}".format(self.train_dataset.total_images))
+		print("Images in validation set \t:\t {}".format(self.val_dataset.total_images))
+		print("="*80)
 	"""
 	Define dataloaders
 	"""
@@ -124,9 +146,9 @@ class TortillaDataset:
 			been iterated
 		"""
 		if train:
-			return float(self.train_iter_pointer*config.batch_size)/self.len_train_images
+			return float(self.train_iter_pointer*self.batch_size)/self.len_train_images
 		else:
-			return float(self.val_iter_pointer*config.batch_size)/self.len_val_images
+			return float(self.val_iter_pointer*self.batch_size)/self.len_val_images
 
 
 	def get_next_batch(self, train=True, use_gpu=False):
