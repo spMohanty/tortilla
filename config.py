@@ -15,6 +15,7 @@ class Config:
 
     num_cpu_workers = 4
     no_plots = False
+    no_render_images = False
     visdom_server = "localhost"
     visdom_port = 8097
 

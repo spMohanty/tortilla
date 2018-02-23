@@ -162,6 +162,9 @@ def collect_args():
 	parser.add_argument('--no-plots', action='store_true', default=config.no_plots,
 	                    dest='no_plots',
 	                    help='Disable plotting on the visdom server')
+	parser.add_argument('--no-render-images', action='store_true', default=config.no_render_images,
+	                    dest='no_render_images',
+	                    help='Disable rendering of images on the visdom server')
 
 	parser.add_argument('--use-cpu', action='store_true', default=config.use_cpu,
 	                    dest='use_cpu',
@@ -189,6 +192,8 @@ def collect_args():
 	config.visdom_server = args.visdom_server
 	config.visdom_port = int(args.visdom_port)
 	config.debug = args.debug
+	config.no_plots = args.no_plots
+	config.no_render_images = args.no_render_images
 	config.use_cpu = args.use_cpu
 
 	return config
