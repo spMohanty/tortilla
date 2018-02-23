@@ -13,6 +13,7 @@ class Config:
     train_flush_per_epoch = 100
     normalize_confusion_matrix = True
 
+    num_cpu_workers = 4
     visdom_server = "localhost"
     visdom_port = 8097
 

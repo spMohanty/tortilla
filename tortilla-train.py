@@ -33,7 +33,7 @@ def main(config):
 	"""
 	dataset = TortillaDataset(	config.dataset_dir,
 								batch_size=config.batch_size,
-								num_cpu_workers=10,
+								num_cpu_workers=config.num_cpu_workers,
 								debug=config.debug
 								)
 
@@ -110,11 +110,11 @@ def main(config):
 
 def collect_args():
 	parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-	parser.add_argument('--experiment_name', action='store', dest='experiment_name',
+	parser.add_argument('--experiment-name', action='store', dest='experiment_name',
 						required=True,
 	                    help='A unique name for the current experiment')
 
-	parser.add_argument('--experiments_dir', action='store', dest='experiments_dir',
+	parser.add_argument('--experiments-dir', action='store', dest='experiments_dir',
 						default="experiments/",
 	                    help='Directory where results of all experiments will be stored.')
 
@@ -141,10 +141,14 @@ def collect_args():
 						default=0.01,
 	                    help='Learning Rate.')
 
-	parser.add_argument('--top_k', action='store', dest='top_k',
+	parser.add_argument('--top-k', action='store', dest='top_k',
 						default="1,2,3,4,5,6,7,8,9,10",
 	                    help='List of values to compute top-k accuracies during \
 						train and val.')
+
+	parser.add_argument('--num-cpu-workers', action='store', dest='num_cpu_workers',
+						default=4,
+	                    help='Number of CPU workers to be used by data loaders.')
 
 	parser.add_argument('--visdom-server', action='store', dest='visdom_server',
 						default="localhost",
@@ -180,6 +184,7 @@ def collect_args():
 	config.epochs = int(args.epochs)
 	config.learning_rate = float(args.learning_rate)
 	config.topk = [int(x) for x in args.top_k.split(",")]
+	config.num_cpu_workers = args.num_cpu_workers
 	config.visdom_server = args.visdom_server
 	config.visdom_port = args.visdom_port
 	config.debug = args.debug
