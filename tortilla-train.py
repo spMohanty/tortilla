@@ -38,6 +38,16 @@ def main(config):
 								num_cpu_workers=config.num_cpu_workers,
 								debug=config.debug
 								)
+
+	# Filter top-k to ensure that all values are >0 and less than
+	# the number of classes
+	_topk = []
+	for tk in config.topk:
+		if tk <= len(dataset.classes) and tk > 0:
+			_topk.append(tk)
+	config.topk = _topk
+
+
 	"""
 	Initialize Model
 	"""

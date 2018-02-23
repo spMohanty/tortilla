@@ -155,14 +155,6 @@ class TortillaMonitor:
 		return _batch_confusion_matrix
 
 	def _compute_and_register_stats(self, epoch, outputs, labels, loss, train=True):
-		# Filter top-k to ensure that all values are >0 and less than
-		# the number of classes
-		_topk = []
-		for tk in self.topk:
-			if tk <= len(self.classes) and tk > 0:
-				_topk.append(tk)
-		self.topk = _topk
-
 		_accuracy = accuracy(outputs, labels, topk=self.topk)
 		_accuracy = np.array([x.data[0] for x in _accuracy])
 		_batch_confusion_matrix = self.compute_confusion_matrix(outputs, labels)
