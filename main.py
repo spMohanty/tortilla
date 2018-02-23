@@ -14,6 +14,7 @@ from trainer import TortillaTrainer
 
 from monitor import TortillaMonitor
 import utils
+import os, shutil
 
 """
 Initliaze params
@@ -74,12 +75,18 @@ def main():
 			outputs, end_of_epoch = trainer._step(use_gpu=use_gpu, train=train)
 			if end_of_epoch:
 				break
+	def _save_checkpoint(model, epoch):
+		path = config.experiment_dir_name+"/checkpoints/snapshot_{}.model".format(epoch)
+		latest_snapshot_path = config.experiment_dir_name+"/checkpoints/snapshot_latest.model"
+		print("Checkpointing model at : ", path)
+		torch.save(model, path)
+		shutil.copy2(path, latest_snapshot_path)
 
 	for epoch in range(config.epochs):
 		print("Epoch : ", epoch)
 		for train in [False, True]:
 			_run_one_epoch(train=train)
-
+		_save_checkpoint(net, epoch)
 	_run_one_epoch(train=False)
 
 
