@@ -2,6 +2,7 @@
 from utils import accuracy
 import numpy as np
 from sklearn.metrics import confusion_matrix
+from sklearn.preprocessing import normalize
 from datastream import TortillaDataStream
 from plotter import TortillaLinePlotter, TortillaHeatMapPlotter
 
@@ -237,7 +238,8 @@ class TortillaMonitor:
             last_confusion_matrix = self.val_confusion_matrix.get_last()
             # Normalize confusion matrix
             if self.config.normalize_confusion_matrix:
-                last_confusion_matrix = last_confusion_matrix.astype('float')/last_confusion_matrix.sum(axis=1)
+                #last_confusion_matrix = last_confusion_matrix.astype('float')/last_confusion_matrix.sum(axis=1)
+                last_confusion_matrix = normalize(last_confusion_matrix)
             self.val_confusion_matrix_plotter.update_plot(
                 last_confusion_matrix
             )
