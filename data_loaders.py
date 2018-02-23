@@ -17,7 +17,7 @@ class ImageFilelist(data.Dataset):
 		self.debug=debug
 		self.imlist = flist_reader(flist)
 		if self.debug:
-			self.imlist = self.imlist[:1000]
+			self.imlist = self.imlist[:3000]
 		self.total_images = len(self.imlist)
 		self.transform = transform
 		self.target_transform = target_transform

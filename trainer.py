@@ -72,7 +72,7 @@ class TortillaTrainer:
             # Flush at the end of the epoch in any case
             self.monitor._flush_stats(train=train)
             self.monitor._dump_states(train=train)
-            return (False, False, False, False, end_of_epoch)
+            return (False, False, False, False, 100, end_of_epoch)
 
         # Predict
         outputs = self._predict(images)
@@ -89,11 +89,13 @@ class TortillaTrainer:
             _loss.backward()
             self.optimizer.step()
 
+        percent_complete = self.dataset.percent_complete(train=train)
         return  (
                     _loss,
                     images,
                     labels,
                     outputs,
+                    percent_complete,
                     end_of_epoch
                 )
 
