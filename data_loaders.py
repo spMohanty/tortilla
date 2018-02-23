@@ -14,15 +14,14 @@ class ImageFilelist(data.Dataset):
 			flist_reader=default_flist_reader, loader=default_loader,
 			debug=False):
 		self.root   = root
+		self.debug=debug
 		self.imlist = flist_reader(flist)
+		if self.debug:
+			self.imlist = self.imlist[:1000]
 		self.total_images = len(self.imlist)
 		self.transform = transform
 		self.target_transform = target_transform
 		self.loader = loader
-		self.debug=debug
-
-		if self.debug:
-			self.imlist[:100]
 
 	def __getitem__(self, index):
 		impath, target = self.imlist[index]

@@ -85,7 +85,7 @@ def main():
 		print("Checkpointing model at : ", path)
 		torch.save(model, path)
 		shutil.copy2(path, latest_snapshot_path)
-		pickle.dump(optimizer.state_dict(), open(optimizer_snapshot_path, "wb"))
+		# pickle.dump(optimizer.state_dict(), open(optimizer_snapshot_path, "wb"))
 
 	for epoch in range(config.epochs):
 		print("Epoch : ", epoch)
