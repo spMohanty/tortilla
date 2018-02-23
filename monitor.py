@@ -5,6 +5,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.preprocessing import normalize
 from datastream import TortillaDataStream
 from plotter import TortillaLinePlotter, TortillaHeatMapPlotter, VisdomTest
+import os
 
 class TortillaMonitor:
     """
@@ -209,6 +210,15 @@ class TortillaMonitor:
             self.val_loss.dump(prefix.format("val_loss"))
             self.val_confusion_matrix.dump(prefix.format("val_confusion_matrix"))
 
+        """
+        Save dataset specific metadata into experiment dir
+        """
+        # TODO: Redo this with more information from dataset meta.json file
+        classes_path = self.config.experiment_dir_name+"/classes.txts"
+        if not os.path.exists(classes_path):
+            fp = open(classes_path, "w")
+            fp.write("\n".join(self.classes))
+            fp.close()
 
     def _plot(self, train=True):
         #The actual plot happens on every buffer flush
