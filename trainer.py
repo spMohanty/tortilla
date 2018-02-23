@@ -98,7 +98,10 @@ class TortillaTrainer:
         STD = [0.229, 0.224, 0.225]
         for i in range(5):
             for t in range(3):
-                _im[i,t,:,:] = _im[i,t,:,:]*STD[t] + MEAN[t]
+                try:
+                    _im[i,t,:,:] = _im[i,t,:,:]*STD[t] + MEAN[t]
+                except:
+                    pass
 
 
         self.monitor.images_plotter.update_images(_im)
