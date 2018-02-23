@@ -39,6 +39,12 @@ def main(config):
 								debug=config.debug
 								)
 
+	_topk = []
+	for tk in config.topk:
+		if tk <= len(dataset.classes) and tk > 0:
+			_topk.append(tk)
+	config.topk = _topk
+
 	"""
 	Initialize Model
 	"""
@@ -179,7 +185,7 @@ def collect_args():
 
 	config.experiment_name = args.experiment_name
 	config.experiments_dir = args.experiments_dir
-	experiment_dir_name = config.experiments_dir+"/"+config.experiment_name
+	config.experiment_dir_name = config.experiments_dir+"/"+config.experiment_name
 	config.dataset_dir = args.dataset_dir
 	config.batch_size = int(args.batch_size)
 	config.epochs = int(args.epochs)

@@ -38,8 +38,67 @@ As always, contributions welcome. :D
   cd tortilla
   pip install -r requirements.txt
 ```
-
 # Usage
+## Prepare Data
+
+For the task of image classification, [Tortilla](https://github.com/spMohanty/tortilla) expects the data to
+be arranged in folders and subfolders. Create one root folder, and inside this root folder include one folder
+each for every `class` in your classification problem.
+The structure should look something like :
+```
+/-root_folder
+----/class-1
+----/class-2
+----/class-3
+----/class-4
+....
+...
+and so on
+```
+
+Now, lets the the root folder is present at `<root_folder_path>`. We will need to resize all the images, divide them into
+train-test splits, etc.
+
+This can be done by :
+
+```
+python scripts/data-prepartion/prepare_data.py --input-folder-path <CHANGE_ME_root_folder_path> --output-folder-path datasets/CHANGE_ME_my_dataset_name --dataset-name=CHANGE_ME_my_dataset_name
+```
+
+The total list of options available with the data preparation script are :
+```
+usage: prepare_data.py [-h] --input-folder-path INPUT_FOLDER_PATH
+                       --output-folder-path OUTPUT_FOLDER_PATH
+                       [--min-images-per-class MIN_IMAGES_PER_CLASS]
+                       [--train-percent TRAIN_PERCENT] --dataset-name
+                       DATASET_NAME [--img-size IMG_SIZE]
+
+Converts dataset from folder-subfolder format (one sub folder per class) to
+tortilla's data format
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --input-folder-path INPUT_FOLDER_PATH
+                        Path to input folder containing images (default: None)
+  --output-folder-path OUTPUT_FOLDER_PATH
+                        Path to output folder to write images (default: None)
+  --min-images-per-class MIN_IMAGES_PER_CLASS
+                        Minimum number of images required per class (default:
+                        500)
+  --train-percent TRAIN_PERCENT
+                        Percentage of all images to use as training data
+                        (default: 0.8)
+  --dataset-name DATASET_NAME
+                        Name of the Dataset (default: None)
+  --img-size IMG_SIZE   Size of the target images (default: 256x256)
+```
+
+If the previous script executed without any errors, then you should have a new datasets folder at `datasets/CHANGE_ME_my_dataset_name`
+which should have resized versions of all the images, and also split into training and validation sets.
+
+## Training
+
+Training will be done by the `tortilla-train.py` script, and a list of all the available options is as follows :
 
 ```
 ==============================================================================================================================
@@ -112,6 +171,21 @@ optional arguments:
                         automatically use just CPU) (default: False)
   --debug               Run tortilla in debug mode (default: False)
   --version             show program's version number and exit
+```
+
+But before we can start the training, we need to start the `visdom` server, which will help
+us visualize the actual training details. This can be done by :
+```
+# Please do this in a separate terminal tab
+conda activate tortilla
+python -m visdom.server
+```
+This should start a local visdom server with which the actual training code can interact.
+
+Now we can start training by :
+
+```
+python tortilla-train.py --experiment-name CHANGE_ME_my_dataset_name --dataset-dir datasets/CHANGE_ME_my_dataset_name
 ```
 
 # Author
