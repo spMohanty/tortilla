@@ -9,6 +9,10 @@ class Config:
     debug=True
     train_flush_per_epoch = 100
     normalize_confusion_matrix = True
+
+    visdom_server = "localhost"
+    visdom_port = 8097
+
     if debug:
         batch_size = 101
         epochs = 5

@@ -10,6 +10,8 @@ import random
 
 class VisdomTest:
     def __init__(self, server='localhost', port=8097):
+        self.server = server
+        self.port = port
         try:
             vis = Visdom(server="http://"+self.server, port=self.port)
             vis.win_exists("test")#dummy call to make sure that a connection to

@@ -26,7 +26,7 @@ class TortillaMonitor:
         self.use_gpu = use_gpu
 
         if self.plot:
-            VisdomTest()
+            VisdomTest(server=self.config.visdom_server, port=self.config.visdom_port)
             self._init_plotters()
 
         self._init_data_gatherers()
@@ -45,7 +45,9 @@ class TortillaMonitor:
                                         ytickmax = 100,
                                         xlabel="Epochs",
                                         ylabel="Accuracy"
-                                )
+                                ),
+                            server=self.config.visdom_server,
+                            port=self.config.visdom_port
                             )
 
         self.val_accuracy_plotter = TortillaLinePlotter(
@@ -60,7 +62,9 @@ class TortillaMonitor:
                                         xlabel="Epochs",
                                         ylabel="Accuracy",
                                         markers=True
-                                )
+                                ),
+                            server=self.config.visdom_server,
+                            port=self.config.visdom_port
                             )
 
         self.loss_plotter = TortillaLinePlotter(
@@ -73,7 +77,9 @@ class TortillaMonitor:
                                         xlabel="Epochs",
                                         ylabel="Loss",
                                         markers=True
-                                )
+                                ),
+                            server=self.config.visdom_server,
+                            port=self.config.visdom_port
                             )
         self.val_confusion_matrix_plotter = TortillaHeatMapPlotter(
                             experiment_name=self.experiment_name,
@@ -82,7 +88,9 @@ class TortillaMonitor:
                             opts = dict(
                                     rownames=self.classes,
                                     columnnames=self.classes
-                                )
+                                ),
+                            server=self.config.visdom_server,
+                            port=self.config.visdom_port
                             )
 
 
