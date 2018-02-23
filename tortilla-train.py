@@ -38,13 +38,6 @@ def main(config):
 								num_cpu_workers=config.num_cpu_workers,
 								debug=config.debug
 								)
-
-	_topk = []
-	for tk in config.topk:
-		if tk <= len(dataset.classes) and tk > 0:
-			_topk.append(tk)
-	config.topk = _topk
-
 	"""
 	Initialize Model
 	"""
@@ -191,9 +184,9 @@ def collect_args():
 	config.epochs = int(args.epochs)
 	config.learning_rate = float(args.learning_rate)
 	config.topk = [int(x) for x in args.top_k.split(",")]
-	config.num_cpu_workers = args.num_cpu_workers
+	config.num_cpu_workers = int(args.num_cpu_workers)
 	config.visdom_server = args.visdom_server
-	config.visdom_port = args.visdom_port
+	config.visdom_port = int(args.visdom_port)
 	config.debug = args.debug
 	config.use_cpu = args.use_cpu
 
