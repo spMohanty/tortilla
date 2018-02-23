@@ -187,6 +187,9 @@ Now we can start training by :
 ```
 python tortilla-train.py --experiment-name CHANGE_ME_my_dataset_name --dataset-dir datasets/CHANGE_ME_my_dataset_name
 ```
+In a bit, after you code starts running, you should be able to see all the plots, etc at
+`http://localhost:8097`
+(If you didnot change the `visdom-server` and `visdom-port` using the corresponding cli flags)
 
 # Author
 Sharada Mohanty (sharada.mohanty@epfl.ch)
