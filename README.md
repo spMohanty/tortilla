@@ -75,7 +75,7 @@ The structure should look something like :
 and so on
 ```
 
-Now, lets the the root folder is present at `<root_folder_path>`. We will need to resize all the images, divide them into
+Now, let say the root folder is present at `<root_folder_path>`. We will need to resize all the images, divide them into
 train-test splits, etc.
 
 This can be done by :
