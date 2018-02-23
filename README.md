@@ -13,6 +13,32 @@ As always, contributions welcome. :D
 
 **NOTE** This is a work in progress :construction:, and will take a few more weeks before it is production ready.
 
+# Installation
+* Install Anaconda3 from [https://www.anaconda.com/download/](https://www.anaconda.com/download/)
+* Create your conda env and activate it :
+```
+  conda create python=3.5 --name tortilla
+  source activate tortilla
+```
+* Install pytorch using :
+```
+  conda install pytorch torchvision -c pytorch #python3.5 + cuda8
+  # or
+  conda install pytorch torchvision cuda90 -c pytorch #python3.5 + cuda9.0
+  # or
+  conda install pytorch torchvision cuda91 -c pytorch #python3.5 + cuda9.1
+  # or the safest
+  conda install pytorch-cpu torchvision -c pytorch #python3.5 and cpu version of pytorch
+
+  # More instructions for pytorch installation at : http://pytorch.org/
+```
+* Clone and install tortilla :
+```
+  git clone https://github.com/spMohanty/tortilla
+  cd tortilla
+  pip install -r requirements.txt
+```
+
 # Usage
 
 ```
