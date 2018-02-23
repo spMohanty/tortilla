@@ -13,6 +13,7 @@ from data_loaders import TortillaDataset
 from trainer import TortillaTrainer
 
 from monitor import TortillaMonitor
+import utils
 
 """
 Initliaze params
@@ -20,6 +21,7 @@ Initliaze params
 use_gpu = torch.cuda.is_available()
 
 def main():
+	utils.create_directory_structure(config.experiment_dir_name)
 	"""
 	Initialize Dataset
 	"""

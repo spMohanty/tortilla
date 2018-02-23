@@ -1,6 +1,7 @@
 class Config:
     experiment_name = "test-food-101"
-    experiments_dir = "experiments/"
+    experiments_dir = "experiments"
+    experiment_dir_name = experiments_dir+"/"+experiment_name
     data_dir = "/mount/SDE/instagram/food101/food-101/images"
     learning_rate = 0.001
     epochs = 100
@@ -8,7 +9,7 @@ class Config:
     topk = (1,2,3,4,5,6,7,8,9,10)
     debug=True
     train_flush_per_epoch = 100
-    normalize_confusion_matrix = True
+    normalize_confusion_matrix = False
     if debug:
         batch_size = 101
         epochs = 5

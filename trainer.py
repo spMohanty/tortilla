@@ -71,6 +71,7 @@ class TortillaTrainer:
 
             # Flush at the end of the epoch in any case
             self.monitor._flush_stats(train=train)
+            self.monitor._dump_states(train=train)
             return (False, False, False, False, end_of_epoch)
 
         # Predict

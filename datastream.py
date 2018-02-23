@@ -1,4 +1,5 @@
 import numpy as np
+import pickle
 
 class TortillaDataStream:
     """
@@ -69,6 +70,11 @@ class TortillaDataStream:
         else:
             return None
 
+    def dump(self, path):
+        self.flush_buffer()
+        pickle.dump(self.datastream, open(path, "wb"))
+
+
 if __name__ == "__main__":
     ds = TortillaDataStream(name="test", column_names=["a", "b", "c"])
     ds.add_to_buffer(np.array([1,2,3]))
@@ -84,3 +90,4 @@ if __name__ == "__main__":
     print(ds.datastream)
     assert len(ds.datastream) == 1
     assert ds.get_last().all() == np.array([1,2,3]).all()
+    ds.dump("test.pickle")

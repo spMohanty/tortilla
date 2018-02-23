@@ -174,6 +174,30 @@ class TortillaMonitor:
         if self.plot:
             self._plot(train=train)
 
+    def _dump_states(self, train=True):
+        """
+        Pickles and saves all the datastreams
+        """
+        prefix = self.config.experiment_dir_name+"/datastreams/"
+        try:
+            os.mkdir(prefix)
+        except:
+            pass
+
+        prefix += "{}.pickle"
+
+        if train:
+            self.train_accuracy.dump(prefix.format("train_accuracy"))
+            self.train_epochs.dump(prefix.format("train_epochs"))
+            self.train_loss.dump(prefix.format("train_loss"))
+            self.train_confusion_matrix.dump(prefix.format("train_confusion_matrix"))
+        else:
+            self.val_accuracy.dump(prefix.format("val_accuracy"))
+            self.val_epochs.dump(prefix.format("val_epochs"))
+            self.val_loss.dump(prefix.format("val_loss"))
+            self.val_confusion_matrix.dump(prefix.format("val_confusion_matrix"))
+
+
     def _plot(self, train=True):
         #The actual plot happens on every buffer flush
         if train:
