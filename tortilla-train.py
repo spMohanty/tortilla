@@ -52,7 +52,7 @@ def main(config):
 	"""
 	Initialize Optimizers, Loss, Loss Schedulers
 	"""
-	optimizer_ft = optim.Adam(net.parameters(), lr=0.001)
+	optimizer_ft = optim.Adam(net.parameters(), lr=config.learning_rate)
 	exp_lr_scheduler = optim.lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
 	criterion = CrossEntropyLoss()
 
@@ -116,7 +116,7 @@ def collect_args():
 	                    help='A unique name for the current experiment')
 
 	parser.add_argument('--experiments-dir', action='store', dest='experiments_dir',
-						default=config.experiment_name,
+						default=config.experiments_dir,
 	                    help='Directory where results of all experiments will be stored.')
 
 	parser.add_argument('--dataset-dir', action='store', dest='dataset_dir',
