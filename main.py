@@ -19,18 +19,103 @@ import pickle
 import tqdm
 tqdm.monitor_interval = 0
 
+import argparse
+
 """
 Initliaze params
 """
-use_gpu = torch.cuda.is_available()
+def collect_args():
+	parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+	parser.add_argument('--experiment_name', action='store', dest='experiment_name',
+						required=True,
+	                    help='A unique name for the current experiment')
+
+	parser.add_argument('--experiments_dir', action='store', dest='experiments_dir',
+						default="experiments/",
+	                    help='Directory where results of all experiments will be stored.')
+
+	parser.add_argument('--dataset-dir', action='store', dest='dataset_dir',
+						required=True,
+	                    help='Dataset directory in the TortillaDataset format')
+
+	parser.add_argument('--model', action='store', dest='model',
+						default="resnet-50",
+	                    help='Type of the pretrained network to train with. Options : ["resnet-50"]')
+
+	parser.add_argument('--optimizer', action='store', dest='optimizer',
+						default="adam",
+	                    help='Type of the pretrained network to train with. Options : ["adam"]')
+
+	parser.add_argument('--batch-size', action='store', dest='batch_size',
+						default=128,
+	                    help='Batch Size.')
+
+	parser.add_argument('--epochs', action='store', dest='epochs',
+						default=30,
+	                    help='Number of epochs.')
+	parser.add_argument('--learning-rate', action='store', dest='learning_rate',
+						default=0.01,
+	                    help='Learning Rate.')
+
+	parser.add_argument('--top_k', action='store', dest='top_k',
+						default="1,2,3,4,5,6,7,8,9,10",
+	                    help='List of values to compute top-k accuracies during \
+						train and val.')
+
+	parser.add_argument('--visdom-server', action='store', dest='visdom_server',
+						default="localhost",
+	                    help='Visdom server hostname.')
+
+	parser.add_argument('--visdom-port', action='store', dest='visdom_port',
+						default=8097,
+	                    help='Visdom server port.')
+
+	parser.add_argument('--no-plots', action='store_true', default=False,
+	                    dest='no_plots',
+	                    help='Disable plotting on the visdom server')
+
+	parser.add_argument('--use-cpu', action='store_true', default=False,
+	                    dest='use_cpu',
+	                    help='Boolean Flag to forcibly use CPU (on servers which\
+						have GPUs. If you do not have a GPU, tortilla will \
+						automatically use just CPU)')
+
+	parser.add_argument('--debug', action='store_true', default=False,
+	                    dest='debug',
+	                    help='Run tortilla in debug mode')
+
+	parser.add_argument('--version', action='version', version='tortilla v0.1')
+
+	args = parser.parse_args()
+
+	config.experiment_name = args.experiment_name
+	config.experiments_dir = args.experiments_dir
+	experiment_dir_name = config.experiments_dir+"/"+config.experiment_name
+	config.dataset_dir = args.dataset_dir
+	config.batch_size = int(args.batch_size)
+	config.epochs = int(args.epochs)
+	config.learning_rate = float(args.learning_rate)
+	config.topk = [int(x) for x in args.top_k.split(",")]
+	config.visdom_server = args.visdom_server
+	config.visdom_port = args.visdom_port
+	config.debug = args.debug
+	config.use_cpu = args.use_cpu
+
+	return config
 
 def main():
 	utils.logo()
+	config = collect_args()
+	if config.use_cpu:
+		use_gpu = False
+	else:
+		use_gpu = torch.cuda.is_available()
+
 	utils.create_directory_structure(config.experiment_dir_name)
 	"""
 	Initialize Dataset
 	"""
-	dataset = TortillaDataset(	"datasets/food-101",
+	dataset = TortillaDataset(	config.dataset_dir,
 								batch_size=config.batch_size,
 								num_cpu_workers=10,
 								debug=config.debug
@@ -104,7 +189,7 @@ def main():
 			_run_one_epoch(epoch, train=train)
 		_save_checkpoint(net, optimizer_ft, epoch)
 	_run_one_epoch(epoch, train=False)
-
+	print("Hurray !! Your network is trained ! Now you can use `tortilla-predict` to make predictions.")
 
 if __name__ == "__main__":
 	main()
