@@ -81,7 +81,10 @@ train-test splits, etc.
 This can be done by :
 
 ```
-python scripts/data-prepartion/prepare_data.py --input-folder-path <CHANGE_ME_root_folder_path> --output-folder-path datasets/CHANGE_ME_my_dataset_name --dataset-name=CHANGE_ME_my_dataset_name
+python scripts/data-prepartion/prepare_data.py \
+  --input-folder-path <CHANGE_ME_root_folder_path> \
+  --output-folder-path datasets/CHANGE_ME_my_dataset_name \
+  --dataset-name=CHANGE_ME_my_dataset_name
 ```
 
 The total list of options available with the data preparation script are available at [docs/prepare-data.md](docs/prepare-data.md).
@@ -107,7 +110,9 @@ This should start a local visdom server with which the actual training code can 
 Now we can start training by :
 
 ```
-python tortilla-train.py --experiment-name CHANGE_ME_my_dataset_name --dataset-dir datasets/CHANGE_ME_my_dataset_name
+python tortilla-train.py \
+  --experiment-name CHANGE_ME_my_dataset_name \
+  --dataset-dir datasets/CHANGE_ME_my_dataset_name
 ```
 In a bit, after you code starts running, you should be able to see all the plots, etc at
 `http://localhost:8097`
