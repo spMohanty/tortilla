@@ -39,7 +39,7 @@ optional arguments:
                         None)
   --experiments-dir EXPERIMENTS_DIR
                         Directory where results of all experiments will be
-                        stored. (default: test-food-101)
+                        stored. (default: experiments)
   --dataset-dir DATASET_DIR
                         Dataset directory in the TortillaDataset format
                         (default: None)
@@ -48,8 +48,8 @@ optional arguments:
                         'densenet169', 'densenet201', 'inception_v3',
                         'resnet101', 'resnet152', 'resnet18', 'resnet34',
                         'resnet50', 'vgg11', 'vgg11_bn', 'vgg13', 'vgg13_bn',
-                        'vgg16', 'vgg16_bn', 'vgg19', 'vgg19_bn'] (default:
-                        resnet-50)
+                        'vgg16', 'vgg16_bn', 'vgg19', 'vgg19_bn',
+                        'squeezenet1_0'] (default: resnet-50)
   --optimizer OPTIMIZER
                         Type of the pretrained network to train with. Options
                         : ["adam"] (default: adam)
@@ -73,4 +73,3 @@ optional arguments:
                         automatically use just CPU) (default: False)
   --debug               Run tortilla in debug mode (default: False)
   --version             show program's version number and exit
-```
