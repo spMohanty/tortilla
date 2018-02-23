@@ -1,9 +1,10 @@
 import sys
 import os
 import shutil
+import glob
 
 def quick_compute_class_frequency_from_folder(folder_path, classes):
-    _classes = os.listdir(folder_path)
+    _classes = get_classes_from_input_folder(folder_path)
     assert _classes == classes
 
     _class_frequency = {}
@@ -52,11 +53,21 @@ def output_folder_path_validation(output_folder_path, classes):
             _class
         ))
 
+def get_classes_from_input_folder(input_folder_path):
+    dot_files = glob.glob(input_folder_path+"/.*")
+    dot_files = [x.replace(input_folder_path+"/","") for x in dot_files]
+    classes = set(os.listdir(input_folder_path)) - set(dot_files)
+    final_classes = []
+    for _class in classes:
+        if os.path.isdir(os.path.join(input_folder_path, _class)):
+            final_classes.append(_class)
+    return final_classes
+
 def input_folder_path_validation(input_folder_path):
     """
         Validation of the Input folder path
     """
-    classes = os.listdir(input_folder_path)
+    classes = get_classes_from_input_folder(input_folder_path)
     for _class in classes:
         assert(os.path.isdir(os.path.join(input_folder_path, _class)))
 

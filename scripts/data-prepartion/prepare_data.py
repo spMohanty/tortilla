@@ -51,7 +51,7 @@ if __name__ == "__main__":
 	dataset_name = args.dataset_name
 	img_size = (int(args.img_size.split("x")[0]), int(args.img_size.split("x")[1]))
 
-	classes = os.listdir(input_folder_path)
+	classes = get_classes_from_input_folder(input_folder_path)
 	"""
 	Validation
 	"""
@@ -122,7 +122,7 @@ if __name__ == "__main__":
 			_class,
 			target_file_name
 		)
-        
+
 		# Open, Preprocess and write file to output_folder_path
 		try:
 			# TODO: Make this opening of the file optional
