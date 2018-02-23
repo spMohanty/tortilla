@@ -159,6 +159,48 @@ class TortillaHeatMapPlotter(TortillaBasePlotter):
             )
             self.plot_initalised = True
 
+class TortillaImagesPlotter(TortillaBasePlotter):
+    def __init__(   self, experiment_name=None, fields=None,
+                    title=None, opts={}, port=8097, server='localhost',
+                    debug=False):
+        super(TortillaImagesPlotter, self).__init__(
+                    experiment_name=experiment_name, fields=fields,
+                    win=title, opts=opts, port=port, server=server,
+                    debug=debug)
+
+        self.default_opts = dict(
+            legend = self.fields,
+            showlegend = True,
+            title = self.win,
+            nrow = 3,
+            marginbottom = 50,
+            marginleft = 50,
+        )
+        self.update_opts() #merge supplied opts into default_opts
+
+    def update_images(self, images):
+        """
+        Args:
+            images : A 4D tensor representing a B x C x H x W tensor or a list of images
+        """
+        if self.plot_initalised:
+            win = self.vis.images(
+                tensor = images,
+                win = self.win,
+                env=self.env,
+                opts = self.opts
+            )
+        else:
+            # Instantiate
+            win = self.vis.images(
+                tensor = images,
+                env=self.env,
+                win = self.win,
+                opts = self.opts
+            )
+            self.plot_initalised = True
+
+
 
 if __name__ == "__main__":
     # opts = dict(

@@ -4,8 +4,10 @@ import numpy as np
 from sklearn.metrics import confusion_matrix
 from sklearn.preprocessing import normalize
 from datastream import TortillaDataStream
-from plotter import TortillaLinePlotter, TortillaHeatMapPlotter, VisdomTest
+from plotter import TortillaLinePlotter, TortillaHeatMapPlotter, \
+                    TortillaImagesPlotter, VisdomTest
 import os
+import json
 
 class TortillaMonitor:
     """
@@ -93,6 +95,12 @@ class TortillaMonitor:
                             server=self.config.visdom_server,
                             port=self.config.visdom_port
                             )
+        self.images_plotter = TortillaImagesPlotter(
+                            experiment_name=self.experiment_name,
+                            title='Images',
+                            server=self.config.visdom_server,
+                            port=self.config.visdom_port
+        )
 
 
     def _init_data_gatherers(self):
@@ -214,10 +222,13 @@ class TortillaMonitor:
         Save dataset specific metadata into experiment dir
         """
         # TODO: Redo this with more information from dataset meta.json file
-        classes_path = self.config.experiment_dir_name+"/classes.txts"
-        if not os.path.exists(classes_path):
-            fp = open(classes_path, "w")
-            fp.write("\n".join(self.classes))
+        meta_path = self.config.experiment_dir_name+"/meta.json"
+        _meta = {}
+        _meta["classes"] = self.classes
+        # _meta["dataset_dir"] = self.dataset.dataset_folder
+        if not os.path.exists(meta_path):
+            fp = open(meta_path, "w")
+            fp.write(json.dumps(_meta))
             fp.close()
 
     def _plot(self, train=True):

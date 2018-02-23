@@ -1,4 +1,7 @@
 import math
+import torchvision
+from torchvision import datasets, models, transforms
+import torch
 
 class TortillaTrainer:
     def __init__(self,  dataset, model, loss,
@@ -83,11 +86,24 @@ class TortillaTrainer:
         # Compute and log/plot stats
         self._compute_and_register_stats(outputs, labels, _loss, train=train)
 
+        # DEBUG
+        im = images[0:5]
+        MEAN = [0.485, 0.456, 0.406]
+        STD = [0.229, 0.224, 0.225]
+        for t in range(3):
+            im[:,t,:,:] = im[:,t,:,:]*STD[t] + MEAN[t]
+        if use_gpu:
+            _im = im.data.cpu()
+        else:
+            _im = im.data
+        self.monitor.images_plotter.update_images(_im)
+
         if train:
             # Adjust weights
             self.model.zero_grad()
             _loss.backward()
             self.optimizer.step()
+
 
         percent_complete = self.dataset.percent_complete(train=train)
         return  (
