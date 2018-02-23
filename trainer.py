@@ -88,16 +88,18 @@ class TortillaTrainer:
 
         # DEBUG
         im = images[0:5]
-        MEAN = [0.485, 0.456, 0.406]
-        STD = [0.229, 0.224, 0.225]
-        for i in range(5):
-            for t in range(3):
-                im[i,t,:,:] = im[i,t,:,:]*STD[t] + MEAN[t]
 
         if use_gpu:
             _im = im.data.cpu()
         else:
             _im = im.data
+
+        MEAN = [0.485, 0.456, 0.406]
+        STD = [0.229, 0.224, 0.225]
+        for i in range(5):
+            for t in range(3):
+                _im[i,t,:,:] = _im[i,t,:,:]*STD[t] + MEAN[t]
+
 
         self.monitor.images_plotter.update_images(_im)
 
