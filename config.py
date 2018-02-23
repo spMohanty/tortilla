@@ -14,6 +14,7 @@ class Config:
     normalize_confusion_matrix = True
 
     num_cpu_workers = 4
+    no_plots = False
     visdom_server = "localhost"
     visdom_port = 8097
 
@@ -21,3 +22,5 @@ class Config:
     if debug:
         batch_size = 101
         epochs = 5
+
+    version = 0.01

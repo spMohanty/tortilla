@@ -116,7 +116,7 @@ def collect_args():
 	                    help='A unique name for the current experiment')
 
 	parser.add_argument('--experiments-dir', action='store', dest='experiments_dir',
-						default="experiments/",
+						default=config.experiment_name,
 	                    help='Directory where results of all experiments will be stored.')
 
 	parser.add_argument('--dataset-dir', action='store', dest='dataset_dir',
@@ -124,56 +124,56 @@ def collect_args():
 	                    help='Dataset directory in the TortillaDataset format')
 
 	parser.add_argument('--model', action='store', dest='model',
-						default="resnet-50",
+						default=config.model,
 	                    help='Type of the pretrained network to train with. Options : {}'.format(TortillaModel.supported_models))
 
 	parser.add_argument('--optimizer', action='store', dest='optimizer',
-						default="adam",
+						default=config.optimizer,
 	                    help='Type of the pretrained network to train with. Options : ["adam"]')
 
 	parser.add_argument('--batch-size', action='store', dest='batch_size',
-						default=128,
+						default=config.batch_size,
 	                    help='Batch Size.')
 
 	parser.add_argument('--epochs', action='store', dest='epochs',
-						default=30,
+						default=config.epochs,
 	                    help='Number of epochs.')
 	parser.add_argument('--learning-rate', action='store', dest='learning_rate',
-						default=0.01,
+						default=config.learning_rate,
 	                    help='Learning Rate.')
 
 	parser.add_argument('--top-k', action='store', dest='top_k',
-						default="1,2,3,4,5,6,7,8,9,10",
+						default=",".join([str(x) for x in config.topk]),
 	                    help='List of values to compute top-k accuracies during \
 						train and val.')
 
 	parser.add_argument('--num-cpu-workers', action='store', dest='num_cpu_workers',
-						default=4,
+						default=config.num_cpu_workers,
 	                    help='Number of CPU workers to be used by data loaders.')
 
 	parser.add_argument('--visdom-server', action='store', dest='visdom_server',
-						default="localhost",
+						default=config.visdom_server,
 	                    help='Visdom server hostname.')
 
 	parser.add_argument('--visdom-port', action='store', dest='visdom_port',
-						default=8097,
+						default=config.visdom_port,
 	                    help='Visdom server port.')
 
-	parser.add_argument('--no-plots', action='store_true', default=False,
+	parser.add_argument('--no-plots', action='store_true', default=config.no_plots,
 	                    dest='no_plots',
 	                    help='Disable plotting on the visdom server')
 
-	parser.add_argument('--use-cpu', action='store_true', default=False,
+	parser.add_argument('--use-cpu', action='store_true', default=config.use_cpu,
 	                    dest='use_cpu',
 	                    help='Boolean Flag to forcibly use CPU (on servers which\
 						have GPUs. If you do not have a GPU, tortilla will \
 						automatically use just CPU)')
 
-	parser.add_argument('--debug', action='store_true', default=False,
+	parser.add_argument('--debug', action='store_true', default=config.debug,
 	                    dest='debug',
 	                    help='Run tortilla in debug mode')
 
-	parser.add_argument('--version', action='version', version='tortilla v0.1')
+	parser.add_argument('--version', action='version', version='tortilla '+str(config.version))
 
 	args = parser.parse_args()
 
