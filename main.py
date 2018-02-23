@@ -76,7 +76,7 @@ def main():
 			if end_of_epoch:
 				break
 	def _save_checkpoint(model, epoch):
-		path = config.experiment_dir_name+"/checkpoints/snapshot_{}.model".format(epoch)
+		path = config.experiment_dir_name+"/checkpoints/snapshot_{}_{}.model".format(epoch, monitor.val_loss.get_last())
 		latest_snapshot_path = config.experiment_dir_name+"/checkpoints/snapshot_latest.model"
 		print("Checkpointing model at : ", path)
 		torch.save(model, path)
