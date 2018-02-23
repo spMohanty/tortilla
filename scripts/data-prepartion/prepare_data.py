@@ -20,7 +20,7 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,
 			description="Converts dataset from folder-subfolder format \
 						(one sub folder per class) to tortilla's data format")
-						
+
 	parser.add_argument('--input-folder-path', action='store', dest='input_folder_path',
 						required=True,
 						help='Path to input folder containing images')
@@ -108,7 +108,7 @@ if __name__ == "__main__":
 
 		target_file_name = "{}_{}".format(
 			str(uuid.uuid4()),
-			_file.split("/")[-1]
+			"_".join(_file.split("/")[-1].split())
 			)
 		target_file_path = os.path.abspath(os.path.join(
 			output_folder_path,
