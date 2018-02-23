@@ -27,6 +27,15 @@ class TortillaMonitor:
 		self.classes = classes
 		self.config = config
 		self.use_gpu = use_gpu
+		# Filter top-k to ensure that all values are >0 and less than
+		# the number of classes
+		_topk = []
+		for tk in self.config.topk:
+			if tk <= len(self.classes) and tk > 0:
+				_topk.append(tk)
+		self.topk = _topk
+		self.config.topk = self.topk
+
 
 		if self.plot:
 			VisdomTest(server=self.config.visdom_server, port=self.config.visdom_port)
