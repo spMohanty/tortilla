@@ -1,16 +1,18 @@
 #!/usr/bin/env python
 
+from config import Config as config
+from data_loaders import TortillaDataset
+from trainer import TortillaTrainer
+from models import TortillaModel
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
 # from torch.optim import lr_scheduler
+
 from torch.autograd import Variable
 from torchvision import datasets, models, transforms
 from torch.nn import CrossEntropyLoss
-
-from config import Config as config
-from data_loaders import TortillaDataset
-from trainer import TortillaTrainer
 
 from monitor import TortillaMonitor
 import utils
@@ -40,9 +42,8 @@ def main(config):
 	"""
 	Initialize Model
 	"""
-	net = models.resnet50(pretrained=True)
-	num_ftrs = net.fc.in_features
-	net.fc = nn.Linear(num_ftrs, len(dataset.classes))
+	model = TortillaModel("resnet50", dataset.classes)
+	net = model.net
 
 	# Make net use parallel gpu
 	if use_gpu:
@@ -124,7 +125,7 @@ def collect_args():
 
 	parser.add_argument('--model', action='store', dest='model',
 						default="resnet-50",
-	                    help='Type of the pretrained network to train with. Options : ["resnet-50"]')
+	                    help='Type of the pretrained network to train with. Options : {}'.format(TortillaModel.supported_models))
 
 	parser.add_argument('--optimizer', action='store', dest='optimizer',
 						default="adam",
