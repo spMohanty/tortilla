@@ -75,8 +75,8 @@ def main():
 
 	def _run_one_epoch(epoch, train=True):
 		print("\n" + "+"*80)
-		print("Epoch : {} ; {}".format(epoch, "Training" if train else "Validation"))
 		pbar = tqdm.tqdm(total=100)
+		pbar.set_description("Epoch : {} ; {}".format(epoch, "Training" if train else "Validation"))
 		end_of_epoch = False
 		last_percentage = 0
 		while not end_of_epoch:
