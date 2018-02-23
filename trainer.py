@@ -88,10 +88,10 @@ class TortillaTrainer:
 
         # DEBUG
         im = images[0:5]
-        MEAN = [0.485, 0.456, 0.406]
-        STD = [0.229, 0.224, 0.225]
-        for t in range(3):
-            im[:,t,:,:] = im[:,t,:,:]*STD[t] + MEAN[t]
+        # MEAN = [0.485, 0.456, 0.406]
+        # STD = [0.229, 0.224, 0.225]
+        # for t in range(3):
+        #     im[:,t,:,:] = im[:,t,:,:]*STD[t] + MEAN[t]
         if use_gpu:
             _im = im.data.cpu()
         else:
