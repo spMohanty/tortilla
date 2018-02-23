@@ -7,6 +7,21 @@ import numpy as np
 from visdom import Visdom
 import random
 
+
+class VisdomTest:
+    def __init__(self, server='localhost', port=8097):
+        try:
+            vis = Visdom(server="http://"+self.server, port=self.port)
+            vis.win_exists("test")#dummy call to make sure that a connection to
+            # visdom can be established
+        except:
+            print("\n\n\TortillaError :: Unable to connect to Visdom Server even when you have plotting on. \n\
+Are you sure that you have visdom server running at : \
+http://{}:{} ? \n \
+If not, please start visdom by running : \n\npython -m visdom.server \n\n\n \
+Or...disable plotting by passing the --no-plots option. \
+                ".format(server,port))
+            exit(0)
 """
     Deals with all the logging and plotting
     requirements during the training

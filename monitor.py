@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.metrics import confusion_matrix
 from sklearn.preprocessing import normalize
 from datastream import TortillaDataStream
-from plotter import TortillaLinePlotter, TortillaHeatMapPlotter
+from plotter import TortillaLinePlotter, TortillaHeatMapPlotter, VisdomTest
 
 class TortillaMonitor:
     """
@@ -25,9 +25,12 @@ class TortillaMonitor:
         self.config = config
         self.use_gpu = use_gpu
 
-        self._init_data_gatherers()
         if self.plot:
+            VisdomTest()
             self._init_plotters()
+
+        self._init_data_gatherers()
+
 
     def _init_plotters(self):
         topklabels = ["top-"+str(x) for x in self.topk]
