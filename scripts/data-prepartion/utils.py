@@ -3,6 +3,14 @@ import os
 import shutil
 import glob
 
+def files_in_a_directory(folder_path):
+    files = glob.glob(folder_path+"/*")
+    final_files = []
+    for _file in files:
+        if os.path.isfile(_file):
+            final_files.append(_file)
+    return final_files
+
 def quick_compute_class_frequency_from_folder(folder_path, classes):
     _classes = get_classes_from_input_folder(folder_path)
     assert _classes == classes
@@ -10,7 +18,7 @@ def quick_compute_class_frequency_from_folder(folder_path, classes):
     _class_frequency = {}
 
     for _class in classes:
-        _class_frequency[_class] = len(os.listdir(
+        _class_frequency[_class] = len(files_in_a_directory(
                             os.path.join(folder_path, _class)
                         ))
 
