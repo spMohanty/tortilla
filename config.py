@@ -10,7 +10,7 @@ class Config:
     batch_size = 128
     topk = (1,2,3,4,5,6,7,8,9,10)
     debug=False
-    train_flush_per_epoch = 100
+    train_flush_per_epoch = 10
     normalize_confusion_matrix = True
 
     num_cpu_workers = 4
