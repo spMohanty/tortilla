@@ -30,7 +30,7 @@ class TortillaModel:
 				self.net.classifier = nn.Linear(in_features, len(self.classes))
 			#
 			if self.model_name=='densenet201':
-				self.net=models.densenet169(pretrained=True)
+				self.net=models.densenet201(pretrained=True)
 				in_features = self.net.classifier.in_features
 				self.net.classifier = nn.Linear(in_features, len(self.classes))
 
