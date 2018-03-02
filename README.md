@@ -102,7 +102,7 @@ But before we can start the training, we need to start the `visdom` server, whic
 us visualize the actual training details. This can be done by :
 ```
 # Please do this in a separate terminal tab
-conda activate tortilla
+source activate tortilla
 python -m visdom.server
 ```
 This should start a local visdom server with which the actual training code can interact.
