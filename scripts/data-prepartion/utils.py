@@ -13,9 +13,6 @@ def files_in_a_directory(folder_path):
     return final_files
 
 def quick_compute_class_frequency_from_folder(folder_path, classes):
-    _classes = get_classes_from_input_folder(folder_path)
-    assert _classes == classes
-
     _class_frequency = {}
 
     for _class in classes:
@@ -40,8 +37,7 @@ def output_folder_path_validation(output_folder_path, classes):
         if response:
             shutil.rmtree(output_folder_path)
         else:
-            print("Exiting, because output folder path exists \
-            and cannot be deleted.")
+            print("Exiting, because output folder path exists and cannot be deleted.")
             exit(0)
 
     """
@@ -62,72 +58,58 @@ def output_folder_path_validation(output_folder_path, classes):
             _class
         ))
 
-def get_classes_from_input_folder(input_folder_path):
-    dot_files = glob.glob(input_folder_path+"/.*")
-    dot_files = [x.replace(input_folder_path,"") for x in dot_files]
-    folders_list = set(os.listdir(input_folder_path)) - set(dot_files)
-    print(folders_list)
-    final_classes = []
-    for _folder in folders_list:
-        if os.path.isdir(os.path.join(input_folder_path, _folder)): #Only keep folders
-            files_list = set(os.listdir(os.path.join(input_folder_path, _folder)))
-            if files_list: #Discard empty folders
-                print("Full folder: {} ".format(_folder))
-                print(list(files_list)[:10])
-                stop = False;
-                print(len(files_list))
-                while not stop:
-                    for _idx, _file in enumerate(files_list):
-                        print("Processing {}/{} :: {}".format(str(_idx), str(len(files_list)), _file))
-                        try:
-                            print("Try")
-                            im=Image.open(os.path.join(input_folder_path, _folder,_file))
-                            print("Yes")
-                            stop = True;
-                            final_classes.append(_folder)
-                            print("Class added.")
-                            break
-                        except:
-                            print("Except")
-                            if _idx == len(files_list)-1:
-                                print("Warning: the folder {} does not contain valid images.".format(_folder))
-                                response = query_yes_no(
-                                            "Do you want to continue ?",
-                                            default='no')
+def search_if_image(input_folder_path, folder, files_list, final_classes):
+    """
+        Add the folder into final_classes only if it contains at least one valid image.
+    """
+    stop = False;
+    while not stop:
+        for _idx, _file in enumerate(files_list):
+            try:
+                im=Image.open(os.path.join(input_folder_path, folder,_file))
+                stop = True;
+                final_classes.append(folder)
+                break
+            except:
+                if _idx == len(files_list)-1:
+                    response = query_yes_no(
+                                "Warning: the folder {} does not contain valid images. Do you want to continue ?".format(folder),
+                                default='no')
 
-                                if not response:
-                                    print("Exiting.")
-                                    exit(0)
-                                stop = True;
-                            else:
-                                continue
-                #if one_valid_image:
-                    #break
-                #for _file in sub_folders_list:
-                # need editing for valid image check
-                # either while true try Image or check for .jpg...
-                # final_classes.append(_folder)
-    if not final_classes:
-        print("Exiting because none of the subfolders contains valid images.")
-        exit(0)
-    print(final_classes)
+                    if not response:
+                        print("Exiting.")
+                        exit(0)
+                    stop = True;
+                else:
+                    continue
     return final_classes
 
-def input_folder_path_validation(input_folder_path):
+def get_classes_from_input_folder(input_folder_path):
     """
-        Validation of the Input folder path
+        Validation of the Input folder path and extraction of the classes.
 
-        If the folder is not a directory, then the program exits.
+        If a problem arise, then the program exits.
     """
+
     if os.path.isdir(input_folder_path):
-        classes = get_classes_from_input_folder(input_folder_path)
-        #I don't know if this is really useful because already done in get_classes
-        for _class in classes:
-            assert(os.path.isdir(os.path.join(input_folder_path, _class)))
+        folders_list = set(os.listdir(input_folder_path))
+        final_classes = []
+        for folder in folders_list:
+            if folder.startswith('.'):
+                continue
+            if os.path.isdir(os.path.join(input_folder_path, folder)):
+                files_list = set(os.listdir(os.path.join(input_folder_path, folder)))
+                if files_list:
+                    final_classes = search_if_image(input_folder_path, folder, files_list, final_classes)
+        if not final_classes:
+            print("Exiting because none of the subfolders contains valid images.")
+            exit(0)
+        return final_classes
     else:
         print("Exiting because Input Folder Path is not a directory, \
                 please provide a folder containing sub-folders of images")
         exit(0)
+
 
 def query_yes_no(question, default="yes"):
     """Ask a yes/no question via raw_input() and return their answer.

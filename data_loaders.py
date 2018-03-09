@@ -80,8 +80,8 @@ class TortillaDataset:
 		"""
 			Define datasets from filelists
 		"""
-		train_filelist = os.path.join(self.dataset_folder, "train.txt")
-		val_filelist = os.path.join(self.dataset_folder, "val.txt")
+		train_filelist = os.path.join(self.dataset_folder, "train.json")
+		val_filelist = os.path.join(self.dataset_folder, "val.json")
 		self.train_dataset = ImageFilelist(
 								self.dataset_folder,
 								train_filelist,

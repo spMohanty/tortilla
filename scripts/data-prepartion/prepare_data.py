@@ -52,16 +52,11 @@ if __name__ == "__main__":
 	img_size = (int(args.img_size.split("x")[0]), int(args.img_size.split("x")[1]))
 
 	"""
-	Validation Input
+	Validation Input and Output Folder
 	"""
-	input_folder_path_validation(input_folder_path)
-
 	classes = get_classes_from_input_folder(input_folder_path)
-
-	"""
-	Validation Output
-	"""
 	output_folder_path_validation(output_folder_path, classes)
+
 
 	_message = """
 		Input Folder Path : {}
@@ -109,6 +104,16 @@ if __name__ == "__main__":
 	for _idx, _file in enumerate(files):
 		print("Processing {}/{} :: {}".format(str(_idx), str(len(files)), _file))
 		_class = _file.split("/")[-2]
+
+		# Open, Preprocess and write file to output_folder_path
+		try:
+			# TODO: Make this opening of the file optional
+			im = Image.open(_file)
+			im = im.resize(img_size)
+		except Exception as e:
+			error_list.append((_file, str(_class), str(e)))
+			continue
+
 		is_train = np.random.rand() <= train_percent
 
 		target_file_name = "{}_{}".format(
@@ -127,14 +132,6 @@ if __name__ == "__main__":
 			_class,
 			target_file_name
 		)
-
-		# Open, Preprocess and write file to output_folder_path
-		try:
-			# TODO: Make this opening of the file optional
-			im = Image.open(_file)
-			im = im.resize(img_size)
-		except Exception as e:
-			error_list.append((_file, str(_class), str(e)))
 
 		im.save(target_file_path)
 
