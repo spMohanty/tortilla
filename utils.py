@@ -1,6 +1,7 @@
 from PIL import Image
 import sys,os
 import shutil
+import json
 
 def default_loader(path):
 	try:
@@ -17,14 +18,10 @@ def default_flist_reader(flist):
 	"""
 	imlist = []
 	with open(flist, 'r') as fp:
-		for line in fp.readlines():
-			impath, imlabel = line.strip().split()
-			imlist.append( (impath, int(imlabel)) )
-
-	#Json type
-	with open(flist, 'r') as fp:
-		for line in json.loads(fp.read()):
-			impath, imlabel = line.strip().split()
+		data = json.loads(fp.read());
+		for line in data:
+			impath = line
+			imlabel = data[str(line)]
 			imlist.append( (impath, int(imlabel)) )
 
 	return imlist
