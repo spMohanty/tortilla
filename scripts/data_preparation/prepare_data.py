@@ -232,16 +232,12 @@ if __name__ == "__main__":
 	), "w")
 	_train = {}
 	_train = {item[0]: item[1] for item in train_list}
-<<<<<<< 24ec37eb39f52ee6373e0de5518d0ef903cc12cf:scripts/data_preparation/prepare_data.py
 	f.write(json.dumps(
 					_train,
 					sort_keys=True,
 					indent=4,
 					separators=(',', ': ')
 					))
-=======
-	f.write(json.dumps(_train))
->>>>>>> Draft changes for refactoring prepare_data:scripts/data-prepartion/prepare_data.py
 
 	# Write val.json
 	f = open(os.path.join(
@@ -250,16 +246,12 @@ if __name__ == "__main__":
 	), "w")
 	_val = {}
 	_val = {item[0]: item[1] for item in val_list}
-<<<<<<< 24ec37eb39f52ee6373e0de5518d0ef903cc12cf:scripts/data_preparation/prepare_data.py
 	f.write(json.dumps(
 					_val,
 					sort_keys=True,
 					indent=4,
 					separators=(',', ': ')
 					))
-=======
-	f.write(json.dumps(_val))
->>>>>>> Draft changes for refactoring prepare_data:scripts/data-prepartion/prepare_data.py
 
 	# Write errors.txt
 	f = open(os.path.join(
