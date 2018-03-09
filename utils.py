@@ -16,8 +16,14 @@ def default_flist_reader(flist):
 	flist format: impath label\nimpath label\n ...(same to caffe's filelist)
 	"""
 	imlist = []
-	with open(flist, 'r') as rf:
-		for line in rf.readlines():
+	with open(flist, 'r') as fp:
+		for line in fp.readlines():
+			impath, imlabel = line.strip().split()
+			imlist.append( (impath, int(imlabel)) )
+
+	#Json type
+	with open(flist, 'r') as fp:
+		for line in json.loads(fp.read()):
 			impath, imlabel = line.strip().split()
 			imlist.append( (impath, int(imlabel)) )
 
@@ -115,5 +121,5 @@ tttttt:::::::tttttt    o:::::ooooo:::::orr::::::rrrrr::::::rtttttt:::::::tttttt 
       tt::::::::::::::to:::::::::::::::o r:::::r                  tt::::::::::::::ti::::::il::::::ll::::::la:::::aaaa::::::a
         tt:::::::::::tt oo:::::::::::oo  r:::::r                    tt:::::::::::tti::::::il::::::ll::::::l a::::::::::aa:::a
           ttttttttttt     ooooooooooo    rrrrrrr                      ttttttttttt  iiiiiiiillllllllllllllll  aaaaaaaaaa  aaaa
-==============================================================================================================================		  
+==============================================================================================================================
 	""")

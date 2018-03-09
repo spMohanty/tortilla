@@ -51,11 +51,16 @@ if __name__ == "__main__":
 	dataset_name = args.dataset_name
 	img_size = (int(args.img_size.split("x")[0]), int(args.img_size.split("x")[1]))
 
-	classes = get_classes_from_input_folder(input_folder_path)
 	"""
-	Validation
+	Validation Input
 	"""
 	input_folder_path_validation(input_folder_path)
+
+	classes = get_classes_from_input_folder(input_folder_path)
+
+	"""
+	Validation Output
+	"""
 	output_folder_path_validation(output_folder_path, classes)
 
 	_message = """
@@ -169,21 +174,23 @@ if __name__ == "__main__":
 	), "w")
 	f.write("\n".join(classes))
 
-	# Write train.txt
+	# Write train.json
 	f = open(os.path.join(
 		output_folder_path,
-		"train.txt"
+		"train.json"
 	), "w")
-	train_list = ["\t".join(x) for x in train_list]
-	f.write("\n".join(train_list))
+	_train = {}
+	_train = {item[0]: item[1] for item in train_list}
+	f.write(json.dumps(_train))
 
-	# Write val.txt
+	# Write val.json
 	f = open(os.path.join(
 		output_folder_path,
-		"val.txt"
+		"val.json"
 	), "w")
-	val_list = ["\t".join(x) for x in val_list]
-	f.write("\n".join(val_list))
+	_val = {}
+	_val = {item[0]: item[1] for item in val_list}
+	f.write(json.dumps(_val))
 
 	# Write errors.txt
 	f = open(os.path.join(
