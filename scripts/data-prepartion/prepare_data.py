@@ -14,6 +14,7 @@ import uuid
 import json
 import random
 
+
 if __name__ == "__main__":
 	import argparse
 
@@ -54,8 +55,8 @@ if __name__ == "__main__":
 	"""
 	Validation Input and Output Folder
 	"""
-	classes = get_classes_from_input_folder(input_folder_path)
-	output_folder_path_validation(output_folder_path, classes)
+	classes = get_classes_from_input_folder(input_folder_path,non_interactive_mode=False)
+	output_folder_path_validation(output_folder_path, classes, non_interactive_mode =False)
 
 
 	_message = """
