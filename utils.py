@@ -1,6 +1,7 @@
 from PIL import Image
 import sys,os
 import shutil
+import json
 
 def default_loader(path):
 	try:
@@ -16,9 +17,11 @@ def default_flist_reader(flist):
 	flist format: impath label\nimpath label\n ...(same to caffe's filelist)
 	"""
 	imlist = []
-	with open(flist, 'r') as rf:
-		for line in rf.readlines():
-			impath, imlabel = line.strip().split()
+	with open(flist, 'r') as fp:
+		data = json.loads(fp.read());
+		for line in data:
+			impath = line
+			imlabel = data[str(line)]
 			imlist.append( (impath, int(imlabel)) )
 
 	return imlist
@@ -115,5 +118,5 @@ tttttt:::::::tttttt    o:::::ooooo:::::orr::::::rrrrr::::::rtttttt:::::::tttttt 
       tt::::::::::::::to:::::::::::::::o r:::::r                  tt::::::::::::::ti::::::il::::::ll::::::la:::::aaaa::::::a
         tt:::::::::::tt oo:::::::::::oo  r:::::r                    tt:::::::::::tti::::::il::::::ll::::::l a::::::::::aa:::a
           ttttttttttt     ooooooooooo    rrrrrrr                      ttttttttttt  iiiiiiiillllllllllllllll  aaaaaaaaaa  aaaa
-==============================================================================================================================		  
+==============================================================================================================================
 	""")

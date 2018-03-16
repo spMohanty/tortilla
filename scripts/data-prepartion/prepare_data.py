@@ -14,6 +14,7 @@ import uuid
 import json
 import random
 
+
 if __name__ == "__main__":
 	import argparse
 
@@ -51,12 +52,12 @@ if __name__ == "__main__":
 	dataset_name = args.dataset_name
 	img_size = (int(args.img_size.split("x")[0]), int(args.img_size.split("x")[1]))
 
-	classes = get_classes_from_input_folder(input_folder_path)
 	"""
-	Validation
+	Validation Input and Output Folder
 	"""
-	input_folder_path_validation(input_folder_path)
-	output_folder_path_validation(output_folder_path, classes)
+	classes = get_classes_from_input_folder(input_folder_path,non_interactive_mode=False)
+	output_folder_path_validation(output_folder_path, classes, non_interactive_mode =False)
+
 
 	_message = """
 		Input Folder Path : {}
@@ -104,6 +105,16 @@ if __name__ == "__main__":
 	for _idx, _file in enumerate(files):
 		print("Processing {}/{} :: {}".format(str(_idx), str(len(files)), _file))
 		_class = _file.split("/")[-2]
+
+		# Open, Preprocess and write file to output_folder_path
+		try:
+			# TODO: Make this opening of the file optional
+			im = Image.open(_file)
+			im = im.resize(img_size)
+		except Exception as e:
+			error_list.append((_file, str(_class), str(e)))
+			continue
+
 		is_train = np.random.rand() <= train_percent
 
 		target_file_name = "{}_{}".format(
@@ -122,14 +133,6 @@ if __name__ == "__main__":
 			_class,
 			target_file_name
 		)
-
-		# Open, Preprocess and write file to output_folder_path
-		try:
-			# TODO: Make this opening of the file optional
-			im = Image.open(_file)
-			im = im.resize(img_size)
-		except Exception as e:
-			error_list.append((_file, str(_class), str(e)))
 
 		im.save(target_file_path)
 
@@ -169,21 +172,23 @@ if __name__ == "__main__":
 	), "w")
 	f.write("\n".join(classes))
 
-	# Write train.txt
+	# Write train.json
 	f = open(os.path.join(
 		output_folder_path,
-		"train.txt"
+		"train.json"
 	), "w")
-	train_list = ["\t".join(x) for x in train_list]
-	f.write("\n".join(train_list))
+	_train = {}
+	_train = {item[0]: item[1] for item in train_list}
+	f.write(json.dumps(_train))
 
-	# Write val.txt
+	# Write val.json
 	f = open(os.path.join(
 		output_folder_path,
-		"val.txt"
+		"val.json"
 	), "w")
-	val_list = ["\t".join(x) for x in val_list]
-	f.write("\n".join(val_list))
+	_val = {}
+	_val = {item[0]: item[1] for item in val_list}
+	f.write(json.dumps(_val))
 
 	# Write errors.txt
 	f = open(os.path.join(
