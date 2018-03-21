@@ -4,7 +4,7 @@ from data_loaders import *
 
 class Test_Dataloaders:
     def test_image_list_length(self):
-        classes = open("tests/plants/classes.txt").readlines()
+        classes = open("tests/data/prepared-plants/classes.txt").readlines()
         train_list = ImageFilelist('tests/data/prepared-plants', 'tests/data/prepared-plants/train.json', classes=classes)
         assert train_list.total_images == 664
         val_list = ImageFilelist('tests/data/prepared-plants', 'tests/data/prepared-plants/val.json', classes=classes)
