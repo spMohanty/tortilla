@@ -118,5 +118,35 @@ In a bit, after you code starts running, you should be able to see all the plots
 `http://localhost:8097`
 (If you didnot change the `visdom-server` and `visdom-port` using the corresponding cli flags)
 
+# Run the tests
+
+In order to ensure the expected functionality of the code, tests were implemented using [Nosetests](http://nose.readthedocs.io/en/latest/). The following code can be run after having installed tortilla.
+
+* First, install `nose`:
+
+```
+pip install nose
+```
+
+* Run the test for data preparation by typing:
+
+```
+nosetests scripts/data-prepartion/test_me.py   
+```
+This should run 6 tests without throwing errors.
+
+* Run the main test by simply running:
+
+```
+nosetests
+```
+
+If this throw you an error: No Module named `torch`, try:
+
+```
+python `which nosetests`
+```
+**NOTE** This last part is still in progress :construction: and might not work for the moment.
+
 # Author
 Sharada Mohanty (sharada.mohanty@epfl.ch)
