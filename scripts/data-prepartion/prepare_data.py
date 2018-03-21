@@ -163,7 +163,12 @@ if __name__ == "__main__":
 		output_folder_path,
 		"meta.json"
 	), "w")
-	f.write(json.dumps(_meta))
+	f.write(json.dumps(
+					_meta,
+					sort_keys=True,
+					indent=4,
+					separators=(',', ': ')
+					))
 
 	# Write classes.txt
 	f = open(os.path.join(
@@ -179,7 +184,12 @@ if __name__ == "__main__":
 	), "w")
 	_train = {}
 	_train = {item[0]: item[1] for item in train_list}
-	f.write(json.dumps(_train))
+	f.write(json.dumps(
+					_meta,
+					sort_keys=True,
+					indent=4,
+					separators=(',', ': ')
+					))
 
 	# Write val.json
 	f = open(os.path.join(
@@ -188,7 +198,12 @@ if __name__ == "__main__":
 	), "w")
 	_val = {}
 	_val = {item[0]: item[1] for item in val_list}
-	f.write(json.dumps(_val))
+	f.write(json.dumps(
+					_val
+					sort_keys=True,
+					indent=4,
+					separators=(',', ': ')
+					))
 
 	# Write errors.txt
 	f = open(os.path.join(
