@@ -180,13 +180,6 @@ if __name__ == "__main__":
 			else:
 				target_file_path = target_file_path_rel
 
-		# Conditionally save absolute paths to the file
-		# Useful when designing multiple experiments on the same dataset
-		if absolute_path:
-			target_file_path = os.path.abs(target_file_path_rel)
-		else:
-			target_file_path = target_file_path_rel
-
 		if is_train:
 			train_list.append((target_file_path, str(classes.index(_class))))
 			train_class_frequency[_class] += 1
@@ -212,7 +205,7 @@ if __name__ == "__main__":
 	_meta["is_absolute_path"] = absolute_path
   _meta["total_classes"] = len(classes)
 	_meta["classes"] = classes
-	
+
 	# Write meta file
 	f = open(os.path.join(
 		output_folder_path,
