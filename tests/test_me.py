@@ -1,8 +1,6 @@
 from nose.tools import assert_raises
-from utils import *
 import numpy as np
-
-
+from scripts.data_preparation.utils import *
 
 class TestClass:
 
@@ -13,12 +11,12 @@ class TestClass:
 
     def test_subfolders(self):
         with assert_raises(SystemExit) as cm:
-            get_classes_from_input_folder('tests/data/plant/c_6',non_interactive_mode=True)
+            get_classes_from_input_folder('tests/data/no-valid-image-folder/c_6',non_interactive_mode=True)
         assert cm.exception.args[0] == 'No Valid Subfolders'
 
     def test_valid_subfolders(self):
         with assert_raises(SystemExit) as cm:
-            get_classes_from_input_folder('tests/data/plant',non_interactive_mode=True)
+            get_classes_from_input_folder('tests/data/no-valid-image-folder',non_interactive_mode=True)
         assert cm.exception.args[0] == 'No Valid Images'
 
     def test_classes_creation(self):
@@ -28,16 +26,16 @@ class TestClass:
 
     def test_output_folder_creation(self):
         test_classes = np.array(['A', 'B', 'C'])
-        output_folder_path_validation('datasets/test1', test_classes, non_interactive_mode=True)
-        assert os.path.exists('datasets/test1') == True
-        assert set(os.listdir('datasets/test1/images')) == set(test_classes)
-        shutil.rmtree('datasets/test1')
+        output_folder_path_validation('tests/test1', test_classes, non_interactive_mode=True)
+        assert os.path.exists('tests/test1') == True
+        assert set(os.listdir('tests/test1/images')) == set(test_classes)
+        shutil.rmtree('tests/test1')
 
     def test_output_folder_deletion(self):
         test_classes_2 = np.array(['D', 'E', 'F'])
-        os.mkdir('datasets/test2')
-        assert os.path.exists('datasets/test2') == True
+        os.mkdir('tests/test2')
+        assert os.path.exists('tests/test2') == True
         with assert_raises(SystemExit) as cm:
-            output_folder_path_validation('datasets/test2', test_classes_2, non_interactive_mode=True)
+            output_folder_path_validation('tests/test2', test_classes_2, non_interactive_mode=True)
         assert cm.exception.args[0] == 'No deletion of Output Folder'
-        shutil.rmtree('datasets/test2')
+        shutil.rmtree('tests/test2')
