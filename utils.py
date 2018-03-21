@@ -12,18 +12,18 @@ def default_loader(path):
 		print("Unable to load file at path : ", path)
 	return im
 
-def default_flist_reader(flist):
+def default_flist_reader(flist, classes):
 	"""
 	flist format: impath label\nimpath label\n ...(same to caffe's filelist)
 	"""
+	print(flist)
 	imlist = []
 	with open(flist, 'r') as fp:
 		data = json.loads(fp.read());
-		for line in data:
-			impath = line
-			imlabel = data[str(line)]
-			imlist.append( (impath, int(imlabel)) )
-
+		for filepath in data.keys():
+			imlabel = int(data[filepath])
+			assert imlabel < len(classes)
+			imlist.append( (filepath, imlabel) )
 	return imlist
 
 def accuracy(output, target, topk=(1,)):
