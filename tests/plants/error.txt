@@ -1,4 +1,0 @@
-tests/data/plant_diseases/c_6/File 1	c_6	cannot identify image file 'tests/data/plant_diseases/c_6/File 1'
-tests/data/plant_diseases/c_5/File 2	c_5	cannot identify image file 'tests/data/plant_diseases/c_5/File 2'
-tests/data/plant_diseases/c_6/File 2	c_6	cannot identify image file 'tests/data/plant_diseases/c_6/File 2'
-tests/data/plant_diseases/c_5/File_1	c_5	cannot identify image file 'tests/data/plant_diseases/c_5/File_1'
