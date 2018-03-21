@@ -25,7 +25,6 @@ if __name__ == "__main__":
 	parser.add_argument('--input-folder-path', action='store', dest='input_folder_path',
 						required=True,
 						help='Path to input folder containing images')
-
 	parser.add_argument('--output-folder-path', action='store', dest='output_folder_path',
 						required=True,
 						help='Path to output folder to write images')
@@ -42,6 +41,7 @@ if __name__ == "__main__":
 	parser.add_argument('--img-size', action='store', dest='img_size',
 						default="256x256",
 						help='Size of the target images')
+	parser.add_argument('--absolute_path', dest='absolute_path', action='store_true')
 
 	args = parser.parse_args()
 
@@ -51,6 +51,7 @@ if __name__ == "__main__":
 	train_percent = args.train_percent
 	dataset_name = args.dataset_name
 	img_size = (int(args.img_size.split("x")[0]), int(args.img_size.split("x")[1]))
+	absolute_path = args.absolute_path
 
 	"""
 	Validation Input and Output Folder
@@ -136,11 +137,18 @@ if __name__ == "__main__":
 
 		im.save(target_file_path)
 
+		# Conditionally save absolute paths to the file
+		# Useful when designing multiple experiments on the same dataset
+		if absolute_path:
+			target_file_path = os.path.abs(target_file_path_rel)
+		else:
+			target_file_path = target_file_path_rel
+
 		if is_train:
-			train_list.append((target_file_path_rel, str(classes.index(_class))))
+			train_list.append((target_file_path, str(classes.index(_class))))
 			train_class_frequency[_class] += 1
 		else:
-			val_list.append((target_file_path_rel, str(classes.index(_class))))
+			val_list.append((target_file_path, str(classes.index(_class))))
 			val_class_frequency[_class] += 1
 
 	"""
@@ -157,6 +165,7 @@ if __name__ == "__main__":
 	_meta["errors"] = len(error_list)
 	_meta["train_class_frequency"] = train_class_frequency
 	_meta["val_class_frequency"] = val_class_frequency
+	_meta["absolute_path"] = absolute_path
 
 	# Write meta file
 	f = open(os.path.join(
@@ -199,7 +208,7 @@ if __name__ == "__main__":
 	_val = {}
 	_val = {item[0]: item[1] for item in val_list}
 	f.write(json.dumps(
-					_val
+					_val,
 					sort_keys=True,
 					indent=4,
 					separators=(',', ': ')
