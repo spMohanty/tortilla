@@ -182,7 +182,7 @@ class TortillaDataset:
 		return (images, labels, end_of_epoch)
 
 def main():
-	dataset = TortillaDataset(	"datasets/food-101",
+	dataset = TortillaDataset(	"datasets/plants",
 								batch_size=128,
 								num_cpu_workers=1
 								)
