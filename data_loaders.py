@@ -62,7 +62,9 @@ class TortillaDataset:
 		self.classes = [x.strip() for x in self.classes]
 		self.meta = json.loads(open(os.path.join(self.dataset_folder,
 										"meta.json")).read())
-
+		# Add default values if they dont exist in meta
+		if "is_absolute_path" not in self.meta.keys():
+			self.meta["is_absolute_path"] = False
 		"""
 		Define transforms
 		"""
