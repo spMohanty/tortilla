@@ -136,11 +136,8 @@ nosetests
 
 This should run 12 tests without throwing errors.
 
-# Authors
-=======
-**NOTE** This last part is still in progress :construction: and might not work for the moment.
 
-# Author
->>>>>>> Update README: how to run the tests
+# Authors
+
 Sharada Mohanty (sharada.mohanty@epfl.ch)
 Camille Renner (camille.renner@epfl.ch)
