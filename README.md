@@ -140,6 +140,12 @@ This should run 6 tests without throwing errors.
 ```
 nosetests
 ```
+
+If this throw you an error: No Module named `torch`, try:
+
+```
+python `which nosetests`
+```
 **NOTE** This last part is still in progress :construction: and might not work for the moment.
 
 # Author
