@@ -122,6 +122,7 @@ if __name__ == "__main__":
 			str(uuid.uuid4()),
 			"_".join(_file.split("/")[-1].split())
 			)
+		# Absolute Path
 		target_file_path = os.path.abspath(os.path.join(
 			output_folder_path,
 			"images",
@@ -139,9 +140,7 @@ if __name__ == "__main__":
 
 		# Conditionally save absolute paths to the file
 		# Useful when designing multiple experiments on the same dataset
-		if absolute_path:
-			target_file_path = os.path.abs(target_file_path_rel)
-		else:
+		if not absolute_path:
 			target_file_path = target_file_path_rel
 
 		if is_train:
