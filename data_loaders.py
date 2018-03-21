@@ -10,22 +10,29 @@ import json
 from utils import default_flist_reader, default_loader
 
 class ImageFilelist(data.Dataset):
-	def __init__(self, root, flist, transform=None, target_transform=None,
-			flist_reader=default_flist_reader, loader=default_loader,
-			debug=False):
+	def __init__(self, root, flist, classes, transform=None,
+				target_transform=None, flist_reader=default_flist_reader,
+				loader=default_loader, is_absolute_path=False, debug=False):
 		self.root   = root
-		self.debug=debug
-		self.imlist = flist_reader(flist)
-		if self.debug:
-			self.imlist = self.imlist[:3000]
+		self.flist = flist
+		self.classes = classes
+		self.imlist = flist_reader(self.flist, self.classes)
 		self.total_images = len(self.imlist)
 		self.transform = transform
 		self.target_transform = target_transform
 		self.loader = loader
+		self.is_absolute_path = is_absolute_path
+		self.debug = debug
+		if self.debug:
+			self.imlist = self.imlist[:3000]
 
 	def __getitem__(self, index):
 		impath, target = self.imlist[index]
-		img = self.loader(os.path.join(self.root,impath))
+
+		if not self.is_absolute_path:
+			impath = os.path.join(self.root, impath)
+
+		img = self.loader(impath)
 		if self.transform is not None:
 			img = self.transform(img)
 		if self.target_transform is not None:
@@ -85,13 +92,17 @@ class TortillaDataset:
 		self.train_dataset = ImageFilelist(
 								self.dataset_folder,
 								train_filelist,
+								self.classes,
 								transform=self.data_transforms["train"],
+								is_absolute_path = self.meta["is_absolute_path"],
 								debug=self.debug
 								)
 		self.val_dataset = ImageFilelist(
 								self.dataset_folder,
 								val_filelist,
+								self.classes,
 								transform=self.data_transforms["val"],
+								is_absolute_path = self.meta["is_absolute_path"],
 								debug=self.debug
 								)
 

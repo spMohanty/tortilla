@@ -164,7 +164,7 @@ if __name__ == "__main__":
 	_meta["errors"] = len(error_list)
 	_meta["train_class_frequency"] = train_class_frequency
 	_meta["val_class_frequency"] = val_class_frequency
-	_meta["absolute_path"] = absolute_path
+	_meta["is_absolute_path"] = absolute_path
 
 	# Write meta file
 	f = open(os.path.join(
@@ -193,7 +193,7 @@ if __name__ == "__main__":
 	_train = {}
 	_train = {item[0]: item[1] for item in train_list}
 	f.write(json.dumps(
-					_meta,
+					_train,
 					sort_keys=True,
 					indent=4,
 					separators=(',', ': ')
