@@ -97,4 +97,4 @@ if __name__ == "__main__":
                 for _file in _files:
                     fileName = str(uuid.uuid4())[:4]+"___"+os.path.basename(_file)
                     target_path = os.path.join(classRoot, fileName)
-                    os.symlink(_file, target_path)
+                    os.symlink(fileName, target_path)
