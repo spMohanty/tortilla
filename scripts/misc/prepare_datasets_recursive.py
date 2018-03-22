@@ -1,4 +1,5 @@
 import os
+import uuid
 
 SOURCE_IMAGES = "/mount/SDE/instagram/myfoodrepo-images/myfoodrepo-images/images"
 OUTPUT_FOLDER = "output" #Should create tortilla compatible dataset folders for all possible datasets
@@ -51,6 +52,7 @@ def main(SOURCE_IMAGES):
             CLASSES = []
             FILES = []
             DATASET_NAME = sanitise_class_name(dirName)
+            DATASET_FOLDER_PATH = os.path.join(OUTPUT_FOLDER, DATASET_NAME)
 
             for subDir in subdirList:
                 subDirPath = os.path.join(dirName, subDir)
@@ -62,5 +64,28 @@ def main(SOURCE_IMAGES):
                 FILES.append(all_files)
 
             print(DATASET_NAME, CLASSES, [len(x) for x in FILES])
+            """
+            TODO
+
+
+            - Create symlinks for all the files in the corresponding subdirectories : Done
+                - Use the original filename to create the symlink :: Done
+            - Write a bash script which iterates over all the datasets in OUTPUT_FOLDER and then use `prepare_data.py` to create tortilla datasets
+            - Use a min-image of 100
+            """
+            os.mkdir(os.path.join(OUTPUT_FOLDER, DATASET_NAME))
+            for _idx, _class in enumerate(CLASSES):
+                _files = FILES[_idx]
+                classRoot = os.path.join(OUTPUT_FOLDER, DATASET_NAME, _class)
+                try:
+                    os.mkdir(classRoot)
+                except:
+                    pass
+                    #TODO: Throw some error or handle them well
+
+                for _file in _files:
+                    fileName = str(uuid.uuid4())[:4]+"___"+os.path.basename(_file)
+                    target_path = os.path.join(classRoot, fileName)
+                    os.symlink(fileName, target_path)
 
 main(SOURCE_IMAGES)
