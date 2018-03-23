@@ -128,25 +128,12 @@ In order to ensure the expected functionality of the code, tests were implemente
 pip install nose
 ```
 
-* Run the test for data preparation by typing:
+* Run all the tests by typing:
 
 ```
-nosetests scripts/data-prepartion/test_me.py   
+nosetests tests/
 ```
-This should run 6 tests without throwing errors.
-
-* Run the main test by simply running:
-
-```
-nosetests
-```
-
-If this throw you an error: No Module named `torch`, try:
-
-```
-python `which nosetests`
-```
-**NOTE** This last part is still in progress :construction: and might not work for the moment.
+This should run 9 tests without throwing errors.
 
 # Author
 Sharada Mohanty (sharada.mohanty@epfl.ch)

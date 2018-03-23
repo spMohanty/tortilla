@@ -86,6 +86,6 @@ def main(SOURCE_IMAGES):
                 for _file in _files:
                     fileName = str(uuid.uuid4())[:4]+"___"+os.path.basename(_file)
                     target_path = os.path.join(classRoot, fileName)
-                    os.symlink(fileName, target_path)
+                    os.symlink(_file, target_path)
 
 main(SOURCE_IMAGES)

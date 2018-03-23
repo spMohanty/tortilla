@@ -42,6 +42,8 @@ if __name__ == "__main__":
 						default="256x256",
 						help='Size of the target images')
 	parser.add_argument('--absolute_path', dest='absolute_path', action='store_true')
+	parser.add_argument('--non_interactive_mode', dest='non_interactive_mode', action='store',
+						default=False)
 
 	args = parser.parse_args()
 
@@ -52,12 +54,14 @@ if __name__ == "__main__":
 	dataset_name = args.dataset_name
 	img_size = (int(args.img_size.split("x")[0]), int(args.img_size.split("x")[1]))
 	absolute_path = args.absolute_path
+	non_interactive_mode = args.non_interactive_mode
 
 	"""
 	Validation Input and Output Folder
 	"""
-	classes = get_classes_from_input_folder(input_folder_path,non_interactive_mode=False)
-	output_folder_path_validation(output_folder_path, classes, non_interactive_mode =False)
+	classes = get_classes_from_input_folder(input_folder_path, non_interactive_mode)
+	classes = min_images_validation(input_folder_path, classes, min_images_per_class)
+	output_folder_path_validation(output_folder_path, classes, non_interactive_mode)
 
 
 	_message = """
@@ -80,7 +84,7 @@ if __name__ == "__main__":
 		len(classes)
 	)
 
-	response = query_yes_no(_message, default="yes")
+	response = query_yes_no(_message, default="yes",non_interactive_mode=non_interactive_mode)
 	if not response:
 		exit(0)
 
@@ -99,8 +103,10 @@ if __name__ == "__main__":
 	train_list = []
 	val_list = []
 	error_list = []
+	files = []
 
-	files = glob.glob(input_folder_path+"/*/*")
+	for _class in classes:
+		files.extend(glob.glob(os.path.join(input_folder_path,_class,"*")))
 	random.shuffle(files)
 
 	for _idx, _file in enumerate(files):
