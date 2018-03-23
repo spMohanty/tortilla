@@ -86,7 +86,16 @@ def query_yes_no(question, default="yes"):
 			sys.stdout.write("Please respond with 'yes' or 'no' "
 							 "(or 'y' or 'n').\n")
 
-def create_directory_structure(root):
+def create_directory_structure(root, resume=False):
+	if resume:
+		if not os.path.exists(root):
+			raise Exception("You are running tortilla in `resume` mode, but the experiment_directory does not exist. Are you sure you passed the correct experiment name ?")
+		else:
+			print("Found experiment directory at : ", root)
+			"""
+			Assume directory structure exists
+			"""
+			return
 	if os.path.exists(root):
 		if query_yes_no(("Path {} exists. Continute deleting ?".format(root))):
 			shutil.rmtree(root)

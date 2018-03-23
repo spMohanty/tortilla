@@ -12,6 +12,7 @@ class Config:
     debug=False
     train_flush_per_epoch = 10
     normalize_confusion_matrix = True
+    resume = False
 
     num_cpu_workers = 4
     no_plots = False
