@@ -41,7 +41,8 @@ if __name__ == "__main__":
 	parser.add_argument('--img-size', action='store', dest='img_size',
 						default="256x256",
 						help='Size of the target images')
-	parser.add_argument('--absolute_path', dest='absolute_path', action='store_true')
+	parser.add_argument('--absolute-path', dest='absolute_path', action='store_true')
+	parser.add_argument('--no-copy', dest='no_copy', action='store_true')
 	parser.add_argument('--non_interactive_mode', dest='non_interactive_mode', action='store',
 						default=False)
 
@@ -54,6 +55,7 @@ if __name__ == "__main__":
 	dataset_name = args.dataset_name
 	img_size = (int(args.img_size.split("x")[0]), int(args.img_size.split("x")[1]))
 	absolute_path = args.absolute_path
+	no_copy = args.no_copy
 	non_interactive_mode = args.non_interactive_mode
 
 	"""
@@ -117,37 +119,56 @@ if __name__ == "__main__":
 		try:
 			# TODO: Make this opening of the file optional
 			im = Image.open(_file)
-			im = im.resize(img_size)
+			if not no_copy:
+				im = im.resize(img_size)
 		except Exception as e:
 			error_list.append((_file, str(_class), str(e)))
 			continue
 
 		is_train = np.random.rand() <= train_percent
 
-		target_file_name = "{}_{}".format(
-			str(uuid.uuid4()),
-			"_".join(_file.split("/")[-1].split())
-			)
-		# Absolute Path
-		target_file_path = os.path.abspath(os.path.join(
-			output_folder_path,
-			"images",
-			_class,
-			target_file_name
-		))
-		# File path relative to the images root
-		target_file_path_rel = os.path.join(
-			"images",
-			_class,
-			target_file_name
-		)
+		"""
+		In no_copy mode, the files are not copied over,
+		and it is assumed that the files are in the correct size
 
-		im.save(target_file_path)
+		#TODO: Write tests for no_copy mode.
+		"""
+		if not no_copy:
+			target_file_name = "{}_{}".format(
+				str(uuid.uuid4()),
+				"_".join(_file.split("/")[-1].split())
+				)
+			im.save(target_file_path)
+			# Absolute Path
+			target_file_path = os.path.abspath(os.path.join(
+				output_folder_path,
+				"images",
+				_class,
+				target_file_name
+			))
+			# File path relative to the images root
+			target_file_path_rel = os.path.join(
+				"images",
+				_class,
+				target_file_name
+			)
+		else:
+			target_file_name = os.path.basename(_file)
+			target_file_path = os.path.abspath(_file)
 
 		# Conditionally save absolute paths to the file
 		# Useful when designing multiple experiments on the same dataset
 		if not absolute_path:
-			target_file_path = target_file_path_rel
+			if args.no_copy:
+				raise Exception(
+				"""It seems that both `no_copy` mode is active
+				while `absolute_path` mode is not. `no_copy` mode is currently
+				only supported while the `absolute_path` mode is on. Please pass
+				both the `--absolute-path --no-copy` flags together.
+				"""
+				)
+			else:
+				target_file_path = target_file_path_rel
 
 		if is_train:
 			train_list.append((target_file_path, str(classes.index(_class))))
