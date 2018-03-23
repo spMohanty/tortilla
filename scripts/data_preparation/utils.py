@@ -22,6 +22,19 @@ def quick_compute_class_frequency_from_folder(folder_path, classes):
 
     return _class_frequency
 
+def min_images_validation(folder_path, classes, min_images_per_class):
+
+    class_frequency = quick_compute_class_frequency_from_folder(folder_path, classes)
+
+    final_classes = [c for c in classes if not class_frequency[c] < int(min_images_per_class)]
+
+    if len(final_classes) <= 1:
+        print("Exiting because the subfolders contain not enough images.")
+        exit('Not Enough Images')
+
+    return final_classes
+
+
 def output_folder_path_validation(output_folder_path, classes, non_interactive_mode):
     """
         Validation of the Output folder path
@@ -109,8 +122,8 @@ def get_classes_from_input_folder(input_folder_path, non_interactive_mode):
             exit('No Valid Images')
         return final_classes
     else:
-        print("Exiting because Input Folder Path is not a directory, \
-                please provide a folder containing sub-folders of images")
+        print("Exiting because Input Folder Path {} is not a directory, \
+                please provide a folder containing sub-folders of images".format(input_folder_path))
         exit('Invalid Input Folder Path')
 
 
