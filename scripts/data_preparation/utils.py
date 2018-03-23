@@ -122,13 +122,8 @@ def get_classes_from_input_folder(input_folder_path, non_interactive_mode):
             exit('No Valid Images')
         return final_classes
     else:
-<<<<<<< 4658b79ee1a10bf7e63d55dc2170d300ba5fcd7e:scripts/data_preparation/utils.py
         print("Exiting because Input Folder Path {} is not a directory, \
                 please provide a folder containing sub-folders of images".format(input_folder_path))
-=======
-        print("Exiting because Input Folder Path is not a directory, \
-                please provide a folder containing sub-folders of images")
->>>>>>> Implement test, related to issue #10:scripts/data-prepartion/utils.py
         exit('Invalid Input Folder Path')
 
 
