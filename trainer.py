@@ -37,12 +37,15 @@ class TortillaTrainer:
             # val set
             epoch_pointer = float(self.val_epochs)
 
+        learning_rate = self.optimizer.param_groups[0]["lr"]
+
         if self.monitor:
             self.monitor._compute_and_register_stats(
                 epoch_pointer,
                 outputs,
                 labels,
                 loss,
+                learning_rate,
                 train=train)
             if train:
                 # Flush every `train_flush_frequency` steps in case of training

@@ -53,7 +53,6 @@ def main(config):
 	Initialize Optimizers, Loss, Loss Schedulers
 	"""
 	optimizer_ft = optim.Adam(net.parameters(), lr=config.learning_rate)
-	exp_lr_scheduler = optim.lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
 	criterion = CrossEntropyLoss()
 
 	monitor = TortillaMonitor(	experiment_name=config.experiment_name,
@@ -63,23 +62,6 @@ def main(config):
 								plot=True,
 								config=config
 								)
-
-	def _run_one_epoch(epoch, train=True):
-		print("\n" + "+"*80)
-		pbar = tqdm.tqdm(total=100)
-		pbar.set_description("Epoch : {} ; {}".format(epoch, "Training" if train else "Validation"))
-		end_of_epoch = False
-		last_percentage = 0
-		while not end_of_epoch:
-			_loss, images, labels, \
-			outputs, percent_complete, \
-			end_of_epoch = trainer._step(use_gpu=use_gpu, train=train)
-
-			pbar.update(percent_complete*100 - last_percentage)
-			last_percentage = percent_complete*100
-			if end_of_epoch:
-				break
-		pbar.close()
 
 	def _load_checkpoint(net, optimizer, checkpoint_path=False):
 		if checkpoint_path:
@@ -112,6 +94,10 @@ def main(config):
 	else:
 		start_epoch = 0
 
+	lr_milestones = [int(1.0*config.epochs/3), int(2.0*config.epochs/3)]
+	print(lr_milestones)
+	exp_lr_scheduler = optim.lr_scheduler.MultiStepLR(optimizer_ft, milestones=lr_milestones, gamma=0.1, last_epoch=start_epoch-1)
+
 	"""
 	Train
 	"""
@@ -125,7 +111,25 @@ def main(config):
 				start_epoch=start_epoch
 				)
 
-	for epoch in range(start_epoch, start_epoch+config.epochs):
+	def _run_one_epoch(epoch, train=True):
+		print("\n" + "+"*80)
+		# exp_lr_scheduler.step()
+		pbar = tqdm.tqdm(total=100)
+		pbar.set_description("Epoch : {} ; {}".format(epoch, "Training" if train else "Validation"))
+		end_of_epoch = False
+		last_percentage = 0
+		while not end_of_epoch:
+			_loss, images, labels, \
+			outputs, percent_complete, \
+			end_of_epoch = trainer._step(use_gpu=use_gpu, train=train)
+
+			pbar.update(percent_complete*100 - last_percentage)
+			last_percentage = percent_complete*100
+			if end_of_epoch:
+				break
+		pbar.close()
+
+	for epoch in range(start_epoch, config.epochs):
 		for train in [False, True]:
 			_run_one_epoch(epoch, train=train)
 		_save_checkpoint(net, optimizer_ft, epoch)

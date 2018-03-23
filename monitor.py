@@ -111,6 +111,21 @@ class TortillaMonitor:
 							port=self.config.visdom_port
 		)
 
+		self.learning_rate_plotter = TortillaLinePlotter(
+							experiment_name=self.experiment_name,
+							fields=['learning_rate', 'na'],
+							title='Learning Rate',
+							opts = dict(
+								xtickmin=0,
+								xtickmax=self.config.epochs,
+								xlabel="Epochs",
+								ylabel="Learning Rate",
+								markers=False
+							),
+							server=self.config.visdom_server,
+							port=self.config.visdom_port
+		)
+
 
 	def _init_data_gatherers(self):
 		topklabels = ["top-"+str(x) for x in self.topk]
@@ -149,6 +164,10 @@ class TortillaMonitor:
 								name="val-confusion_matrix",
 								merge_mode="sum"
 								)
+		self.learning_rate = TortillaDataStream(
+								name="learning_rate",
+								column_names=['learning_rate']
+								)
 
 	def compute_confusion_matrix(self, outputs, labels):
 		_, pred_top_1 = outputs.topk(1, 1, True, True)#compute top-1 predictions
@@ -163,7 +182,8 @@ class TortillaMonitor:
 		_batch_confusion_matrix = confusion_matrix(_labels, _preds, labels=range(len(self.classes)))
 		return _batch_confusion_matrix
 
-	def _compute_and_register_stats(self, epoch, outputs, labels, loss, train=True):
+	def _compute_and_register_stats(self, epoch, outputs, labels,
+									loss, learning_rate=False, train=True):
 		_accuracy = accuracy(outputs, labels, topk=self.topk)
 		_accuracy = np.array([x.data[0] for x in _accuracy])
 		_batch_confusion_matrix = self.compute_confusion_matrix(outputs, labels)
@@ -184,6 +204,9 @@ class TortillaMonitor:
 		loss_stream.add_to_buffer(loss.data[0])
 		confusion_matrix_stream.add_to_buffer(_batch_confusion_matrix)
 
+		if learning_rate:
+			self.learning_rate.add_to_buffer(learning_rate)
+
 
 	def _flush_stats(self, train=True):
 		"""
@@ -195,6 +218,7 @@ class TortillaMonitor:
 			self.train_epochs.flush_buffer()
 			self.train_loss.flush_buffer()
 			self.train_confusion_matrix.flush_buffer()
+			self.learning_rate.flush_buffer()
 		else:
 			self.val_accuracy.flush_buffer()
 			self.val_epochs.flush_buffer()
@@ -221,12 +245,12 @@ class TortillaMonitor:
 			self.train_epochs.dump(prefix.format("train_epochs"))
 			self.train_loss.dump(prefix.format("train_loss"))
 			self.train_confusion_matrix.dump(prefix.format("train_confusion_matrix"))
+			self.learning_rate.dump(prefix.format("learning_rate"))
 		else:
 			self.val_accuracy.dump(prefix.format("val_accuracy"))
 			self.val_epochs.dump(prefix.format("val_epochs"))
 			self.val_loss.dump(prefix.format("val_loss"))
 			self.val_confusion_matrix.dump(prefix.format("val_confusion_matrix"))
-
 		"""
 		Save dataset specific metadata into experiment dir
 		"""
@@ -259,6 +283,13 @@ class TortillaMonitor:
 				_payload,
 				self.train_epochs.get_last()
 			)
+
+			_payload = {}
+			_payload["learning_rate"] = self.learning_rate.get_last()
+			self.learning_rate_plotter.append_plot_with_dict(
+				_payload,
+				self.train_epochs.get_last()
+			)
 		else:
 			# A check to ensure that it doesnt throw errors when
 			# the buffer is empty
@@ -284,7 +315,6 @@ class TortillaMonitor:
 			self.val_confusion_matrix_plotter.update_plot(
 				last_confusion_matrix
 			)
-
 
 def main():
 	monitor = TortillaMonitor(topk=(1,5,), plotter=None, classes=[])
