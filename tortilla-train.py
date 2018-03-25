@@ -95,7 +95,7 @@ def main(config):
 		start_epoch = 0
 
 	lr_milestones = [int(1.0*config.epochs/3), int(2.0*config.epochs/3)]
-	print(lr_milestones)
+	print("LR_Milestones : ", lr_milestones)
 	exp_lr_scheduler = optim.lr_scheduler.MultiStepLR(optimizer_ft, milestones=lr_milestones, gamma=0.1, last_epoch=start_epoch-1)
 
 	"""
@@ -113,7 +113,6 @@ def main(config):
 
 	def _run_one_epoch(epoch, train=True):
 		print("\n" + "+"*80)
-		# exp_lr_scheduler.step()
 		pbar = tqdm.tqdm(total=100)
 		pbar.set_description("Epoch : {} ; {}".format(epoch, "Training" if train else "Validation"))
 		end_of_epoch = False
@@ -128,6 +127,9 @@ def main(config):
 			if end_of_epoch:
 				break
 		pbar.close()
+		if train:
+			exp_lr_scheduler.step()
+
 
 	for epoch in range(start_epoch, config.epochs):
 		for train in [False, True]:
