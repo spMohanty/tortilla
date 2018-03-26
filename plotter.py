@@ -131,8 +131,10 @@ class TortillaHeatMapPlotter(TortillaBasePlotter):
             legend = self.fields,
             showlegend = True,
             title = self.win,
-            marginbottom = 50,
-            marginleft = 50,
+            marginbottom = 100,
+            marginleft = 100,
+            xlabel="Predicted Labels",
+            ylabel="True Labels",
             connectgaps=True
         )
         self.update_opts() #merge supplied opts into default_opts
@@ -142,6 +144,7 @@ class TortillaHeatMapPlotter(TortillaBasePlotter):
         Args:
             XY : A 2D array representing a confusion matrix
         """
+        print("Updatinh Plot : ", XY.shape)
         if self.plot_initalised:
             win = self.vis.heatmap(
                 X = XY,

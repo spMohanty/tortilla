@@ -310,8 +310,10 @@ class TortillaMonitor:
 			last_confusion_matrix = self.val_confusion_matrix.get_last()
 			# Normalize confusion matrix
 			if self.config.normalize_confusion_matrix:
-				#last_confusion_matrix = last_confusion_matrix.astype('float')/last_confusion_matrix.sum(axis=1)
-				last_confusion_matrix = normalize(last_confusion_matrix)
+				axis_sum = last_confusion_matrix.sum(axis=1) + 1e-20
+				last_confusion_matrix = last_confusion_matrix.astype('float')/axis_sum[:, np.newaxis]
+				last_confusion_matrix = np.ndarray.clip(last_confusion_matrix, 0, 1)
+
 			self.val_confusion_matrix_plotter.update_plot(
 				last_confusion_matrix
 			)
