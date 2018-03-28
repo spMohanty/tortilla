@@ -1,6 +1,8 @@
 import os
 import uuid
-import argparse
+
+SOURCE_IMAGES = "/mount/SDE/instagram/myfoodrepo-images/myfoodrepo-images/images"
+OUTPUT_FOLDER = "output" #Should create tortilla compatible dataset folders for all possible datasets
 
 def all_valid_files(rootDir, is_valid):
     all_files = []
@@ -32,20 +34,7 @@ def sanitise_class_name(className):
     className = className.replace("/","::").replace(" ", "_")
     return className
 
-
-if __name__ == "__main__":
-
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter, description="Converts a taxonomy tree into multiple datasets \
-                with folder-subfolder format (one subfolder per class)")
-
-    parser.add_argument('--input-folder-path', action='store', dest='input_folder_path', required=True, help='Path to input folder containing images')
-    parser.add_argument('--output-folder-path', action='store', dest='output_folder_path', required=True, help='Path to output folder to write images')
-
-    args = parser.parse_args()
-
-    SOURCE_IMAGES = args.input_folder_path
-    OUTPUT_FOLDER = args.output_folder_path
-
+def main(SOURCE_IMAGES):
     for dirName, subdirList, fileList in os.walk(SOURCE_IMAGES):
         if len(subdirList) == 0:
             """
@@ -98,3 +87,5 @@ if __name__ == "__main__":
                     fileName = str(uuid.uuid4())[:4]+"___"+os.path.basename(_file)
                     target_path = os.path.join(classRoot, fileName)
                     os.symlink(_file, target_path)
+
+main(SOURCE_IMAGES)
