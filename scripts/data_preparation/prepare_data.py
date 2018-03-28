@@ -118,7 +118,8 @@ if __name__ == "__main__":
 	random.shuffle(files)
 
 	for _idx, _file in enumerate(files):
-		print("Processing {}/{} :: {}".format(str(_idx), str(len(files)), _file))
+		if not non_interactive_mode:
+			print("Processing {}/{} :: {}".format(str(_idx), str(len(files)), _file))
 		_class = _file.split("/")[-2]
 
 		# Stop processing of this class if above max_images_per_class
