@@ -1,0 +1,38 @@
+Type;Variables;29-Mar-2018:plants
+Meta_data;classes;['c_1', 'c_0', 'c_3', 'c_2']
+Meta_data;dataset_name;plants
+Meta_data;errors;0
+Meta_data;img_size;[256, 256]
+Meta_data;input_folder_path;/home/camille/tortilla/tests/data/plant_diseases
+Meta_data;is_absolute_path;False
+Meta_data;max_images_per_class;200
+Meta_data;min_images_per_class;50
+Meta_data;output_folder_path;/home/camille/tortilla/datasets/plants
+Meta_data;total_classes;4
+Meta_data;total_images;686
+Meta_data;train_class_frequency;{'c_0': 156, 'c_1': 165, 'c_2': 98, 'c_3': 133}
+Meta_data;train_percent;0.8
+Meta_data;val_class_frequency;{'c_0': 44, 'c_1': 35, 'c_2': 26, 'c_3': 29}
+Config_data;experiment_name;plants
+Config_data;experiments_dir;experiments
+Config_data;dataset_dir;datasets/plants
+Config_data;experiment_dir_name;experiments/plants
+Config_data;model;resnet-50
+Config_data;optimizer;adam
+Config_data;learning_rate;0.01
+Config_data;epochs;50
+Config_data;batch_size;128
+Config_data;topk;[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+Config_data;debug;False
+Config_data;train_flush_per_epoch;10
+Config_data;normalize_confusion_matrix;True
+Config_data;resume;False
+Config_data;num_cpu_workers;4
+Config_data;no_plots;False
+Config_data;no_render_images;False
+Config_data;visdom_server;localhost
+Config_data;visdom_port;8097
+Config_data;use_cpu;False
+Config_data;version;0.01
+Comments;General_impression;Waouh
+Comments;Suggested_changes;

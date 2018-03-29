@@ -204,6 +204,8 @@ if __name__ == "__main__":
 	_meta["train_class_frequency"] = train_class_frequency
 	_meta["val_class_frequency"] = val_class_frequency
 	_meta["is_absolute_path"] = absolute_path
+	_meta["total_classes"] = len(classes)
+	_meta["classes"] = classes
 
 	# Write meta file
 	f = open(os.path.join(

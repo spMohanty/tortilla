@@ -55,12 +55,10 @@ class TestClass:
 
     def test_prepare_data(self):
         result = os.system("python scripts/data_preparation/prepare_data.py --input-folder-path=tests/data/plant_diseases/ --output-folder-path=tests/test3/ --dataset-name=test3 --min-images-per-class=50 --max-images-per-class=100 --non_interactive_mode=True")
-        #main(input_folder_path="tests/data/plant_diseases",output_folder_path = "tests/test3", dataset_name ="test3", min_images_per_class= 50, max_images_per_class = 100)
         assert os.path.exists('tests/test3') == True
         classes = open(os.path.join("tests/test3","classes.txt")).readlines()
-        print(classes)
-		#classes = [x.strip() for x in classes]
-        #assert set(classes) == set(np.array(['c_0', 'c_1', 'c_2', 'c_3']))
+        classes = [_class.strip() for _class in classes]
+        assert set(classes) == set(np.array(['c_0', 'c_1', 'c_2', 'c_3']))
         d = json.loads(open(os.path.join("tests/test3","meta.json")).read())
         assert d['total_images'] == 400
         total_class0 = d['train_class_frequency']['c_0']+d['val_class_frequency']['c_0']

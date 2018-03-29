@@ -1,7 +1,9 @@
 from PIL import Image
+import pandas as pd
 import sys,os
 import shutil
 import json
+import datetime
 
 def default_loader(path):
 	try:
@@ -49,6 +51,28 @@ def append_val(var, key, value):
 	#
 	# var[key].append(value)
 
+def save_to_csv(config):
+	EXP = pd.read_csv('Experiments.csv', sep=';', index_col=['Type','Variables'])
+	date = datetime.date.today().strftime("%d-%b-%Y")
+	name  = ":".join([date, config.experiment_name])
+
+	meta = json.loads(open(os.path.join(config.dataset_dir, "meta.json")).read())
+	meta_data = pd.DataFrame(list(meta.items()), columns=['Variables', name])
+	meta_data = meta_data.set_index('Variables')
+
+	var = vars(config)
+	attributes = {key: var[key] for key in var if not key.startswith('__')}
+	config_data = pd.DataFrame(list(attributes.items()), columns=['Variables', name])
+	config_data = config_data.set_index('Variables')
+
+	comments = {'General_impression':None,'Suggested_changes':None}
+	comments = pd.DataFrame(list(comments.items()), columns=['Variables', name])
+	comments = comments.set_index('Variables')
+
+	NEW_EXP = pd.concat([meta_data, config_data, comments], keys=['Meta_data', 'Config_data', 'Comments'], names= ['Type', 'Variables'])
+	EXP = pd.concat([EXP,NEW_EXP], axis=1)
+
+	EXP.to_csv('Experiments.csv', sep=';')
 
 def query_yes_no(question, default="yes"):
 	"""Ask a yes/no question via raw_input() and return their answer.
