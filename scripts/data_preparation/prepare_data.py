@@ -29,7 +29,7 @@ if __name__ == "__main__":
 						required=True,
 						help='Path to output folder to write images')
 	parser.add_argument('--min-images-per-class', action='store', dest='min_images_per_class',
-						default=500,
+						default=50,
 						help='Minimum number of images required per class')
 	parser.add_argument('--train-percent', action='store', dest='train_percent',
 						default=0.8,
@@ -45,6 +45,9 @@ if __name__ == "__main__":
 	parser.add_argument('--no-copy', dest='no_copy', action='store_true')
 	parser.add_argument('--non_interactive_mode', dest='non_interactive_mode', action='store',
 						default=False)
+  parser.add_argument('--max-images-per-class', action='store', dest='max_images_per_class',
+						default=20000,
+						help='Maximum number of images required per class')
 
 	args = parser.parse_args()
 
@@ -57,6 +60,7 @@ if __name__ == "__main__":
 	absolute_path = args.absolute_path
 	no_copy = args.no_copy
 	non_interactive_mode = args.non_interactive_mode
+  max_images_per_class = args.max_images_per_class
 
 	"""
 	Validation Input and Output Folder
@@ -70,6 +74,7 @@ if __name__ == "__main__":
 		Input Folder Path : {}
 		Output Folder Path : {}
 		Minimum Images per Class : {}
+    Maximum Images per Class : {}
 		Train Percentage : {}
 		Dataset Name : {}
 		Target Image Size : {}
@@ -80,6 +85,7 @@ if __name__ == "__main__":
 		input_folder_path,
 		output_folder_path,
 		min_images_per_class,
+    max_images_per_class,
 		train_percent,
 		dataset_name,
 		img_size,
@@ -112,8 +118,13 @@ if __name__ == "__main__":
 	random.shuffle(files)
 
 	for _idx, _file in enumerate(files):
-		print("Processing {}/{} :: {}".format(str(_idx), str(len(files)), _file))
+    if not non_interactive_mode:
+			print("Processing {}/{} :: {}".format(str(_idx), str(len(files)), _file))
 		_class = _file.split("/")[-2]
+
+		# Stop processing of this class if above max_images_per_class
+		if train_class_frequency[_class]+val_class_frequency[_class] == int(max_images_per_class):
+			continue
 
 		# Open, Preprocess and write file to output_folder_path
 		try:
@@ -138,7 +149,6 @@ if __name__ == "__main__":
 				str(uuid.uuid4()),
 				"_".join(_file.split("/")[-1].split())
 				)
-			im.save(target_file_path)
 			# Absolute Path
 			target_file_path = os.path.abspath(os.path.join(
 				output_folder_path,
@@ -152,6 +162,7 @@ if __name__ == "__main__":
 				_class,
 				target_file_name
 			)
+      im.save(target_file_path)
 		else:
 			target_file_name = os.path.basename(_file)
 			target_file_path = os.path.abspath(_file)
@@ -186,12 +197,15 @@ if __name__ == "__main__":
 	_meta["input_folder_path"] = os.path.abspath(input_folder_path)
 	_meta["output_folder_path"] = os.path.abspath(output_folder_path)
 	_meta["min_images_per_class"] = min_images_per_class
+  _meta["max_images_per_class"] = max_images_per_class
 	_meta["img_size"] = img_size
 	_meta["total_images"] = len(train_list) + len(val_list)
 	_meta["errors"] = len(error_list)
 	_meta["train_class_frequency"] = train_class_frequency
 	_meta["val_class_frequency"] = val_class_frequency
 	_meta["is_absolute_path"] = absolute_path
+  _meta["total_classes"] = len(classes)
+	_meta["classes"] = classes
 
 	# Write meta file
 	f = open(os.path.join(

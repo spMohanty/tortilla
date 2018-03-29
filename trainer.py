@@ -6,13 +6,18 @@ import torch
 class TortillaTrainer:
     def __init__(self,  dataset, model, loss,
                         optimizer=None, monitor=None,
-                        config=None, verbose=True):
+                        config=None, start_epoch=False, verbose=True):
         """
             A wrapper class for all the training requirements of tortilla.
         """
         self.dataset = dataset
-        self.train_epochs = 0
-        self.val_epochs = 0
+        if start_epoch:
+            self.start_epoch = start_epoch
+        else:
+            self.start_epoch = 0
+
+        self.train_epochs = self.start_epoch
+        self.val_epochs = self.start_epoch
 
         self.model = model
         self.loss = loss
@@ -32,12 +37,15 @@ class TortillaTrainer:
             # val set
             epoch_pointer = float(self.val_epochs)
 
+        learning_rate = self.optimizer.param_groups[0]["lr"]
+
         if self.monitor:
             self.monitor._compute_and_register_stats(
                 epoch_pointer,
                 outputs,
                 labels,
                 loss,
+                learning_rate,
                 train=train)
             if train:
                 # Flush every `train_flush_frequency` steps in case of training

@@ -29,7 +29,7 @@ def main(config):
 	else:
 		use_gpu = torch.cuda.is_available()
 
-	utils.create_directory_structure(config.experiment_dir_name)
+	utils.create_directory_structure(config.experiment_dir_name, resume=config.resume)
 	"""
 	Initialize Dataset
 	"""
@@ -53,7 +53,6 @@ def main(config):
 	Initialize Optimizers, Loss, Loss Schedulers
 	"""
 	optimizer_ft = optim.Adam(net.parameters(), lr=config.learning_rate)
-	exp_lr_scheduler = optim.lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
 	criterion = CrossEntropyLoss()
 
 	monitor = TortillaMonitor(	experiment_name=config.experiment_name,
@@ -63,6 +62,42 @@ def main(config):
 								plot=True,
 								config=config
 								)
+
+	def _load_checkpoint(net, optimizer, checkpoint_path=False):
+		if checkpoint_path:
+			path = checkpoint_path
+		else:
+			path = config.experiment_dir_name+"/checkpoints/snapshot_latest.net"
+
+		checkpoint = torch.load(path)
+		start_epoch = checkpoint["epoch"]
+		net.load_state_dict(checkpoint["model_state_dict"])
+		optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
+		return start_epoch
+
+
+	def _save_checkpoint(net, optimizer, epoch):
+		path = config.experiment_dir_name+"/checkpoints/snapshot_{}_{}.net".format(epoch, monitor.val_loss.get_last())
+		latest_snapshot_path = config.experiment_dir_name+"/checkpoints/snapshot_latest.net"
+		print("Checkpointing model at : ", path)
+		torch.save({
+			"epoch": epoch,
+			"model_state_dict": net.state_dict(),
+			"optimizer_state_dict": optimizer.state_dict(),
+			"config": config,
+			"val_loss": monitor.val_loss.get_last()
+		}, path)
+		shutil.copy2(path, latest_snapshot_path)
+
+	if config.resume:
+		start_epoch = _load_checkpoint(net, optimizer_ft)
+	else:
+		start_epoch = 0
+
+	lr_milestones = [int(1.0*config.epochs/3), int(2.0*config.epochs/3)]
+	print("LR_Milestones : ", lr_milestones)
+	exp_lr_scheduler = optim.lr_scheduler.MultiStepLR(optimizer_ft, milestones=lr_milestones, gamma=0.1, last_epoch=start_epoch-1)
+
 	"""
 	Train
 	"""
@@ -72,7 +107,8 @@ def main(config):
 				loss = criterion,
 				optimizer = optimizer_ft,
 				monitor = monitor,
-				config=config
+				config=config,
+				start_epoch=start_epoch
 				)
 
 	def _run_one_epoch(epoch, train=True):
@@ -91,17 +127,11 @@ def main(config):
 			if end_of_epoch:
 				break
 		pbar.close()
+		if train:
+			exp_lr_scheduler.step()
 
-	def _save_checkpoint(model, optimizer, epoch):
-		path = config.experiment_dir_name+"/checkpoints/snapshot_{}_{}.model".format(epoch, monitor.val_loss.get_last())
-		latest_snapshot_path = config.experiment_dir_name+"/checkpoints/snapshot_latest.model"
-		optimizer_snapshot_path = config.experiment_dir_name+"/checkpoints/optimizer_state.pickle"
-		print("Checkpointing model at : ", path)
-		torch.save(model, path)
-		shutil.copy2(path, latest_snapshot_path)
-		# pickle.dump(optimizer.state_dict(), open(optimizer_snapshot_path, "wb"))
 
-	for epoch in range(config.epochs):
+	for epoch in range(start_epoch, config.epochs):
 		for train in [False, True]:
 			_run_one_epoch(epoch, train=train)
 		_save_checkpoint(net, optimizer_ft, epoch)
@@ -171,6 +201,9 @@ def collect_args():
 	                    help='Boolean Flag to forcibly use CPU (on servers which\
 						have GPUs. If you do not have a GPU, tortilla will \
 						automatically use just CPU)')
+	parser.add_argument('--resume', action='store_true', default=config.resume,
+	                    dest='resume',
+	                    help='Resume training from the latest checkpoint?')
 
 	parser.add_argument('--debug', action='store_true', default=config.debug,
 	                    dest='debug',
@@ -195,10 +228,12 @@ def collect_args():
 	config.no_plots = args.no_plots
 	config.no_render_images = args.no_render_images
 	config.use_cpu = args.use_cpu
+	config.resume = args.resume
 
 	return config
 
 if __name__ == "__main__":
 	utils.logo()
 	config = collect_args()
+	utils.save_to_csv(config)
 	main(config)
