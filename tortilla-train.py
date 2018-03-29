@@ -235,4 +235,5 @@ def collect_args():
 if __name__ == "__main__":
 	utils.logo()
 	config = collect_args()
+	utils.save_to_csv(config)
 	main(config)
