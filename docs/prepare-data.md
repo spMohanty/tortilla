@@ -20,10 +20,17 @@ optional arguments:
   --min-images-per-class MIN_IMAGES_PER_CLASS
                         Minimum number of images required per class (default:
                         500)
+  --max-images-per-class MIN_IMAGES_PER_CLASS
+                        Maximum number of images required per class (default:
+                        20000)
   --train-percent TRAIN_PERCENT
                         Percentage of all images to use as training data
                         (default: 0.8)
   --dataset-name DATASET_NAME
                         Name of the Dataset (default: None)
   --img-size IMG_SIZE   Size of the target images (default: 256x256)
+  --non-interactive-mode
+                        If do not want interaction with terminal
+  --absolute-path       If want to use absolute paths
+  --no-copy             If do not want to copy the images
 ```

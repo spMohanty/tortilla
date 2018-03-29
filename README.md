@@ -81,9 +81,9 @@ train-test splits, etc.
 This can be done by :
 
 ```
-python scripts/data-prepartion/prepare_data.py \
-  --input-folder-path <CHANGE_ME_root_folder_path> \
-  --output-folder-path datasets/CHANGE_ME_my_dataset_name \
+python scripts/data_preparation/prepare_data.py \
+  --input-folder-path=CHANGE_ME_root_folder_path \
+  --output-folder-path=datasets/CHANGE_ME_my_dataset_name \
   --dataset-name=CHANGE_ME_my_dataset_name
 ```
 
@@ -131,9 +131,10 @@ pip install nose
 * Run all the tests by typing:
 
 ```
-nosetests tests/
+nosetests
 ```
-This should run 9 tests without throwing errors.
+This should run 12 tests without throwing errors.
 
-# Author
+# Authors
 Sharada Mohanty (sharada.mohanty@epfl.ch)
+Camille Renner (camille.renner@epfl.ch)
