@@ -43,9 +43,8 @@ if __name__ == "__main__":
 						help='Size of the target images')
 	parser.add_argument('--absolute-path', dest='absolute_path', action='store_true')
 	parser.add_argument('--no-copy', dest='no_copy', action='store_true')
-	parser.add_argument('--non_interactive_mode', dest='non_interactive_mode', action='store',
-						default=False)
-  parser.add_argument('--max-images-per-class', action='store', dest='max_images_per_class',
+	parser.add_argument('--non-interactive-mode', dest='non_interactive_mode', action='store_true')
+	parser.add_argument('--max-images-per-class', action='store', dest='max_images_per_class',
 						default=20000,
 						help='Maximum number of images required per class')
 
