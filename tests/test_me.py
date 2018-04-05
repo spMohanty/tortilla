@@ -54,7 +54,7 @@ class TestClass:
         shutil.rmtree('tests/test2')
   
     def test_prepare_data(self):
-        result = os.system("python scripts/data_preparation/prepare_data.py --input-folder-path=tests/data/plant_diseases/ --output-folder-path=tests/test3/ --dataset-name=test3 --min-images-per-class=50 --max-images-per-class=100 --non_interactive_mode=True")
+        result = os.system("python scripts/data_preparation/prepare_data.py --input-folder-path=tests/data/plant_diseases/ --output-folder-path=tests/test3/ --dataset-name=test3 --min-images-per-class=50 --max-images-per-class=100 --non-interactive-mode")
         assert os.path.exists('tests/test3') == True
         classes = open(os.path.join("tests/test3","classes.txt")).readlines()
         classes = [_class.strip() for _class in classes]
