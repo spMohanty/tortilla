@@ -1,11 +1,43 @@
 import torch
 import time
 import os
+import torchvision.utils as vutils
+import tensorflow as tf
 
 import numpy as np
+import tfplot
+import matplotlib
 
 from visdom import Visdom
+from tensorboardX import SummaryWriter
 import random
+
+
+def plot_confusion_matrix(XY, tensor_name, classes):
+
+    np.set_printoptions(precision=2)
+
+    fig = matplotlib.figure.Figure(figsize=(7, 7), dpi=320, facecolor='w', edgecolor='k')
+    ax = fig.add_subplot(1, 1, 1)
+    im = ax.imshow(XY, cmap='Blues')
+
+    tick_marks = np.arange(len(classes))
+
+    ax.set_xlabel('Predicted', fontsize=20)
+    ax.set_xticks(tick_marks)
+    c = ax.set_xticklabels(classes, fontsize=14, rotation=-90,  ha='center')
+    ax.xaxis.set_label_position('bottom')
+    ax.xaxis.tick_bottom()
+
+    ax.set_ylabel('True Label', fontsize=20)
+    ax.set_yticks(tick_marks)
+    ax.set_yticklabels(classes, fontsize=14, va ='center')
+    ax.yaxis.set_label_position('left')
+    ax.yaxis.tick_left()
+
+    fig.set_tight_layout(True)
+    summary = tfplot.figure.to_summary(fig, tag=tensor_name)
+    return summary
 
 
 class VisdomTest:
@@ -47,6 +79,7 @@ class TortillaBasePlotter:
 
     def init_visdom_server(self):
         self.vis = Visdom(server="http://"+self.server, port=self.port)
+        self.writer = SummaryWriter(self.experiment_name)
 
     def update_opts(self):
         self._opts = self.default_opts.copy()
@@ -79,8 +112,12 @@ class TortillaLinePlotter(TortillaBasePlotter):
             t : A floating point number representing the location along
                 time-axis
         """
+
         y = np.array(y).reshape((1,len(self.fields)))
         t = np.array([t])
+
+        dictionary =  dict(zip(self.fields,y[0].tolist()))
+        self.writer.add_scalars(self.win, dictionary, t)
 
         if self.plot_initalised:
             win = self.vis.line(
@@ -91,6 +128,7 @@ class TortillaLinePlotter(TortillaBasePlotter):
                 update = "append",
                 opts = self.opts
             )
+
         else:
             # Instantiate
             win = self.vis.line(
@@ -144,7 +182,13 @@ class TortillaHeatMapPlotter(TortillaBasePlotter):
         Args:
             XY : A 2D array representing a confusion matrix
         """
-        print("Updatinh Plot : ", XY.shape)
+        sess = tf.InteractiveSession()
+
+        img_d_summary_writer = tf.summary.FileWriter(os.path.join(self.experiment_name,"confusion_matrix"), sess.graph)
+        img_d_summary = plot_confusion_matrix(XY=XY, tensor_name='Confusion matrix', classes = self.fields)
+        img_d_summary_writer.add_summary(img_d_summary)
+
+        print("Updating Plot : ", XY.shape)
         if self.plot_initalised:
             win = self.vis.heatmap(
                 X = XY,
@@ -161,6 +205,7 @@ class TortillaHeatMapPlotter(TortillaBasePlotter):
                 opts = self.opts
             )
             self.plot_initalised = True
+
 
 class TortillaImagesPlotter(TortillaBasePlotter):
     def __init__(   self, experiment_name=None, fields=None,
@@ -203,6 +248,10 @@ class TortillaImagesPlotter(TortillaBasePlotter):
             )
             self.plot_initalised = True
 
+        x = vutils.make_grid(images, normalize=True, scale_each=True)
+        self.writer.add_image('Images', x)
+
+
 
 
 if __name__ == "__main__":
@@ -227,7 +276,10 @@ if __name__ == "__main__":
     #     _d["top-2"] = np.random.randn(1)[0]
     #     _d["top-3"] = np.random.randn(1)[0]
     #     plotter.append_plot_with_dict(_d, _t)
-
-    XY = np.random.randn(10, 10)
-    plotter = TortillaHeatMapPlotter(experiment_name="test", title="mohanty")
+    XY = np.random.randn(4, 4)
+    plotter = TortillaHeatMapPlotter(experiment_name="test", fields=['A','B','C','D'], title="mohanty")
     plotter.update_plot(XY)
+    #X = (20,2)
+    #print(X)
+    #plot=TortillaLinePlotter(experiment_name="test", fields = ["Train", "test"], title= "Camille")
+    #plot.append_plot(X, t=2)
