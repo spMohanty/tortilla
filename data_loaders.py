@@ -33,6 +33,7 @@ class ImageFilelist(data.Dataset):
 			impath = os.path.join(self.root, impath)
 
 		img = self.loader(impath)
+
 		if self.transform is not None:
 			img = self.transform(img)
 		if self.target_transform is not None:
