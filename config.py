@@ -15,6 +15,7 @@ class Config:
     resume = False
 
     num_cpu_workers = 4
+    plot_platform = "tensorboard"
     no_plots = False
     no_render_images = False
     visdom_server = "localhost"
