@@ -190,7 +190,6 @@ class TortillaHeatMapPlotter(TortillaBasePlotter):
         """
         if self.platform == "tensorboard":
             sess = tf.InteractiveSession()
-
             img_d_summary_writer = tf.summary.FileWriter(os.path.join(self.log_dir,"confusion_matrix"), sess.graph)
             img_d_summary = plot_confusion_matrix(XY=XY, tensor_name='Confusion matrix', classes = self.fields)
             img_d_summary_writer.add_summary(img_d_summary)
