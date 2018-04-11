@@ -133,8 +133,11 @@ pip install nose
 ```
 nosetests
 ```
+
 This should run 12 tests without throwing errors.
 
+
 # Authors
+
 Sharada Mohanty (sharada.mohanty@epfl.ch)
 Camille Renner (camille.renner@epfl.ch)
