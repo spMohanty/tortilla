@@ -1,5 +1,6 @@
 from nose.tools import assert_raises
 import numpy as np
+import json
 from scripts.data_preparation.utils import *
 
 class TestClass:
