@@ -75,9 +75,9 @@ class TortillaBasePlotter:
         self.server = server
         self.debug = debug
 
+        self.log_dir = os.path.join("experiments",self.experiment_name,"tb_logs")
         self.init_server()
         self.plot_initalised = False
-        self.log_dir = os.path.join("experiments",self.experiment_name,"tb_logs")
 
     def init_server(self):
         if self.platform == "visdom":
