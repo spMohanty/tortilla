@@ -9,8 +9,8 @@ def default_loader(path):
 	try:
 		im = Image.open(path).convert('RGB')
 	except:
-		#im = False
 		print("Unable to load file at path :", path)
+		exit()
 	if im == None:
 		print("Unable to load file at path : ", path)
 	return im

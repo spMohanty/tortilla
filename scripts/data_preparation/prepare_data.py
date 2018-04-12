@@ -84,7 +84,7 @@ if __name__ == "__main__":
 		input_folder_path,
 		output_folder_path,
 		min_images_per_class,
-    max_images_per_class,
+        max_images_per_class,
 		train_percent,
 		dataset_name,
 		img_size,
@@ -128,7 +128,7 @@ if __name__ == "__main__":
 		# Open, Preprocess and write file to output_folder_path
 		try:
 			# TODO: Make this opening of the file optional
-			im = Image.open(_file)
+			im = Image.open(_file).convert('RGB')
 			if not no_copy:
 				im = im.resize(img_size)
 		except Exception as e:
