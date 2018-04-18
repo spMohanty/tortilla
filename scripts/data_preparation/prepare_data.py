@@ -48,7 +48,7 @@ def preprocessing(classes, meta):
 			# TODO: Make this opening of the file optional
 			im = Image.open(_file).convert('RGB')
 			if not meta["no_copy"]:
-				im = im.resize(img_size)
+				im = im.resize(meta["img_size"])
 		except Exception as e:
 			error_list.append((_file, str(_class), str(e)))
 			continue
@@ -153,12 +153,13 @@ if __name__ == "__main__":
 	parser.add_argument('--img-size', action='store', dest='img_size',
 						default="256x256",
 						help='Size of the target images')
-	parser.add_argument('--absolute-path', dest='absolute_path', action='store_true')
-	parser.add_argument('--no-copy', dest='no_copy', action='store_true')
-	parser.add_argument('--non-interactive-mode', dest='non_interactive_mode', action='store_true')
 	parser.add_argument('--num-cpu', action='store', dest='num_cpu',
 						default=multiprocessing.cpu_count(),
 						help='Number of cores to use for prepare_data')
+	parser.add_argument('--absolute-path', dest='absolute_path', action='store_true')
+	parser.add_argument('--no-copy', dest='no_copy', action='store_true')
+	parser.add_argument('--non-interactive-mode', dest='non_interactive_mode', action='store_true')
+
 
 	args = parser.parse_args()
 
