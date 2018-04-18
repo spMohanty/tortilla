@@ -1,11 +1,43 @@
 import torch
 import time
 import os
+import torchvision.utils as vutils
+import tensorflow as tf
 
 import numpy as np
+import tfplot
+import matplotlib
 
 from visdom import Visdom
+from tensorboardX import SummaryWriter
 import random
+
+
+def plot_confusion_matrix(XY, tensor_name, classes):
+
+    np.set_printoptions(precision=2)
+
+    fig = matplotlib.figure.Figure(figsize=(7, 7), dpi=320, facecolor='w', edgecolor='k')
+    ax = fig.add_subplot(1, 1, 1)
+    im = ax.imshow(XY, cmap='Blues')
+
+    tick_marks = np.arange(len(classes))
+
+    ax.set_xlabel('Predicted', fontsize=20)
+    ax.set_xticks(tick_marks)
+    c = ax.set_xticklabels(classes, fontsize=14, rotation=-90,  ha='center')
+    ax.xaxis.set_label_position('bottom')
+    ax.xaxis.tick_bottom()
+
+    ax.set_ylabel('True Label', fontsize=20)
+    ax.set_yticks(tick_marks)
+    ax.set_yticklabels(classes, fontsize=14, va ='center')
+    ax.yaxis.set_label_position('left')
+    ax.yaxis.tick_left()
+
+    fig.set_tight_layout(True)
+    summary = tfplot.figure.to_summary(fig, tag=tensor_name)
+    return summary
 
 
 class VisdomTest:
@@ -30,7 +62,7 @@ Or...disable plotting by passing the --no-plots option. \
 """
 class TortillaBasePlotter:
     def __init__(self,  experiment_name=None, fields=None, win=None,
-                        opts={}, port=8097, server='localhost',
+                        opts={}, platform="tensorboard", port=8097, server='localhost',
                         debug=False):
         self.experiment_name = experiment_name
         self.fields = fields
@@ -38,15 +70,20 @@ class TortillaBasePlotter:
         self.env = self.experiment_name
         self.opts = opts
         self.default_opts = {}
+        self.platform = platform
         self.port = port
         self.server = server
         self.debug = debug
 
-        self.init_visdom_server()
+        self.log_dir = os.path.join("experiments",self.experiment_name,"tb_logs")
+        self.init_server()
         self.plot_initalised = False
 
-    def init_visdom_server(self):
-        self.vis = Visdom(server="http://"+self.server, port=self.port)
+    def init_server(self):
+        if self.platform == "visdom":
+            self.vis = Visdom(server="http://"+self.server, port=self.port)
+        elif self.platform == "tensorboard":
+            self.writer = SummaryWriter(self.log_dir)
 
     def update_opts(self):
         self._opts = self.default_opts.copy()
@@ -55,12 +92,12 @@ class TortillaBasePlotter:
 
 class TortillaLinePlotter(TortillaBasePlotter):
     def __init__(   self, experiment_name=None, fields=None,
-                    title=None, opts={}, port=8097, server='localhost',
-                    debug=False):
+                    title=None, opts={}, platform="tensorboard", port=8097,
+                    server='localhost', debug=False):
         super(TortillaLinePlotter, self).__init__(
                     experiment_name=experiment_name, fields=fields,
-                    win=title, opts=opts, port=port, server=server,
-                    debug=debug)
+                    win=title, opts=opts, platform=platform, port=port,
+                    server=server, debug=debug)
 
         self.default_opts = dict(
             legend = self.fields,
@@ -79,28 +116,35 @@ class TortillaLinePlotter(TortillaBasePlotter):
             t : A floating point number representing the location along
                 time-axis
         """
+
         y = np.array(y).reshape((1,len(self.fields)))
         t = np.array([t])
 
-        if self.plot_initalised:
-            win = self.vis.line(
-                Y = y,
-                X = t,
-                win = self.win,
-                env=self.env,
-                update = "append",
-                opts = self.opts
-            )
-        else:
-            # Instantiate
-            win = self.vis.line(
-                Y = y,
-                X = t,
-                env=self.env,
-                win = self.win,
-                opts = self.opts
-            )
-            self.plot_initalised = True
+        if self.platform == "tensorboard":
+            dictionary =  dict(zip(self.fields,y[0].tolist()))
+            self.writer.add_scalars(self.win, dictionary, t)
+
+        elif self.platform == "visdom":
+            if self.plot_initalised:
+                win = self.vis.line(
+                    Y = y,
+                    X = t,
+                    win = self.win,
+                    env=self.env,
+                    update = "append",
+                    opts = self.opts
+                )
+
+            else:
+                # Instantiate
+                win = self.vis.line(
+                    Y = y,
+                    X = t,
+                    env=self.env,
+                    win = self.win,
+                    opts = self.opts
+                )
+                self.plot_initalised = True
 
     def append_plot_with_dict(self, d, t):
         """
@@ -120,12 +164,12 @@ class TortillaLinePlotter(TortillaBasePlotter):
 
 class TortillaHeatMapPlotter(TortillaBasePlotter):
     def __init__(   self, experiment_name=None, fields=None,
-                    title=None, opts={}, port=8097, server='localhost',
-                    debug=False):
+                    title=None, opts={}, platform="tensorboard", port=8097,
+                    server='localhost', debug=False):
         super(TortillaHeatMapPlotter, self).__init__(
                     experiment_name=experiment_name, fields=fields,
-                    win=title, opts=opts, port=port, server=server,
-                    debug=debug)
+                    win=title, opts=opts, platform=platform, port=port,
+                    server=server, debug=debug)
 
         self.default_opts = dict(
             legend = self.fields,
@@ -144,32 +188,40 @@ class TortillaHeatMapPlotter(TortillaBasePlotter):
         Args:
             XY : A 2D array representing a confusion matrix
         """
-        print("Updatinh Plot : ", XY.shape)
-        if self.plot_initalised:
-            win = self.vis.heatmap(
-                X = XY,
-                win = self.win,
-                env=self.env,
-                opts = self.opts
-            )
-        else:
-            # Instantiate
-            win = self.vis.heatmap(
-                X = XY,
-                env=self.env,
-                win = self.win,
-                opts = self.opts
-            )
-            self.plot_initalised = True
+        if self.platform == "tensorboard":
+            sess = tf.InteractiveSession()
+            img_d_summary_writer = tf.summary.FileWriter(os.path.join(self.log_dir,"confusion_matrix"), sess.graph)
+            img_d_summary = plot_confusion_matrix(XY=XY, tensor_name='Confusion matrix', classes = self.fields)
+            img_d_summary_writer.add_summary(img_d_summary)
+
+        elif self.platform == "visdom":
+            print("Updating Plot : ", XY.shape)
+            if self.plot_initalised:
+                win = self.vis.heatmap(
+                    X = XY,
+                    win = self.win,
+                    env=self.env,
+                    opts = self.opts
+                )
+            else:
+                # Instantiate
+                win = self.vis.heatmap(
+                    X = XY,
+                    env=self.env,
+                    win = self.win,
+                    opts = self.opts
+                )
+                self.plot_initalised = True
+
 
 class TortillaImagesPlotter(TortillaBasePlotter):
     def __init__(   self, experiment_name=None, fields=None,
-                    title=None, opts={}, port=8097, server='localhost',
-                    debug=False):
+                    title=None, opts={}, platform="tensorboard", port=8097,
+                    server='localhost', debug=False):
         super(TortillaImagesPlotter, self).__init__(
                     experiment_name=experiment_name, fields=fields,
-                    win=title, opts=opts, port=port, server=server,
-                    debug=debug)
+                    win=title, opts=opts, platform=platform, port=port,
+                    server=server, debug=debug)
 
         self.default_opts = dict(
             legend = self.fields,
@@ -186,23 +238,27 @@ class TortillaImagesPlotter(TortillaBasePlotter):
         Args:
             images : A 4D tensor representing a B x C x H x W tensor or a list of images
         """
-        if self.plot_initalised:
-            win = self.vis.images(
-                tensor = images,
-                win = self.win,
-                env=self.env,
-                opts = self.opts
-            )
-        else:
-            # Instantiate
-            win = self.vis.images(
-                tensor = images,
-                env=self.env,
-                win = self.win,
-                opts = self.opts
-            )
-            self.plot_initalised = True
+        if self.platform == "tensorboard":
+            x = vutils.make_grid(images, normalize=True, scale_each=True)
+            self.writer.add_image('Images', x)
 
+        elif self.platform == "visdom":
+            if self.plot_initalised:
+                win = self.vis.images(
+                    tensor = images,
+                    win = self.win,
+                    env=self.env,
+                    opts = self.opts
+                )
+            else:
+                # Instantiate
+                win = self.vis.images(
+                    tensor = images,
+                    env=self.env,
+                    win = self.win,
+                    opts = self.opts
+                )
+                self.plot_initalised = True
 
 
 if __name__ == "__main__":
@@ -227,7 +283,10 @@ if __name__ == "__main__":
     #     _d["top-2"] = np.random.randn(1)[0]
     #     _d["top-3"] = np.random.randn(1)[0]
     #     plotter.append_plot_with_dict(_d, _t)
-
-    XY = np.random.randn(10, 10)
-    plotter = TortillaHeatMapPlotter(experiment_name="test", title="mohanty")
+    XY = np.random.randn(4, 4)
+    plotter = TortillaHeatMapPlotter(experiment_name="test", fields=['A','B','C','D'], title="mohanty")
     plotter.update_plot(XY)
+    #X = (20,2)
+    #print(X)
+    #plot=TortillaLinePlotter(experiment_name="test", fields = ["Train", "test"], title= "Camille")
+    #plot.append_plot(X, t=2)

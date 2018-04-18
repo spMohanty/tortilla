@@ -35,10 +35,13 @@ class TortillaMonitor:
 				_topk.append(tk)
 		self.topk = _topk
 		self.config.topk = self.topk
+		if self.config.plot_platform == 'none':
+			self.plot = False
 
 
 		if self.plot:
-			VisdomTest(server=self.config.visdom_server, port=self.config.visdom_port)
+			if self.config.plot_platform == 'visdom' :
+				VisdomTest(server=self.config.visdom_server, port=self.config.visdom_port)
 			self._init_plotters()
 
 		self._init_data_gatherers()
@@ -58,6 +61,7 @@ class TortillaMonitor:
 										xlabel="Epochs",
 										ylabel="Accuracy"
 								),
+							platform=self.config.plot_platform,
 							server=self.config.visdom_server,
 							port=self.config.visdom_port
 							)
@@ -75,6 +79,7 @@ class TortillaMonitor:
 										ylabel="Accuracy",
 										markers=True
 								),
+							platform=self.config.plot_platform,
 							server=self.config.visdom_server,
 							port=self.config.visdom_port
 							)
@@ -90,6 +95,7 @@ class TortillaMonitor:
 										ylabel="Loss",
 										markers=True
 								),
+							platform=self.config.plot_platform,
 							server=self.config.visdom_server,
 							port=self.config.visdom_port
 							)
@@ -101,12 +107,14 @@ class TortillaMonitor:
 									rownames=self.classes,
 									columnnames=self.classes
 								),
+							platform=self.config.plot_platform,
 							server=self.config.visdom_server,
 							port=self.config.visdom_port
 							)
 		self.images_plotter = TortillaImagesPlotter(
 							experiment_name=self.experiment_name,
 							title='Images',
+							platform=self.config.plot_platform,
 							server=self.config.visdom_server,
 							port=self.config.visdom_port
 		)
@@ -122,6 +130,7 @@ class TortillaMonitor:
 								ylabel="Learning Rate",
 								markers=False
 							),
+							platform=self.config.plot_platform,
 							server=self.config.visdom_server,
 							port=self.config.visdom_port
 		)
@@ -258,6 +267,7 @@ class TortillaMonitor:
 		meta_path = self.config.experiment_dir_name+"/meta.json"
 		_meta = {}
 		_meta["classes"] = self.classes
+		_meta["plot_platform"] = self.config.plot_platform
 		# _meta["dataset_dir"] = self.dataset.dataset_folder
 		if not os.path.exists(meta_path):
 			fp = open(meta_path, "w")

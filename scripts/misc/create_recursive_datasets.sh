@@ -6,5 +6,5 @@ python scripts/misc/prepare_datasets_recursive.py --input-folder-path=/mount/SDE
 cd output
 for f in *
   do
-    python ../scripts/data_preparation/prepare_data.py --input-folder-path=$f/ --output-folder-path=../my_food_repo/$f/ --dataset-name=$f --non_interactive_mode=True --min-images-per-class=100
+    python ../scripts/data_preparation/prepare_data.py --input-folder-path=$f/ --output-folder-path=../my_food_repo/$f/ --dataset-name=$f --non-interactive-mode --min-images-per-class=100
 done

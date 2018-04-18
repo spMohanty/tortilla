@@ -136,6 +136,7 @@ def main(config):
 			_run_one_epoch(epoch, train=train)
 		_save_checkpoint(net, optimizer_ft, epoch)
 	_run_one_epoch(epoch, train=False)
+	utils.save_to_csv(config)
 	print("Hurray !! Your network is trained ! Now you can use `tortilla-predict` to make predictions.")
 
 
@@ -188,7 +189,9 @@ def collect_args():
 	parser.add_argument('--visdom-port', action='store', dest='visdom_port',
 						default=config.visdom_port,
 	                    help='Visdom server port.')
-
+	parser.add_argument('--plot-platform', action='store', dest='plot_platform',
+						default=config.plot_platform,
+	                    help='Type of visualization platform. Options:["tensorboard", "visdom", "none"]')
 	parser.add_argument('--no-plots', action='store_true', default=config.no_plots,
 	                    dest='no_plots',
 	                    help='Disable plotting on the visdom server')
@@ -229,11 +232,14 @@ def collect_args():
 	config.no_render_images = args.no_render_images
 	config.use_cpu = args.use_cpu
 	config.resume = args.resume
+	config.plot_platform = args.plot_platform
+	if config.plot_platform == 'none':
+		config.no_plots=True
+		config.no_render_images=True
 
 	return config
 
 if __name__ == "__main__":
 	utils.logo()
 	config = collect_args()
-	utils.save_to_csv(config)
 	main(config)
