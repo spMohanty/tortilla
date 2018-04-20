@@ -66,10 +66,10 @@ class TestClass:
         shutil.rmtree('tests/test3')
 
     def test_no_copy(self):
-        result = os.system("python scripts/data_preparation/prepare_data.py --input-folder-path=tests/data/plant_diseases/ --output-folder-path=tests/test3/ --dataset-name=test3 --min-images-per-class=50 --max-images-per-class=100 --non-interactive-mode --no-copy --absolute-path")
-        folder_path = 'tests/test3/images/c_0/'
+        result = os.system("python scripts/data_preparation/prepare_data.py --input-folder-path=tests/data/plant_diseases/ --output-folder-path=tests/test4/ --dataset-name=test4 --min-images-per-class=50 --max-images-per-class=100 --non-interactive-mode --no-copy --absolute-path")
+        folder_path = 'tests/test4/images/c_0/'
         assert not os.listdir(folder_path)
-        d = json.loads(open(os.path.join("tests/test3","train.json")).read())
+        d = json.loads(open(os.path.join("tests/test4","train.json")).read())
         image_path = next(iter(d))
         assert not image_path.startswith("images")
-        shutil.rmtree('tests/test3')
+        shutil.rmtree('tests/test4')

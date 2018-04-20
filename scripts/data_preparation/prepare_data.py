@@ -16,9 +16,7 @@ import random
 import multiprocessing
 from functools import partial
 
-def preprocessing(classes, meta):
-
-	_class= classes
+def preprocessing(_class, meta):
 
 	train_class_frequency = {}
 	val_class_frequency = {}
@@ -40,7 +38,7 @@ def preprocessing(classes, meta):
 		_class = _file.split("/")[-2]
 
 		# Stop processing of this class if above max_images_per_class
-		if train_class_frequency[_class]+val_class_frequency[_class] == int(meta["max_images_per_class"]):
+		if train_class_frequency[_class]+val_class_frequency[_class] == meta["max_images_per_class"]:
 			continue
 
 		# Open, Preprocess and write file to output_folder_path
@@ -98,10 +96,10 @@ def preprocessing(classes, meta):
 				target_file_path = target_file_path_rel
 
 		if is_train:
-			train_list.append((target_file_path, str(classes.index(_class))))
+			train_list.append((target_file_path, str(meta["classes"].index(_class))))
 			train_class_frequency[_class] += 1
 		else:
-			val_list.append((target_file_path, str(classes.index(_class))))
+			val_list.append((target_file_path, str(meta["classes"].index(_class))))
 			val_class_frequency[_class] += 1
 
 	return (train_list, val_list, train_class_frequency, val_class_frequency, error_list)
@@ -165,15 +163,15 @@ if __name__ == "__main__":
 
 	input_folder_path = args.input_folder_path
 	output_folder_path = args.output_folder_path
-	min_images_per_class = args.min_images_per_class
-	max_images_per_class = args.max_images_per_class
-	train_percent = args.train_percent
+	min_images_per_class = int(args.min_images_per_class)
+	max_images_per_class = int(args.max_images_per_class)
+	train_percent = float(args.train_percent)
 	dataset_name = args.dataset_name
 	img_size = (int(args.img_size.split("x")[0]), int(args.img_size.split("x")[1]))
 	absolute_path = args.absolute_path
 	no_copy = args.no_copy
 	non_interactive_mode = args.non_interactive_mode
-	num_cpu = args.num_cpu
+	num_cpu = int(args.num_cpu)
 
 	"""
 	Validation Input and Output Folder

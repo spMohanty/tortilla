@@ -1,9 +1,9 @@
 class Config:
-    experiment_name = "test-food-101"
+    experiment_name = "test"
     experiments_dir = "experiments"
     dataset_dir = "datasets/food-101"
     experiment_dir_name = experiments_dir+"/"+experiment_name
-    model="resnet-50"
+    model="resnet50"
     optimizer="adam"
     learning_rate = 0.01
     epochs = 50

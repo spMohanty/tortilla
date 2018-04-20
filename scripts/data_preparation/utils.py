@@ -26,7 +26,7 @@ def min_images_validation(folder_path, classes, min_images_per_class):
 
     class_frequency = quick_compute_class_frequency_from_folder(folder_path, classes)
 
-    final_classes = [c for c in classes if not class_frequency[c] < int(min_images_per_class)]
+    final_classes = [c for c in classes if not class_frequency[c] < min_images_per_class]
 
     if len(final_classes) <= 1:
         print("Exiting because the subfolders contain not enough images.")

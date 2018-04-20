@@ -8,6 +8,7 @@ import os.path
 import json
 
 from utils import default_flist_reader, default_loader
+from config import Config as config
 
 class ImageFilelist(data.Dataset):
 	def __init__(self, root, flist, classes, transform=None,
@@ -87,6 +88,12 @@ class TortillaDataset:
 			        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 			    ]),
 			}
+
+		transf = self.data_transforms['train'].transforms
+		index = [idx for idx, tr in enumerate(transf) if 'Normalize' in str(tr)]
+		if index:
+			self.normalize = {	'mean':transf[index[0]].mean,
+								'std':transf[index[0]].std}
 		"""
 			Define datasets from filelists
 		"""

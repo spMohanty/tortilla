@@ -42,7 +42,7 @@ def main(config):
 	"""
 	Initialize Model
 	"""
-	model = TortillaModel("resnet50", dataset.classes)
+	model = TortillaModel(config.model, dataset.classes)
 	net = model.net
 
 	# Make net use parallel gpu
@@ -85,7 +85,11 @@ def main(config):
 			"model_state_dict": net.state_dict(),
 			"optimizer_state_dict": optimizer.state_dict(),
 			"config": config,
-			"val_loss": monitor.val_loss.get_last()
+			"model": config.model,
+			"exp_dir_name":config.experiment_dir_name,
+			"val_loss": monitor.val_loss.get_last(),
+			"classes": dataset.classes,
+			"normalize":dataset.normalize
 		}, path)
 		shutil.copy2(path, latest_snapshot_path)
 
@@ -219,6 +223,8 @@ def collect_args():
 	config.experiment_name = args.experiment_name
 	config.experiments_dir = args.experiments_dir
 	config.experiment_dir_name = config.experiments_dir+"/"+config.experiment_name
+	config.model = args.model
+	config.optimizer = args.optimizer
 	config.dataset_dir = args.dataset_dir
 	config.batch_size = int(args.batch_size)
 	config.epochs = int(args.epochs)
