@@ -88,12 +88,6 @@ class TortillaDataset:
 			        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 			    ]),
 			}
-
-		transf = self.data_transforms['train'].transforms
-		index = [idx for idx, tr in enumerate(transf) if 'Normalize' in str(tr)]
-		if index:
-			self.normalize = {	'mean':transf[index[0]].mean,
-								'std':transf[index[0]].std}
 		"""
 			Define datasets from filelists
 		"""

@@ -17,11 +17,9 @@ from torchvision import transforms
 from models import TortillaModel
 
 
-def preprocess(im, normalize):
-    if normalize:
-        preprocessing = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize(normalize['mean'], normalize['std'])])
+def preprocess(im, transf):
+    if transf:
+        preprocessing = transf
     else:
         preprocessing =transforms.Compose([
             transforms.ToTensor()])
@@ -49,13 +47,12 @@ if __name__ == "__main__":
     if state_dict["config"].use_cpu:
         use_gpu = False
     else:
-        use_gpu=False #Error with cuda right now
-        #use_gpu = torch.cuda.is_available()
+        use_gpu = torch.cuda.is_available()
 
     model_type = state_dict["model"]
     experiments_dir = state_dict["exp_dir_name"]
     classes = state_dict["classes"]
-    normalize = state_dict["normalize"]
+    transf = state_dict["transforms"]
 
     model = TortillaModel(model_type, classes)
     if use_gpu:
@@ -81,12 +78,11 @@ if __name__ == "__main__":
     images= glob.glob(os.path.join(prediction_dir,"*"))
     for _idx, _image in enumerate(images):
         im = Image.open(_image)
-        im_tensor = preprocess(im, normalize)
+        im_tensor = preprocess(im, transf)
         im_tensor.unsqueeze_(0)
+        image = Variable(im_tensor)
         if use_gpu:
-            image = Variable(im_tensor).cuda()
-        else:
-            image = Variable(im_tensor)
+            image = image.cuda()
         outputs= net(image)
         _, predicted = torch.max(outputs.data, 1)
         prediction[_image]=classes[int(predicted)]
