@@ -233,7 +233,7 @@ class TortillaImagesPlotter(TortillaBasePlotter):
         )
         self.update_opts() #merge supplied opts into default_opts
 
-    def update_images(self, images):
+    def update_images(self, images, labels=None, predicted=None):
         """
         Args:
             images : A 4D tensor representing a B x C x H x W tensor or a list of images
@@ -243,6 +243,7 @@ class TortillaImagesPlotter(TortillaBasePlotter):
             self.writer.add_image('Images', x)
 
         elif self.platform == "visdom":
+            self.opts["caption"] = "True labels : {}, Predicted: {}".format(labels, predicted)
             if self.plot_initalised:
                 win = self.vis.images(
                     tensor = images,
