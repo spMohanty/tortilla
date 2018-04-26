@@ -36,6 +36,7 @@ def main(config):
 	dataset = TortillaDataset(	config.dataset_dir,
 								batch_size=config.batch_size,
 								num_cpu_workers=config.num_cpu_workers,
+								no_data_augmentation=config.no_data_augmentation,
 								debug=config.debug
 								)
 
@@ -217,6 +218,9 @@ def collect_args():
 	                    help='Run tortilla in debug mode')
 
 	parser.add_argument('--version', action='version', version='tortilla '+str(config.version))
+	parser.add_argument('--no-data-augmentation', action='store_true', default=config.no_data_augmentation,
+	                    dest='no_data_augmentation',
+	                    help='Boolean Flag to deactivate data augmentation')
 
 	args = parser.parse_args()
 
@@ -238,6 +242,7 @@ def collect_args():
 	config.no_render_images = args.no_render_images
 	config.use_cpu = args.use_cpu
 	config.resume = args.resume
+	config.no_data_augmentation = args.no_data_augmentation
 	config.plot_platform = args.plot_platform
 	if config.plot_platform == 'none':
 		config.no_plots=True

@@ -26,4 +26,6 @@ class Config:
         batch_size = 101
         epochs = 5
 
+    no_data_augmentation = False
+
     version = 0.01
