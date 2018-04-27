@@ -6,6 +6,7 @@ import json
 import argparse
 import multiprocessing
 from PIL import Image
+from tqdm import tqdm
 from functools import partial
 from collections import OrderedDict
 
@@ -76,7 +77,7 @@ if __name__ == "__main__":
     prediction ={}
 
     images= glob.glob(os.path.join(prediction_dir,"*"))
-    for _idx, _image in enumerate(images):
+    for _idx, _image in enumerate(tqdm(images)):
         im = Image.open(_image)
         im_tensor = preprocess(im, transf)
         im_tensor.unsqueeze_(0)

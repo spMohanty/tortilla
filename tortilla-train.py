@@ -93,6 +93,10 @@ def main(config):
 			"transforms":dataset.data_transforms['val']
 		}, path)
 		shutil.copy2(path, latest_snapshot_path)
+		if epoch == config.epochs-1 :
+			model_path = config.experiment_dir_name+"/trained_model.net"
+			shutil.copy2(latest_snapshot_path, model_path)
+
 
 	if config.resume:
 		start_epoch = _load_checkpoint(net, optimizer_ft)
@@ -209,6 +213,11 @@ def collect_args():
 	                    help='Boolean Flag to forcibly use CPU (on servers which\
 						have GPUs. If you do not have a GPU, tortilla will \
 						automatically use just CPU)')
+
+	parser.add_argument('--data-transforms', action='store', dest='data_transforms',
+						default=config.data_transforms,
+						help='Dict of data transformations to apply on training and validation')
+
 	parser.add_argument('--resume', action='store_true', default=config.resume,
 	                    dest='resume',
 	                    help='Resume training from the latest checkpoint?')
@@ -243,6 +252,7 @@ def collect_args():
 	config.use_cpu = args.use_cpu
 	config.resume = args.resume
 	config.no_data_augmentation = args.no_data_augmentation
+	config.data_transforms = args.data_transforms
 	config.plot_platform = args.plot_platform
 	if config.plot_platform == 'none':
 		config.no_plots=True

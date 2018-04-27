@@ -1,6 +1,8 @@
 import os
 import uuid
 import argparse
+import sys
+import shutil
 
 def all_valid_files(rootDir, is_valid):
     all_files = []
@@ -15,14 +17,15 @@ def is_valid(filePath):
     """
         Validation function
     """
-    if filePath.endswith(".jpg"):
+    ext = [".jpg", ".JPG", ".jpeg", ".png"]
+    if filePath.endswith(tuple(ext)):
         return True
     else:
         return False
 
 
 def sanitise_class_name(className):
-    className = className.replace(SOURCE_IMAGES, "")
+    className = className[len(SOURCE_IMAGES):]
     if className == "":
         className = "ROOT"
 
@@ -31,6 +34,38 @@ def sanitise_class_name(className):
 
     className = className.replace("/","::").replace(" ", "_")
     return className
+
+def query_yes_no(question, default="yes"):
+    """Ask a yes/no question via raw_input() and return their answer.
+
+    "question" is a string that is presented to the user.
+    "default" is the presumed answer if the user just hits <Enter>.
+        It must be "yes" (the default), "no" or None (meaning
+        an answer is required of the user).
+
+    The "answer" return value is True for "yes" or False for "no".
+    """
+    valid = {"yes": True, "y": True, "ye": True,
+             "no": False, "n": False}
+    if default is None:
+        prompt = " [y/n] "
+    elif default == "yes":
+        prompt = " [Y/n] "
+    elif default == "no":
+        prompt = " [y/N] "
+    else:
+        raise ValueError("invalid default answer: '%s'" % default)
+
+    while True:
+        sys.stdout.write(question + prompt)
+        choice = input().lower()
+        if default is not None and choice == '':
+            return valid[default]
+        elif choice in valid:
+            return valid[choice]
+        else:
+            sys.stdout.write("Please respond with 'yes' or 'no' "
+                             "(or 'y' or 'n').\n")
 
 
 if __name__ == "__main__":
@@ -45,6 +80,18 @@ if __name__ == "__main__":
 
     SOURCE_IMAGES = args.input_folder_path
     OUTPUT_FOLDER = args.output_folder_path
+
+    if os.path.exists(OUTPUT_FOLDER):
+        response = query_yes_no(
+                    "Output Folder seems to exist, do you want to overwrite ?",
+                    default='no')
+        if response:
+            shutil.rmtree(OUTPUT_FOLDER)
+        else:
+            print("Exiting, because output folder path exists and cannot be deleted.")
+            exit('No deletion of Output Folder')
+
+    os.mkdir(OUTPUT_FOLDER)
 
     for dirName, subdirList, fileList in os.walk(SOURCE_IMAGES):
         if len(subdirList) == 0:
@@ -74,14 +121,14 @@ if __name__ == "__main__":
                 CLASSES.append(className)
                 FILES.append(all_files)
 
-            print(DATASET_NAME, CLASSES, [len(x) for x in FILES])
+            print("dataset_name: {}, classes: {}, number of images per class: {}".format(DATASET_NAME, CLASSES, [len(x) for x in FILES]))
             """
             TODO
 
 
             - Create symlinks for all the files in the corresponding subdirectories : Done
                 - Use the original filename to create the symlink :: Done
-            - Write a bash script which iterates over all the datasets in OUTPUT_FOLDER and then use `prepare_data.py` to create tortilla datasets
+            - Write a bash script which iterates over all the datasets in OUTPUT_FOLDER and then use `prepare_data.py` to create tortilla datasets :Done
             - Use a min-image of 100
             """
             os.mkdir(os.path.join(OUTPUT_FOLDER, DATASET_NAME))

@@ -139,7 +139,7 @@ if __name__ == "__main__":
 						default=50,
 						help='Minimum number of images required per class')
 	parser.add_argument('--max-images-per-class', action='store', dest='max_images_per_class',
-						default=20000,
+						default=5000,
 						help='Maximum number of images required per class')
 	parser.add_argument('--train-percent', action='store', dest='train_percent',
 						default=0.8,

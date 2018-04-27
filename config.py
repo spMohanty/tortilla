@@ -27,5 +27,6 @@ class Config:
         epochs = 5
 
     no_data_augmentation = False
+    data_transforms = None
 
     version = 0.01
