@@ -207,5 +207,5 @@ This should run 13 tests without throwing errors.
 
 # Authors
 
-Sharada Mohanty (sharada.mohanty@epfl.ch)
+Sharada Mohanty (sharada.mohanty@epfl.ch)   
 Camille Renner (camille.renner@epfl.ch)
