@@ -96,7 +96,6 @@ def main(config):
 		if epoch == config.epochs-1 :
 			model_path = config.experiment_dir_name+"/trained_model.net"
 			shutil.copy2(latest_snapshot_path, model_path)
-			print("You can find your final model at : ", model_path)
 
 
 	if config.resume:
@@ -147,6 +146,7 @@ def main(config):
 		_save_checkpoint(net, optimizer_ft, epoch)
 	_run_one_epoch(epoch, train=False)
 	utils.save_to_csv(config)
+	print("You can find your final model at : ",config.experiment_dir_name+"/trained_model.net")
 	print("Hurray !! Your network is trained ! Now you can use `tortilla-predict` to make predictions.")
 
 

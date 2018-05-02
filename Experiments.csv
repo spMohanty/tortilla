@@ -1,44 +1,44 @@
-Type;Variables;29-Mar-2018:plants;04-Apr-2018:plants;19-Apr-2018:plants1.0;19-Apr-2018:plants2.0;19-Apr-2018:plants2.0.1;20-Apr-2018:plants2.0;25-Apr-2018:plants2.0;25-Apr-2018:plants2.0.1;02-May-2018:plants2.0;02-May-2018:plants2.0
-Comments;General_impression;Waouh;;;;;;;;;
-Comments;Suggested_changes;;;;;;;;;;
-Config_data;batch_size;128;128;128;128;50;128;128;50;128;128
-Config_data;data_transforms;;;;;;;;;;
-Config_data;dataset_dir;datasets/plants;datasets/plants;datasets/plants1.0/;datasets/plants1.0/;datasets/plants1.0/;datasets/plants1.0/;datasets/plants1.0/;datasets/plants1.0/;datasets/plants1.0/;datasets/plants1.0/
-Config_data;debug;False;False;False;False;False;False;False;False;False;False
-Config_data;epochs;50;50;50;50;25;50;50;50;50;50
-Config_data;experiment_dir_name;experiments/plants;experiments/plants;experiments/plants1.0;experiments/plants2.0;experiments/plants2.0;experiments/plants2.0;experiments/plants2.0;experiments/plants2.0;experiments/plants2.0;experiments/plants2.0
-Config_data;experiment_name;plants;plants;plants1.0;plants2.0;plants2.0;plants2.0;plants2.0;plants2.0;plants2.0;plants2.0
-Config_data;experiments_dir;experiments;experiments;experiments;experiments;experiments;experiments;experiments;experiments;experiments;experiments
-Config_data;learning_rate;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01
-Config_data;model;resnet-50;resnet-50;resnet-50;resnet-50;resnet-50;resnet50;resnet50;resnet50;resnet50;resnet50
-Config_data;no_data_augmentation;;;;;;;;;False;False
-Config_data;no_plots;False;False;False;False;False;False;False;False;False;False
-Config_data;no_render_images;False;False;False;False;False;False;False;False;False;False
-Config_data;normalize_confusion_matrix;True;True;True;True;True;True;True;True;True;True
-Config_data;num_cpu_workers;4;4;4;4;4;4;4;4;4;4
-Config_data;optimizer;adam;adam;adam;adam;adam;adam;adam;adam;adam;adam
-Config_data;plot_platform;;;visdom;tensorboard;tensorboard;tensorboard;tensorboard;tensorboard;tensorboard;tensorboard
-Config_data;resume;False;False;False;False;False;False;False;False;False;False
-Config_data;topk;[1, 2, 3, 4, 5, 6, 7, 8, 9, 10];[1, 2, 3, 4, 5, 6, 7, 8, 9, 10];[1, 2, 3, 4];[1, 2, 3, 4];[1, 2, 3, 4];[1, 2, 3, 4];[1, 2, 3, 4];[1, 2, 3, 4];[1, 2, 3, 4];[1, 2, 3, 4]
-Config_data;train_flush_per_epoch;10;10;10;10;10;10;10;10;10;10
-Config_data;use_cpu;False;False;False;False;False;False;False;False;False;False
-Config_data;version;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01
-Config_data;visdom_port;8097;8097;8097;8097;8097;8097;8097;8097;8097;8097
-Config_data;visdom_server;localhost;localhost;localhost;localhost;localhost;localhost;localhost;localhost;localhost;localhost
-Meta_data;classes;['c_1', 'c_0', 'c_3', 'c_2'];['c_1', 'c_0', 'c_3', 'c_2'];['c_2', 'c_0', 'c_3', 'c_1'];['c_2', 'c_0', 'c_3', 'c_1'];['c_0', 'c_2', 'c_3', 'c_1'];['c_3', 'c_0', 'c_2', 'c_1'];['c_2', 'c_0', 'c_3', 'c_1'];['c_2', 'c_0', 'c_3', 'c_1'];['c_0', 'c_1', 'c_2', 'c_3'];['c_0', 'c_1', 'c_2', 'c_3']
-Meta_data;dataset_name;plants;plants;plants1.0;plants1.0;plants1.0;plants1.0;plants1.0;plants1.0;plants1.0;plants1.0
-Meta_data;errors;0;0;0;0;0;0;0;0;0;0
-Meta_data;img_size;[256, 256];[256, 256];[256, 256];[256, 256];[256, 256];[256, 256];[256, 256];[256, 256];[256, 256];[256, 256]
-Meta_data;input_folder_path;/home/camille/tortilla/tests/data/plant_diseases;/home/camille/tortilla/tests/data/plant_diseases;/home/camille/tortilla/tests/data/plant_diseases;/home/camille/tortilla/tests/data/plant_diseases;/home/camille/tortilla/tests/data/plant_diseases;/home/camille/tortilla/tests/data/plant_diseases;/home/camille/camille/tortilla/tests/data/plant_diseases;/home/camille/camille/tortilla/tests/data/plant_diseases;/mount/SDB/tortilla-camille/tests/data/plant_diseases;/mount/SDB/tortilla-camille/tests/data/plant_diseases
-Meta_data;is_absolute_path;False;False;False;False;False;False;False;False;False;False
-Meta_data;max_images_per_class;200;200;200;200;200;200;200;200;200;200
-Meta_data;min_images_per_class;50;50;100;100;100;100;100;100;100;100
-Meta_data;no_copy;;;False;False;False;False;False;False;False;False
-Meta_data;non_interactive_mode;;;True;True;False;False;False;False;False;False
-Meta_data;num_cpu;;;48;48;48;48;48;48;48;48
-Meta_data;output_folder_path;/home/camille/tortilla/datasets/plants;/home/camille/tortilla/datasets/plants;/home/camille/tortilla/datasets/plants1.0;/home/camille/tortilla/datasets/plants1.0;/home/camille/tortilla/datasets/plants1.0;/home/camille/tortilla/datasets/plants1.0;/home/camille/camille/tortilla/datasets/plants1.0;/home/camille/camille/tortilla/datasets/plants1.0;/mount/SDB/tortilla-camille/datasets/plants1.0;/mount/SDB/tortilla-camille/datasets/plants1.0
-Meta_data;total_classes;4;4;4;4;4;4;4;4;4;4
-Meta_data;total_images;686;686;686;686;686;686;686;686;686;686
-Meta_data;train_class_frequency;{'c_0': 156, 'c_1': 165, 'c_2': 98, 'c_3': 133};{'c_0': 156, 'c_1': 165, 'c_2': 98, 'c_3': 133};{'c_0': 154, 'c_1': 154, 'c_2': 91, 'c_3': 126};{'c_0': 154, 'c_1': 154, 'c_2': 91, 'c_3': 126};{'c_0': 165, 'c_1': 165, 'c_2': 102, 'c_3': 131};{'c_0': 170, 'c_1': 170, 'c_2': 104, 'c_3': 139};{'c_0': 165, 'c_1': 165, 'c_2': 100, 'c_3': 132};{'c_0': 165, 'c_1': 165, 'c_2': 100, 'c_3': 132};{'c_0': 168, 'c_1': 168, 'c_2': 103, 'c_3': 136};{'c_0': 168, 'c_1': 168, 'c_2': 103, 'c_3': 136}
-Meta_data;train_percent;0.8;0.8;0.8;0.8;0.8;0.8;0.8;0.8;0.8;0.8
-Meta_data;val_class_frequency;{'c_0': 44, 'c_1': 35, 'c_2': 26, 'c_3': 29};{'c_0': 44, 'c_1': 35, 'c_2': 26, 'c_3': 29};{'c_0': 46, 'c_1': 46, 'c_2': 33, 'c_3': 36};{'c_0': 46, 'c_1': 46, 'c_2': 33, 'c_3': 36};{'c_0': 35, 'c_1': 35, 'c_2': 22, 'c_3': 31};{'c_0': 30, 'c_1': 30, 'c_2': 20, 'c_3': 23};{'c_0': 35, 'c_1': 35, 'c_2': 24, 'c_3': 30};{'c_0': 35, 'c_1': 35, 'c_2': 24, 'c_3': 30};{'c_0': 32, 'c_1': 32, 'c_2': 21, 'c_3': 26};{'c_0': 32, 'c_1': 32, 'c_2': 21, 'c_3': 26}
+Type;Variables;29-Mar-2018:plants;04-Apr-2018:plants;19-Apr-2018:plants1.0;19-Apr-2018:plants2.0;19-Apr-2018:plants2.0.1;20-Apr-2018:plants2.0;25-Apr-2018:plants2.0;25-Apr-2018:plants2.0.1;02-May-2018:plants2.0;02-May-2018:plants2.0.1;02-May-2018:plants_test;02-May-2018:plants_test.1;02-May-2018:plants_test.1.1;02-May-2018:plants_test
+Comments;General_impression;Waouh;;;;;;;;;;;;;
+Comments;Suggested_changes;;;;;;;;;;;;;;
+Config_data;batch_size;128;128;128;128;50;128;128;50;128;128;128;128;128;128
+Config_data;data_transforms;;;;;;;;;;;;;;
+Config_data;dataset_dir;datasets/plants;datasets/plants;datasets/plants1.0/;datasets/plants1.0/;datasets/plants1.0/;datasets/plants1.0/;datasets/plants1.0/;datasets/plants1.0/;datasets/plants1.0/;datasets/plants1.0/;datasets/plants1.0;datasets/plants1.0;datasets/plants1.0;datasets/plants1.0
+Config_data;debug;False;False;False;False;False;False;False;False;False;False;False;False;False;False
+Config_data;epochs;50;50;50;50;25;50;50;50;50;50;10;10;10;10
+Config_data;experiment_dir_name;experiments/plants;experiments/plants;experiments/plants1.0;experiments/plants2.0;experiments/plants2.0;experiments/plants2.0;experiments/plants2.0;experiments/plants2.0;experiments/plants2.0;experiments/plants2.0;experiments/plants_test;experiments/plants_test;experiments/plants_test;experiments/plants_test
+Config_data;experiment_name;plants;plants;plants1.0;plants2.0;plants2.0;plants2.0;plants2.0;plants2.0;plants2.0;plants2.0;plants_test;plants_test;plants_test;plants_test
+Config_data;experiments_dir;experiments;experiments;experiments;experiments;experiments;experiments;experiments;experiments;experiments;experiments;experiments;experiments;experiments;experiments
+Config_data;learning_rate;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01
+Config_data;model;resnet-50;resnet-50;resnet-50;resnet-50;resnet-50;resnet50;resnet50;resnet50;resnet50;resnet50;resnet50;resnet50;resnet50;resnet50
+Config_data;no_data_augmentation;;;;;;;;;False;False;False;False;False;False
+Config_data;no_plots;False;False;False;False;False;False;False;False;False;False;False;False;False;False
+Config_data;no_render_images;False;False;False;False;False;False;False;False;False;False;False;False;False;False
+Config_data;normalize_confusion_matrix;True;True;True;True;True;True;True;True;True;True;True;True;True;True
+Config_data;num_cpu_workers;4;4;4;4;4;4;4;4;4;4;4;4;4;4
+Config_data;optimizer;adam;adam;adam;adam;adam;adam;adam;adam;adam;adam;adam;adam;adam;adam
+Config_data;plot_platform;;;visdom;tensorboard;tensorboard;tensorboard;tensorboard;tensorboard;tensorboard;tensorboard;tensorboard;tensorboard;tensorboard;tensorboard
+Config_data;resume;False;False;False;False;False;False;False;False;False;False;False;False;False;False
+Config_data;topk;[1, 2, 3, 4, 5, 6, 7, 8, 9, 10];[1, 2, 3, 4, 5, 6, 7, 8, 9, 10];[1, 2, 3, 4];[1, 2, 3, 4];[1, 2, 3, 4];[1, 2, 3, 4];[1, 2, 3, 4];[1, 2, 3, 4];[1, 2, 3, 4];[1, 2, 3, 4];[1, 2, 3, 4];[1, 2, 3, 4];[1, 2, 3, 4];[1, 2, 3, 4]
+Config_data;train_flush_per_epoch;10;10;10;10;10;10;10;10;10;10;10;10;10;10
+Config_data;use_cpu;False;False;False;False;False;False;False;False;False;False;False;False;False;False
+Config_data;version;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01;0.01
+Config_data;visdom_port;8097;8097;8097;8097;8097;8097;8097;8097;8097;8097;8097;8097;8097;8097
+Config_data;visdom_server;localhost;localhost;localhost;localhost;localhost;localhost;localhost;localhost;localhost;localhost;localhost;localhost;localhost;localhost
+Meta_data;classes;['c_1', 'c_0', 'c_3', 'c_2'];['c_1', 'c_0', 'c_3', 'c_2'];['c_2', 'c_0', 'c_3', 'c_1'];['c_2', 'c_0', 'c_3', 'c_1'];['c_0', 'c_2', 'c_3', 'c_1'];['c_3', 'c_0', 'c_2', 'c_1'];['c_2', 'c_0', 'c_3', 'c_1'];['c_2', 'c_0', 'c_3', 'c_1'];['c_0', 'c_1', 'c_2', 'c_3'];['c_0', 'c_1', 'c_2', 'c_3'];['c_0', 'c_1', 'c_2', 'c_3'];['c_0', 'c_1', 'c_2', 'c_3'];['c_0', 'c_1', 'c_2', 'c_3'];['c_0', 'c_1', 'c_2', 'c_3']
+Meta_data;dataset_name;plants;plants;plants1.0;plants1.0;plants1.0;plants1.0;plants1.0;plants1.0;plants1.0;plants1.0;plants1.0;plants1.0;plants1.0;plants1.0
+Meta_data;errors;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+Meta_data;img_size;[256, 256];[256, 256];[256, 256];[256, 256];[256, 256];[256, 256];[256, 256];[256, 256];[256, 256];[256, 256];[256, 256];[256, 256];[256, 256];[256, 256]
+Meta_data;input_folder_path;/home/camille/tortilla/tests/data/plant_diseases;/home/camille/tortilla/tests/data/plant_diseases;/home/camille/tortilla/tests/data/plant_diseases;/home/camille/tortilla/tests/data/plant_diseases;/home/camille/tortilla/tests/data/plant_diseases;/home/camille/tortilla/tests/data/plant_diseases;/home/camille/camille/tortilla/tests/data/plant_diseases;/home/camille/camille/tortilla/tests/data/plant_diseases;/mount/SDB/tortilla-camille/tests/data/plant_diseases;/mount/SDB/tortilla-camille/tests/data/plant_diseases;/mount/SDB/tortilla-camille/tests/data/plant_diseases;/mount/SDB/tortilla-camille/tests/data/plant_diseases;/mount/SDB/tortilla-camille/tests/data/plant_diseases;/mount/SDB/tortilla-camille/tests/data/plant_diseases
+Meta_data;is_absolute_path;False;False;False;False;False;False;False;False;False;False;False;False;False;False
+Meta_data;max_images_per_class;200;200;200;200;200;200;200;200;200;200;200;200;200;200
+Meta_data;min_images_per_class;50;50;100;100;100;100;100;100;100;100;100;100;100;100
+Meta_data;no_copy;;;False;False;False;False;False;False;False;False;False;False;False;False
+Meta_data;non_interactive_mode;;;True;True;False;False;False;False;False;False;False;False;False;False
+Meta_data;num_cpu;;;48;48;48;48;48;48;48;48;48;48;48;48
+Meta_data;output_folder_path;/home/camille/tortilla/datasets/plants;/home/camille/tortilla/datasets/plants;/home/camille/tortilla/datasets/plants1.0;/home/camille/tortilla/datasets/plants1.0;/home/camille/tortilla/datasets/plants1.0;/home/camille/tortilla/datasets/plants1.0;/home/camille/camille/tortilla/datasets/plants1.0;/home/camille/camille/tortilla/datasets/plants1.0;/mount/SDB/tortilla-camille/datasets/plants1.0;/mount/SDB/tortilla-camille/datasets/plants1.0;/mount/SDB/tortilla-camille/datasets/plants1.0;/mount/SDB/tortilla-camille/datasets/plants1.0;/mount/SDB/tortilla-camille/datasets/plants1.0;/mount/SDB/tortilla-camille/datasets/plants1.0
+Meta_data;total_classes;4;4;4;4;4;4;4;4;4;4;4;4;4;4
+Meta_data;total_images;686;686;686;686;686;686;686;686;686;686;686;686;686;686
+Meta_data;train_class_frequency;{'c_0': 156, 'c_1': 165, 'c_2': 98, 'c_3': 133};{'c_0': 156, 'c_1': 165, 'c_2': 98, 'c_3': 133};{'c_0': 154, 'c_1': 154, 'c_2': 91, 'c_3': 126};{'c_0': 154, 'c_1': 154, 'c_2': 91, 'c_3': 126};{'c_0': 165, 'c_1': 165, 'c_2': 102, 'c_3': 131};{'c_0': 170, 'c_1': 170, 'c_2': 104, 'c_3': 139};{'c_0': 165, 'c_1': 165, 'c_2': 100, 'c_3': 132};{'c_0': 165, 'c_1': 165, 'c_2': 100, 'c_3': 132};{'c_0': 168, 'c_1': 168, 'c_2': 103, 'c_3': 136};{'c_0': 168, 'c_1': 168, 'c_2': 103, 'c_3': 136};{'c_0': 168, 'c_1': 168, 'c_2': 103, 'c_3': 136};{'c_0': 168, 'c_1': 168, 'c_2': 103, 'c_3': 136};{'c_0': 168, 'c_1': 168, 'c_2': 103, 'c_3': 136};{'c_0': 168, 'c_1': 168, 'c_2': 103, 'c_3': 136}
+Meta_data;train_percent;0.8;0.8;0.8;0.8;0.8;0.8;0.8;0.8;0.8;0.8;0.8;0.8;0.8;0.8
+Meta_data;val_class_frequency;{'c_0': 44, 'c_1': 35, 'c_2': 26, 'c_3': 29};{'c_0': 44, 'c_1': 35, 'c_2': 26, 'c_3': 29};{'c_0': 46, 'c_1': 46, 'c_2': 33, 'c_3': 36};{'c_0': 46, 'c_1': 46, 'c_2': 33, 'c_3': 36};{'c_0': 35, 'c_1': 35, 'c_2': 22, 'c_3': 31};{'c_0': 30, 'c_1': 30, 'c_2': 20, 'c_3': 23};{'c_0': 35, 'c_1': 35, 'c_2': 24, 'c_3': 30};{'c_0': 35, 'c_1': 35, 'c_2': 24, 'c_3': 30};{'c_0': 32, 'c_1': 32, 'c_2': 21, 'c_3': 26};{'c_0': 32, 'c_1': 32, 'c_2': 21, 'c_3': 26};{'c_0': 32, 'c_1': 32, 'c_2': 21, 'c_3': 26};{'c_0': 32, 'c_1': 32, 'c_2': 21, 'c_3': 26};{'c_0': 32, 'c_1': 32, 'c_2': 21, 'c_3': 26};{'c_0': 32, 'c_1': 32, 'c_2': 21, 'c_3': 26}

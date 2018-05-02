@@ -134,7 +134,6 @@ if __name__ == "__main__":
     os.mkdir(path)
 
     # Write prediction file
-    print("Writing predictions at : ", os.path.join(path,"prediction.json"))
     f = open(os.path.join(path,"prediction.json"),"w")
     f.write(json.dumps(
 					prediction,
@@ -147,3 +146,5 @@ if __name__ == "__main__":
     f = open(os.path.join(path,"error.txt"), "w")
     error_list = ["\t".join(x) for x in error_list]
     f.write("\n".join(error_list))
+
+    print("Finished! Find your predictions at : ", os.path.join(path,"prediction.json"))
