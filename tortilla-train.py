@@ -96,6 +96,7 @@ def main(config):
 		if epoch == config.epochs-1 :
 			model_path = config.experiment_dir_name+"/trained_model.net"
 			shutil.copy2(latest_snapshot_path, model_path)
+			print("You can find your final model at : ", model_path)
 
 
 	if config.resume:

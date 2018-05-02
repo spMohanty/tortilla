@@ -7,6 +7,7 @@ import argparse
 import multiprocessing
 from PIL import Image
 from tqdm import tqdm
+from utils import *
 from functools import partial
 from collections import OrderedDict
 
@@ -17,6 +18,24 @@ from torchvision import transforms
 
 from models import TortillaModel
 
+def check_args(model_path, pred_dir):
+
+    if not model_path.endswith(".net"):
+        exit('Model path does not correspond to a model.')
+
+    images= glob.glob(os.path.join(prediction_dir,"*"))
+    stop = False;
+    while not stop:
+        for _idx, _image in enumerate(images):
+            try:
+                im=Image.open(_image)
+                stop = True;
+                break
+            except:
+                if _idx == len(images)-1:
+                    exit('Prediction directory does not contain valid images.')
+                else:
+                    continue
 
 def preprocess(im, transf):
     if transf:
@@ -26,7 +45,6 @@ def preprocess(im, transf):
             transforms.ToTensor()])
     im_tensor = preprocessing(im)
     return im_tensor
-
 
 
 if __name__ == "__main__":
@@ -39,6 +57,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
     model_path = args.model_path
     prediction_dir = args.prediction_dir
+
+    """
+    Check arguments
+    """
+    check_args(model_path, prediction_dir)
 
     """
     Load Model
@@ -74,28 +97,53 @@ if __name__ == "__main__":
     """
     Predict
     """
-    prediction ={}
+    prediction = {}
+    error_list = []
 
     images= glob.glob(os.path.join(prediction_dir,"*"))
-    for _idx, _image in enumerate(tqdm(images)):
-        im = Image.open(_image)
-        im_tensor = preprocess(im, transf)
-        im_tensor.unsqueeze_(0)
-        image = Variable(im_tensor)
-        if use_gpu:
-            image = image.cuda()
-        outputs= net(image)
-        _, predicted = torch.max(outputs.data, 1)
-        prediction[_image]=classes[int(predicted)]
 
+    for _idx, _image in enumerate(tqdm(images)):
+        try:
+            im = Image.open(_image)
+            im_tensor = preprocess(im, transf)
+            im_tensor.unsqueeze_(0)
+            image = Variable(im_tensor)
+            if use_gpu:
+                image = image.cuda()
+            outputs= net(image)
+            _, predicted = torch.max(outputs.data, 1)
+            prediction[_image]=classes[int(predicted)]
+        except Exception as e:
+            error_list.append((_image, str(e)))
+
+    """
+    Create Prediction Folder and write predictions
+    """
+
+    path = os.path.join(experiments_dir,"predictions")
+    if os.path.exists(path):
+        response = query_yes_no(
+                    "Predictions Folder seems to exist, do you want to overwrite ?",
+                    default='no')
+
+        if response:
+            shutil.rmtree(path)
+        else:
+            print("Exiting, because prediction path exists and cannot be deleted.")
+            exit('No deletion of Predictions Folder')
+    os.mkdir(path)
 
     # Write prediction file
-    path = os.path.join(experiments_dir,"prediction.json")
-    print("Writing predictions at : ", path)
-    f = open(path,"w")
+    print("Writing predictions at : ", os.path.join(path,"prediction.json"))
+    f = open(os.path.join(path,"prediction.json"),"w")
     f.write(json.dumps(
 					prediction,
 					sort_keys=True,
 					indent=4,
 					separators=(',', ': ')
 					))
+
+	# Write errors.txt
+    f = open(os.path.join(path,"error.txt"), "w")
+    error_list = ["\t".join(x) for x in error_list]
+    f.write("\n".join(error_list))
