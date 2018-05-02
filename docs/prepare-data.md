@@ -29,8 +29,9 @@ optional arguments:
   --dataset-name DATASET_NAME
                         Name of the Dataset (default: None)
   --img-size IMG_SIZE   Size of the target images (default: 256x256)
+  --num-cpu NUM_CPU     Number of cores to use (default: multiprocessing.cpu_count())
   --non-interactive-mode
-                        If do not want interaction with terminal
-  --absolute-path       If want to use absolute paths
-  --no-copy             If do not want to copy the images
+                        Flag to remove interaction on the terminal
+  --absolute-path       Flag to use absolute paths
+  --no-copy             Flag to avoid copying the images
 ```

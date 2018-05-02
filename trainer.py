@@ -66,6 +66,14 @@ class TortillaTrainer:
         outputs = self.model(inputs)
         return outputs
 
+    def _compute_true_predicted_labels(self, labels, output):
+
+        true_labels = [self.dataset.classes[ind] for ind in labels]
+        _, predicted = torch.max(output.data, 1)
+        predicted_labels = [self.dataset.classes[ind] for ind in predicted]
+
+        return true_labels, predicted_labels
+
     def _step(self, train=True, use_gpu=False):
         """
             Do a single step of training/validation
@@ -111,7 +119,8 @@ class TortillaTrainer:
                         _im[i,t,:,:] = _im[i,t,:,:]*STD[t] + MEAN[t]
                     except:
                         pass
-            self.monitor.images_plotter.update_images(_im)
+            true, predicted = self._compute_true_predicted_labels(labels[0:5], outputs[0:5])
+            self.monitor.images_plotter.update_images(_im, true, predicted)
 
         if train:
             # Adjust weights

@@ -36,13 +36,14 @@ def main(config):
 	dataset = TortillaDataset(	config.dataset_dir,
 								batch_size=config.batch_size,
 								num_cpu_workers=config.num_cpu_workers,
+								no_data_augmentation=config.no_data_augmentation,
 								debug=config.debug
 								)
 
 	"""
 	Initialize Model
 	"""
-	model = TortillaModel("resnet50", dataset.classes)
+	model = TortillaModel(config.model, dataset.classes)
 	net = model.net
 
 	# Make net use parallel gpu
@@ -85,9 +86,18 @@ def main(config):
 			"model_state_dict": net.state_dict(),
 			"optimizer_state_dict": optimizer.state_dict(),
 			"config": config,
-			"val_loss": monitor.val_loss.get_last()
+			"model": config.model,
+			"exp_dir_name":config.experiment_dir_name,
+			"val_loss": monitor.val_loss.get_last(),
+			"classes": dataset.classes,
+			"transforms":dataset.data_transforms['val']
 		}, path)
 		shutil.copy2(path, latest_snapshot_path)
+		if epoch == config.epochs-1 :
+			model_path = config.experiment_dir_name+"/trained_model.net"
+			shutil.copy2(latest_snapshot_path, model_path)
+			print("You can find your final model at : ", model_path)
+
 
 	if config.resume:
 		start_epoch = _load_checkpoint(net, optimizer_ft)
@@ -204,6 +214,11 @@ def collect_args():
 	                    help='Boolean Flag to forcibly use CPU (on servers which\
 						have GPUs. If you do not have a GPU, tortilla will \
 						automatically use just CPU)')
+
+	parser.add_argument('--data-transforms', action='store', dest='data_transforms',
+						default=config.data_transforms,
+						help='Dict of data transformations to apply on training and validation')
+
 	parser.add_argument('--resume', action='store_true', default=config.resume,
 	                    dest='resume',
 	                    help='Resume training from the latest checkpoint?')
@@ -213,12 +228,17 @@ def collect_args():
 	                    help='Run tortilla in debug mode')
 
 	parser.add_argument('--version', action='version', version='tortilla '+str(config.version))
+	parser.add_argument('--no-data-augmentation', action='store_true', default=config.no_data_augmentation,
+	                    dest='no_data_augmentation',
+	                    help='Boolean Flag to deactivate data augmentation')
 
 	args = parser.parse_args()
 
 	config.experiment_name = args.experiment_name
 	config.experiments_dir = args.experiments_dir
 	config.experiment_dir_name = config.experiments_dir+"/"+config.experiment_name
+	config.model = args.model
+	config.optimizer = args.optimizer
 	config.dataset_dir = args.dataset_dir
 	config.batch_size = int(args.batch_size)
 	config.epochs = int(args.epochs)
@@ -232,6 +252,8 @@ def collect_args():
 	config.no_render_images = args.no_render_images
 	config.use_cpu = args.use_cpu
 	config.resume = args.resume
+	config.no_data_augmentation = args.no_data_augmentation
+	config.data_transforms = args.data_transforms
 	config.plot_platform = args.plot_platform
 	if config.plot_platform == 'none':
 		config.no_plots=True

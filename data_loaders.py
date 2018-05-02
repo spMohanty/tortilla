@@ -8,6 +8,7 @@ import os.path
 import json
 
 from utils import default_flist_reader, default_loader
+from config import Config as config
 
 class ImageFilelist(data.Dataset):
 	def __init__(self, root, flist, classes, transform=None,
@@ -50,12 +51,13 @@ class TortillaDataset:
 	"""
 	def __init__(self, dataset_folder, data_transforms=None,
 				shuffle=True, batch_size=32, num_cpu_workers=4,
-				debug=False):
+				no_data_augmentation=False, debug=False):
 		self.dataset_folder = dataset_folder
 		self.data_transforms = data_transforms
 		self.shuffle = shuffle
 		self.batch_size = batch_size
 		self.num_cpu_workers = num_cpu_workers
+		self.no_data_augmentation = no_data_augmentation
 		self.debug = debug
 
 		self.classes = open(os.path.join(self.dataset_folder,
@@ -70,23 +72,41 @@ class TortillaDataset:
 		Define transforms
 		"""
 		if data_transforms == None:
-			self.data_transforms = {
-			    'train': transforms.Compose([
-			        transforms.RandomResizedCrop(224),
-			        transforms.RandomHorizontalFlip(),
-			        transforms.RandomVerticalFlip(),
-			        transforms.RandomRotation(180),
-			        transforms.ColorJitter(),
-			        transforms.ToTensor(),
-			        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-			    ]),
-			    'val': transforms.Compose([
-			        transforms.Resize(256),
-			        transforms.CenterCrop(224),
-			        transforms.ToTensor(),
-			        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-			    ]),
-			}
+			if not no_data_augmentation:
+				self.data_transforms = {
+				    'train': transforms.Compose([
+				        transforms.RandomResizedCrop(224),
+				        transforms.RandomHorizontalFlip(),
+				        transforms.RandomVerticalFlip(),
+				        transforms.RandomRotation(180),
+				        transforms.ColorJitter(),
+				        transforms.ToTensor(),
+				        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+				    ]),
+				    'val': transforms.Compose([
+				        transforms.Resize(256),
+				        transforms.CenterCrop(224),
+				        transforms.ToTensor(),
+				        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+				    ]),
+				}
+			else:
+				self.data_transforms = {
+				    'train': transforms.Compose([
+				        transforms.Resize(256),
+				        transforms.CenterCrop(224),
+				        transforms.ToTensor(),
+				        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+				    ]),
+				    'val': transforms.Compose([
+				        transforms.Resize(256),
+				        transforms.CenterCrop(224),
+				        transforms.ToTensor(),
+				        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+				    ]),
+				}
+
+
 		"""
 			Define datasets from filelists
 		"""
