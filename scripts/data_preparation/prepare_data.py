@@ -185,7 +185,7 @@ if __name__ == "__main__":
 		Input Folder Path : {}
 		Output Folder Path : {}
 		Minimum Images per Class : {}
-    	Maximum Images per Class : {}
+		Maximum Images per Class : {}
 		Train Percentage : {}
 		Dataset Name : {}
 		Target Image Size : {}
