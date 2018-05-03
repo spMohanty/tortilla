@@ -67,7 +67,13 @@ optional arguments:
                         Visdom server hostname. (default: localhost)
   --visdom-port VISDOM_PORT
                         Visdom server port. (default: 8097)
+  --plot-platform PLOT_PLATFORM
+                        Type of visualization platform. Options:["tensorboard",
+                        "visdom", "none"] (default: tensorboard)
   --no-plots            Disable plotting on the visdom server (default: False)
+  --no-render-images    Disable plotting training images example (default: False)
+  --no-data-augmentation
+                        Disable data augmentation (default: False)
   --use-cpu             Boolean Flag to forcibly use CPU (on servers which
                         have GPUs. If you do not have a GPU, tortilla will
                         automatically use just CPU) (default: False)

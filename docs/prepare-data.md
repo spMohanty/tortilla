@@ -19,8 +19,8 @@ optional arguments:
                         Path to output folder to write images (default: None)
   --min-images-per-class MIN_IMAGES_PER_CLASS
                         Minimum number of images required per class (default:
-                        500)
-  --max-images-per-class MIN_IMAGES_PER_CLASS
+                        50)
+  --max-images-per-class MAX_IMAGES_PER_CLASS
                         Maximum number of images required per class (default:
                         20000)
   --train-percent TRAIN_PERCENT
