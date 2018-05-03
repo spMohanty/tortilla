@@ -79,14 +79,24 @@ if __name__ == "__main__":
     transf = state_dict["transforms"]
 
     model = TortillaModel(model_type, classes)
-    print(use_gpu)
+
     if use_gpu:
+        # use GPU for both training and prediction
         net = torch.nn.DataParallel(model.net)
         net.load_state_dict(state_dict["model_state_dict"])
         net.cuda()
-    else:
+    elif state_dict["use_cpu"]:
+        # use CPU for both training and prediction
         net = model.net
         net.load_state_dict(state_dict["model_state_dict"])
+    else:
+        # use GPU for training but CPU for prediction
+        model_state_dict = OrderedDict()
+        for k, v in state_dict["model_state_dict"].items():
+            name = k[7:] # remove module.
+            model_state_dict[name] = v
+        net = model.net
+        net.load_state_dict(model_state_dict)
 
     net.avgpool = nn.AdaptiveAvgPool2d(1)
     net.eval()
