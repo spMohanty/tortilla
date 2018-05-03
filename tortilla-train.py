@@ -90,7 +90,8 @@ def main(config):
 			"exp_dir_name":config.experiment_dir_name,
 			"val_loss": monitor.val_loss.get_last(),
 			"classes": dataset.classes,
-			"transforms":dataset.data_transforms['val']
+			"transforms":dataset.data_transforms['val'],
+			"use_cpu":config.use_cpu
 		}, path)
 		shutil.copy2(path, latest_snapshot_path)
 		if epoch == config.epochs-1 :
