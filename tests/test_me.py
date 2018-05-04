@@ -7,7 +7,7 @@ class TestClass:
 
     def test_valid_input_folder(self):
         with assert_raises(SystemExit) as cm:
-            get_classes_from_input_folder('tests/data/plant_diseases/c_5/File_1', non_interactive_mode=True)
+            get_classes_from_input_folder('tests/data/no-valid-image-folder/c_6/File_1', non_interactive_mode=True)
         assert cm.exception.args[0] == 'Invalid Input Folder Path'
 
     def test_subfolders(self):
