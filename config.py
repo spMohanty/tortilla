@@ -17,7 +17,7 @@ class Config:
     num_cpu_workers = 4
     plot_platform = "tensorboard"
     no_plots = False
-    no_render_images = False
+    no_render_images = True
     visdom_server = "localhost"
     visdom_port = 8097
 
