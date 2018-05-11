@@ -262,6 +262,53 @@ class TortillaImagesPlotter(TortillaBasePlotter):
                 self.plot_initalised = True
 
 
+class TortillaBarGraphPlotter(TortillaBasePlotter):
+    def __init__(   self, experiment_name=None,
+                    title=None, opts={}, platform="tensorboard", port=8097,
+                    server='localhost', debug=False):
+        super(TortillaBarGraphPlotter, self).__init__(
+                    experiment_name=experiment_name,
+                    win=title, opts=opts, platform=platform, port=port,
+                    server=server, debug=debug)
+
+        self.default_opts = dict(
+            title = self.win,
+            nrow = 3,
+            marginbottom = 50,
+            marginleft = 50,
+        )
+        self.update_opts() #merge supplied opts into default_opts
+
+    def update_bar_graph(self, values, field_names):
+        """
+        Args:
+            values: Values for bar grarph columns
+            field_names : Label names for bar graph columns
+        """
+        if self.platform == "visdom":
+            if self.plot_initalised:
+                win = self.vis.bar(
+                    X = values,
+                    opts = dict(
+                        stacked=False,
+                        rownames=field_names
+                    ),
+                    win=self.win,
+                    env=self.env
+                )
+            else:
+                win = self.vis.bar(
+                    X = values,
+                    opts = dict(
+                        stacked=False,
+                        rownames=field_names
+                    ),
+                    win=self.win,
+                    env=self.env
+                )
+                self.plot_initalised = True
+
+
 if __name__ == "__main__":
     # opts = dict(
     #     xlabel = "accuracy",

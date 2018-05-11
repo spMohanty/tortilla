@@ -58,6 +58,7 @@ def main(config):
 
 	monitor = TortillaMonitor(	experiment_name=config.experiment_name,
 								topk=config.topk,
+								dataset=dataset,
 								classes=dataset.classes,
 								use_gpu = use_gpu,
 								plot=True,

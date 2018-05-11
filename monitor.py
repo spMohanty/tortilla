@@ -5,7 +5,8 @@ from sklearn.metrics import confusion_matrix
 from sklearn.preprocessing import normalize
 from datastream import TortillaDataStream
 from plotter import TortillaLinePlotter, TortillaHeatMapPlotter, \
-					TortillaImagesPlotter, VisdomTest
+					TortillaImagesPlotter, TortillaBarGraphPlotter, \
+					VisdomTest
 import os
 import json
 
@@ -20,13 +21,15 @@ class TortillaMonitor:
 	- Val confusion Matrix
 	"""
 	def __init__(self,  experiment_name, plot=True, topk=(1,5),
-						classes=[], config=None, use_gpu=False):
+						dataset=False, classes=[], config=None,
+						use_gpu=False):
 		self.experiment_name = experiment_name
 		self.plot = plot
 		self.topk = topk
 		self.classes = classes
 		self.config = config
 		self.use_gpu = use_gpu
+		self.dataset = dataset
 		# Filter top-k to ensure that all values are >0 and less than
 		# the number of classes
 		_topk = []
@@ -134,6 +137,26 @@ class TortillaMonitor:
 							server=self.config.visdom_server,
 							port=self.config.visdom_port
 		)
+
+		if self.dataset:
+			#Plot data distribution
+			self.data_distribution_plotter = TortillaBarGraphPlotter(
+								experiment_name=self.experiment_name,
+								title='Training Data Distribution',
+								platform=self.config.plot_platform,
+								server=self.config.visdom_server,
+								port=self.config.visdom_port
+			)
+			training_labels = list(self.dataset.meta["train_class_frequency"].keys())
+			training_values = [
+				self.dataset.meta["train_class_frequency"][key] \
+				for key in training_labels
+			]
+			self.data_distribution_plotter.update_bar_graph(
+				values=np.array(training_values),
+				field_names = training_labels
+			)
+
 
 
 	def _init_data_gatherers(self):
