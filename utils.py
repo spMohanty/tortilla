@@ -52,8 +52,9 @@ def append_val(var, key, value):
 	#
 	# var[key].append(value)
 
-def save_to_csv(config):
-	EXP = pd.read_csv('Experiments.csv', sep=';', index_col=['Type','Variables'])
+def save_to_csv(config, experiment_dir):
+	EXP = pd.read_csv(os.path.join(experiment_dir, 'Experiments.csv'), \
+						sep=';', index_col=['Type','Variables'])
 	date = datetime.date.today().strftime("%d-%b-%Y")
 	name  = ":".join([date, config.experiment_name])
 
@@ -70,10 +71,12 @@ def save_to_csv(config):
 	comments = pd.DataFrame(list(comments.items()), columns=['Variables', name])
 	comments = comments.set_index('Variables')
 
-	NEW_EXP = pd.concat([meta_data, config_data, comments], keys=['Meta_data', 'Config_data', 'Comments'], names= ['Type', 'Variables'])
+	NEW_EXP = pd.concat([meta_data, config_data, comments], \
+						keys=['Meta_data', 'Config_data', 'Comments'], \
+						names= ['Type', 'Variables'])
 	EXP = pd.concat([EXP,NEW_EXP], axis=1)
 
-	EXP.to_csv('Experiments.csv', sep=';')
+	EXP.to_csv(os.path.join(experiment_dir, 'Experiments.csv'), sep=';')
 
 def query_yes_no(question, default="yes"):
 	"""Ask a yes/no question via raw_input() and return their answer.

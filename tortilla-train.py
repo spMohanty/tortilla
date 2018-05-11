@@ -147,7 +147,9 @@ def main(config):
 			_run_one_epoch(epoch, train=train)
 		_save_checkpoint(net, optimizer_ft, epoch)
 	_run_one_epoch(epoch, train=False)
-	utils.save_to_csv(config)
+
+	#utils.save_to_csv(config, config.experiment_dir_name)
+
 	print("You can find your final model at : ",config.experiment_dir_name+"/trained_model.net")
 	print("Hurray !! Your network is trained ! Now you can use `tortilla-predict` to make predictions.")
 
