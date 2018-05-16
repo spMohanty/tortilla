@@ -24,7 +24,7 @@ def check_args(model_path, pred_dir):
     if not model_path.endswith(".net"):
         exit('Model path does not correspond to a model.')
 
-    images= glob.glob(os.path.join(prediction_dir,"*"))
+    images= glob.glob(os.path.join(pred_dir,"*"))
     stop = False;
     while not stop:
         for _idx, _image in enumerate(images):
@@ -47,23 +47,13 @@ def preprocess(im, transf):
     im_tensor = preprocessing(im)
     return im_tensor
 
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--model-path', action='store', dest='model_path',
-                        required=True, help='Path of the saved model')
-    parser.add_argument('--prediction-dir', action='store', dest='prediction_dir',
-                        required=True, help='Directory of the images for prediction')
-
-    args = parser.parse_args()
-    model_path = args.model_path
-    prediction_dir = args.prediction_dir
-
+def predict(model_path,prediction_dir):
+    
     """
     Check arguments
     """
     check_args(model_path, prediction_dir)
-
+    print(prediction_dir)	
     """
     Load Model
     """
@@ -156,3 +146,16 @@ if __name__ == "__main__":
     f.write("\n".join(error_list))
 
     print("Finished! Find your predictions at : ", os.path.join(path,"prediction.json"))
+	
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('--model-path', action='store', dest='model_path',
+                        required=True, help='Path of the saved model')
+    parser.add_argument('--prediction-dir', action='store', dest='prediction_dir',
+                        required=True, help='Directory of the images for prediction')
+    args = parser.parse_args()
+    model_path = args.model_path
+    prediction_dir = args.prediction_dir
+
+	
+    predict(model_path,prediction_dir)
