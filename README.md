@@ -179,7 +179,7 @@ All images should be in one single folder at let's say `<new_images_path>`.
 Then, launch predictions by:
 
 ```
-python tortilla-predict.py \
+python tortilla_predict.py \
   --model-path=experiments/CHANGE_ME_my_dataset_name/trained_model.net \
   --prediction-dir=CHANGE_ME_new_images_path
 ```
