@@ -32,7 +32,8 @@ usage: tortilla-train.py [-h] --experiment-name EXPERIMENT_NAME
                          [--visdom-port VISDOM_PORT] [--no-plots] [--use-cpu]
                          [--debug] [--version][--wrs][--wloss]
 			 [--normalize-params PARAMS ]
-
+			 [--checkpoint-frequency CHECKPOINT_FREQUENCY]	
+			
 optional arguments:
   -h, --help            show this help message and exit
   --experiment-name EXPERIMENT_NAME
@@ -84,3 +85,5 @@ optional arguments:
   --wloss		Use pytorch's WeightedLoss method with class frequency as weights
   --normalize-params  PARAMS
 			List of 6 space separated entries which determine means and variances for normalization of each image (PARAMS must have 6 entries else it is not processed)		
+  --checkpoint-frequency CHECKPOINT_FREQUENCY
+			Saves checkpoints at given frequency(default: 5)	
