@@ -21,35 +21,33 @@
 
 </head>
 <body>
-<H1>MyFoodRepo Evaluation</H1>
+<H1>MyFoodRepo Prediction</H1>
 
-<form action="/upload/eval">
-<select name="model">
-	{% for model in models %}
-		{% if model == current_model %}
-			<option selected value="{{ model }}">{{ model }}</option> 
-		{% else %} 
-			<option value="{{ model }}">{{ model }}</option> 
-		{% endif %}
-	{% endfor %}
-</select>
-<input type="submit">
-</form>
-  <form action="/upload" method="post" enctype="multipart/form-data" >
-      <span class="btn btn-default btn-file">
-        Browse <input type="file" name="image">
-      </span>
+{% if error|length > 0 %}
+	<p>{{ type(error) }}</p>
+	<p>{{error}}</p>
+	<p>{{error.args}}</p>
+{% else %}
+<a href="{{url_for('upload_file')}}">Evaluate Images with a Different Model</a>
+<br>
+<a href="{{url_for('index')}}">Delete all uploaded Images</a>
 
-    <input type="submit" value="Upload your image" class="btn btn-primary">
-</form>	
-<h2>Instructions</h2>
-<ol>
-<li> Browse and Upload images one by one</li>
-<li> To evaluate all uploaded images(atleast 1), select model from drop-down menu and click on submit query</li>
-</ol>
-	
+ <table style="width:60%;border:1px solid black;">
+  <tr>
+    <th >File Name</th>
 
-
+    <th>Predicted Label</th>
+    <th> Image </th>	
+  </tr>
+  {% for i in predictions.keys() %}	
+  <tr>	   
+	 <td>{{ i }}</td>
+   	 <td>{{ predictions[i] }}</td>
+	<td> <a href = "{{url_for('send_file',filename= i )}}" target="_blank" >View Image</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif % } 
 </body>
 </html>
 

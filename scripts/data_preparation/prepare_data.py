@@ -39,6 +39,7 @@ def preprocessing(_class, meta):
 
 		# Stop processing of this class if above max_images_per_class
 		if train_class_frequency[_class]+val_class_frequency[_class] == meta["max_images_per_class"]:
+			#print("Max Images reached for the class {}".format(class))
 			continue
 
 		# Open, Preprocess and write file to output_folder_path

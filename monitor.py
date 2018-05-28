@@ -19,6 +19,7 @@ class TortillaMonitor:
 	- val loss
 	- Train Confusion Matrix
 	- Val confusion Matrix
+	- training data distribution
 	"""
 	def __init__(self,  experiment_name, plot=True, topk=(1,5),
 						dataset=False, classes=[], config=None,

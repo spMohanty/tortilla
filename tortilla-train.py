@@ -37,24 +37,29 @@ def main(config):
 								batch_size=config.batch_size,
 								num_cpu_workers=config.num_cpu_workers,
 								no_data_augmentation=config.no_data_augmentation,
-								debug=config.debug
+								debug=config.debug,
+								wrs = config.wrs
 								)
 
 	"""
 	Initialize Model
 	"""
-	model = TortillaModel(config.model, dataset.classes)
+	model = TortillaModel(config.model, dataset.classes,config.input_size,config.batch_size)
 	net = model.net
 
 	# Make net use parallel gpu
 	if use_gpu:
 		net = nn.DataParallel(net).cuda()
+		dataset.weights = dataset.weights.cuda()
 
 	"""
 	Initialize Optimizers, Loss, Loss Schedulers
 	"""
 	optimizer_ft = optim.Adam(net.parameters(), lr=config.learning_rate)
-	criterion = CrossEntropyLoss()
+	if config.wloss ==True:
+		criterion = CrossEntropyLoss(weight = 1./dataset.weights)
+	else:
+		criterion = CrossEntropyLoss()
 
 	monitor = TortillaMonitor(	experiment_name=config.experiment_name,
 								topk=config.topk,
@@ -95,7 +100,7 @@ def main(config):
 			"use_cpu":config.use_cpu
 		}, path)
 		shutil.copy2(path, latest_snapshot_path)
-		if epoch == config.epochs-1 :
+		if epoch == config.epochs-2 :
 			model_path = config.experiment_dir_name+"/trained_model.net"
 			shutil.copy2(latest_snapshot_path, model_path)
 
@@ -145,7 +150,8 @@ def main(config):
 	for epoch in range(start_epoch, config.epochs):
 		for train in [False, True]:
 			_run_one_epoch(epoch, train=train)
-		_save_checkpoint(net, optimizer_ft, epoch)
+		if epoch%int(config.checkpoint_frequency) == 0:
+			_save_checkpoint(net, optimizer_ft, epoch)
 	_run_one_epoch(epoch, train=False)
 
 	#utils.save_to_csv(config, config.experiment_dir_name)
@@ -235,7 +241,18 @@ def collect_args():
 	parser.add_argument('--no-data-augmentation', action='store_true', default=config.no_data_augmentation,
 	                    dest='no_data_augmentation',
 	                    help='Boolean Flag to deactivate data augmentation')
-
+	parser.add_argument('--wrs',action='store_true',default=config.wrs,
+		            dest='wrs',
+			    help='Flag to apply Weighted Random Sampler')
+	parser.add_argument('--wloss',action ='store_true',default=config.wloss,
+			    dest='wloss',
+			    help='Flag to apply Weighted Loss Function')
+	parser.add_argument('--checkpoint-frequency',action='store',default=config.checkpoint_frequency,
+			    dest='checkpoint_frequency',
+			    help='Checkpoint frequency')		
+	parser.add_argument('--normalize-params', nargs ='*',default=config.normalize_params,dest='normalize_params') 
+	#
+	#		
 	args = parser.parse_args()
 
 	config.experiment_name = args.experiment_name
@@ -262,7 +279,14 @@ def collect_args():
 	if config.plot_platform == 'none':
 		config.no_plots=True
 		config.no_render_images=True
-
+	config.wrs = args.wrs
+	config.wloss = args.wloss
+	config.checkpoint_frequency = args.checkpoint_frequency	
+	config.input_size = 299 if config.model=='inception_v3' else 224	
+	config.resize_shape = 342 if config.model=='inception_v3' else 256
+	config.normalize_params = args.normalize_params if len(args.normalize_params) == 6 else config.normalize_params
+	if config.batch_size%32 != 0:
+		config.batch_size = 32 if config.batch_size < 32 else  config.batch_size - (config.batch_size%32)
 	return config
 
 if __name__ == "__main__":

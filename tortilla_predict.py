@@ -120,15 +120,16 @@ def predict(model_path,prediction_dir):
 
     path = os.path.join(experiments_dir,"predictions")
     if os.path.exists(path):
-        response = query_yes_no(
-                    "Predictions Folder seems to exist, do you want to overwrite ?",
-                    default='no')
-
-        if response:
-            shutil.rmtree(path)
-        else:
-            print("Exiting, because prediction path exists and cannot be deleted.")
-            exit('No deletion of Predictions Folder')
+    #    response = query_yes_no(
+    #                "Predictions Folder seems to exist, do you want to overwrite ?",
+    #               default='no')
+        shutil.rmtree(path)
+    #   if response:
+    #        shutil.rmtree(path)
+    #    else:
+    #        print("Exiting, because prediction path exists and cannot be deleted.")
+    #        exit('No deletion of Predictions Folder')
+    
     os.mkdir(path)
 
     # Write prediction file
