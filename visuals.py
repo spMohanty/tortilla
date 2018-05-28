@@ -102,7 +102,8 @@ def create_figure(model):
 	#Validation Confusion Matrix
 	conf = pickle.load(open('/home/harsh/experiments/'+model+'/datastreams/val_confusion_matrix.pickle','rb'))
 	conf = conf[-1]
-	conf = conf/conf.sum()		
+	row_sum = conf.sum(axis=1)
+	conf = conf/row_sum[:,np.newaxis]	
 	data = pd.DataFrame(conf,index=classes,columns=classes)
 	data.index.name = 'classes_ind'
 	data.columns.name = 'classes_col'

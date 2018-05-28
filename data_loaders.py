@@ -2,6 +2,8 @@ import torch
 from torchvision import datasets, models, transforms
 import torch.utils.data as data
 from torch.autograd import Variable
+import numpy as np
+
 
 import os
 import os.path
@@ -24,6 +26,7 @@ class ImageFilelist(data.Dataset):
 		self.loader = loader
 		self.is_absolute_path = is_absolute_path
 		self.debug = debug
+
 		if self.debug:
 			self.imlist = self.imlist[:3000]
 
@@ -51,7 +54,7 @@ class TortillaDataset:
 	"""
 	def __init__(self, dataset_folder, data_transforms=None,
 				shuffle=True, batch_size=32, num_cpu_workers=4,
-				no_data_augmentation=False, debug=False):
+				no_data_augmentation=False, debug=False,wrs=False):
 		self.dataset_folder = dataset_folder
 		self.data_transforms = data_transforms
 		self.shuffle = shuffle
@@ -59,53 +62,37 @@ class TortillaDataset:
 		self.num_cpu_workers = num_cpu_workers
 		self.no_data_augmentation = no_data_augmentation
 		self.debug = debug
-
+		self.wrs = wrs
+	
 		self.classes = open(os.path.join(self.dataset_folder,
 										"classes.txt")).readlines()
 		self.classes = [x.strip() for x in self.classes]
 		self.meta = json.loads(open(os.path.join(self.dataset_folder,
 										"meta.json")).read())
+		self.weights = [self.meta['train_class_frequency'][i] for i in self.meta['train_class_frequency'].keys()]
+		self.weights = (sum(self.weights)/torch.Tensor(self.weights))
 		# Add default values if they dont exist in meta
 		if "is_absolute_path" not in self.meta.keys():
 			self.meta["is_absolute_path"] = False
 		"""
 		Define transforms
 		"""
+				
 		if data_transforms == None:
+			normalize = transforms.Normalize(config.normalize_params[:3],config.normalize_params[3:])
+			trans = [transforms.ToTensor(),normalize]
+			val =  [transforms.Resize(config.resize_shape),
+				        transforms.CenterCrop(config.input_size)] + trans
+
 			if not no_data_augmentation:
-				self.data_transforms = {
-				    'train': transforms.Compose([
-				        transforms.RandomResizedCrop(224),
+				train = [transforms.RandomResizedCrop(config.input_size),
 				        transforms.RandomHorizontalFlip(),
 				        transforms.RandomVerticalFlip(),
 				        transforms.RandomRotation(180),
-				        transforms.ColorJitter(),
-				        transforms.ToTensor(),
-				        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-				    ]),
-				    'val': transforms.Compose([
-				        transforms.Resize(256),
-				        transforms.CenterCrop(224),
-				        transforms.ToTensor(),
-				        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-				    ]),
-				}
-			else:
-				self.data_transforms = {
-				    'train': transforms.Compose([
-				        transforms.Resize(256),
-				        transforms.CenterCrop(224),
-				        transforms.ToTensor(),
-				        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-				    ]),
-				    'val': transforms.Compose([
-				        transforms.Resize(256),
-				        transforms.CenterCrop(224),
-				        transforms.ToTensor(),
-				        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-				    ]),
-				}
-
+				        transforms.ColorJitter()] + trans
+			else: 
+				train = val 
+			self.data_transforms = {'train' : transforms.Compose(train), 'val': transforms.Compose(val)}
 
 		"""
 			Define datasets from filelists
@@ -146,16 +133,33 @@ class TortillaDataset:
 		print("Images in training set \t:\t {}".format(self.train_dataset.total_images))
 		print("Images in validation set \t:\t {}".format(self.val_dataset.total_images))
 		print("="*80)
+		print("Weights \t :\t {}".format(self.weights))
+		print("wrs \t :\t {}".format(self.wrs))
 	"""
 	Define dataloaders
 	"""
+	
 	def reset_train_data_loaders(self):
-		self.train_data_loader = torch.utils.data.DataLoader(
+	
+		if self.wrs ==True:
+			train_targets = np.array([i[1] for i in self.train_dataset.imlist])
+			sampler = torch.utils.data.sampler.WeightedRandomSampler(self.weights[train_targets],self.train_dataset.total_images)
+			
+			self.train_data_loader = torch.utils.data.DataLoader(
+				dataset=self.train_dataset,
+				batch_size=self.batch_size,
+				shuffle=False,
+				num_workers=self.num_cpu_workers,
+				sampler=sampler
+			)
+		else:
+			self.train_data_loader = torch.utils.data.DataLoader(
 				dataset=self.train_dataset,
 				batch_size=self.batch_size,
 				shuffle=self.shuffle,
 				num_workers=self.num_cpu_workers
-		)
+			)
+			
 		self.train = self.train_data_loader
 		self.train_iter = iter(self.train)
 		self.train_iter_pointer = 0
@@ -167,7 +171,8 @@ class TortillaDataset:
 				batch_size=self.batch_size,
 				shuffle=self.shuffle,
 				num_workers=self.num_cpu_workers
-		)
+			)
+
 		self.val = self.val_data_loader
 		self.val_iter = iter(self.val)
 		self.val_iter_pointer = 0
@@ -216,9 +221,10 @@ class TortillaDataset:
 		return (images, labels, end_of_epoch)
 
 def main():
-	dataset = TortillaDataset(	"datasets/plants",
+	dataset = TortillaDataset(	"datasets/601._apple",
 								batch_size=128,
-								num_cpu_workers=1
+								num_cpu_workers=1,
+								wrs=True	
 								)
 
 	# Example iteration using `.get_next_batch`
