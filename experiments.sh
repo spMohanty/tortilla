@@ -10,11 +10,10 @@ for i in "DatasetStudentFiltration"/*; do
 		python ~/tortilla/tortilla-train.py \
 		--dataset-dir "DatasetStudentFiltration/$i" \
 		--experiments-dir "/home/harsh/experiments" \
-		--experiment-name "sfwrs$i"  \
+		--experiment-name "sf$i"  \
 		--no-render-images   \
 		--plot-platform visdom \
 		--checkpoint-frequency 3\
-		--wrs
 
 		#python ~/tortilla/tortilla-train.py \
 		#--dataset-dir "DatasetStudentFiltration/$i" \

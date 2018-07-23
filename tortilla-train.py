@@ -33,6 +33,7 @@ def main(config):
 	"""
 	Initialize Dataset
 	"""
+	print("wrs : {}".format(config.wrs))
 	dataset = TortillaDataset(	config.dataset_dir,
 								batch_size=config.batch_size,
 								num_cpu_workers=config.num_cpu_workers,
@@ -57,8 +58,10 @@ def main(config):
 	"""
 	optimizer_ft = optim.Adam(net.parameters(), lr=config.learning_rate)
 	if config.wloss ==True:
+		print("Weighted loss")
 		criterion = CrossEntropyLoss(weight = 1./dataset.weights)
-	else:
+	else:	
+		print("loss not weighed")
 		criterion = CrossEntropyLoss()
 
 	monitor = TortillaMonitor(	experiment_name=config.experiment_name,

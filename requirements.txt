@@ -54,3 +54,7 @@ tqdm==4.19.5
 urllib3==1.22
 visdom==0.1.7
 Werkzeug==0.14.1
+bokeh
+flask
+pandas
+pickle
