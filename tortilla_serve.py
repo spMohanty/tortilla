@@ -6,11 +6,12 @@ import json
 sys.path.insert(0,'tortilla')
 import tortilla_predict
 import re
+import sys
 
 
-models = os.listdir('/home/harsh/experiments/')
+models = os.listdir(str(sys.argv[1]))
 
-UPLOAD_FOLDER = '/home/harsh/data/uploads'
+UPLOAD_FOLDER = str(sys.argv[2])
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER']=UPLOAD_FOLDER

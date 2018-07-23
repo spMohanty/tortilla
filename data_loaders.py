@@ -153,6 +153,7 @@ class TortillaDataset:
 				sampler=sampler
 			)
 		else:
+			print ("wrs not working")
 			self.train_data_loader = torch.utils.data.DataLoader(
 				dataset=self.train_dataset,
 				batch_size=self.batch_size,
