@@ -188,7 +188,10 @@ At the end, you will have a prediction.json file in the  `experiments/CHANGE_ME_
 
 ## Tortilla-Serve
 You can use the tortilla_serve to run a webapp for making predictions using trained tortilla models on a batch of images.
-``` python tortilla_serve.py MODEL_LIST_DIRECTORY UPLOAD_FOLDER```
+
+``` python tortilla_serve.py MODEL_LIST_DIRECTORY UPLOAD_FOLDER
+```
+
 This starts a [Flask](http://flask.pocoo.org/) app on your localhost (default port number : 5001)
 You can upload files to the upload folder and select your preferred model from those present in MODEL_LIST_DIRECTORY.
 The tortilla_serve assumes that the MODEL_LIST DIRECTORY contains only folders with each folder having a
@@ -196,7 +199,10 @@ trained_model.net file.
 
 ## Alternate Visualization
 To generate plots from training output of Tortilla, the visuals.py file can be used.
-``` python visuals.py MODEL_LIST_DIRECTORY DATASET_DIRECTORY```
+
+``` python visuals.py MODEL_LIST_DIRECTORY DATASET_DIRECTORY
+```
+
 The MODEL_LIST_DIRECTORY contains folders each having logs from tortilla training while the DATASET_DIRECTORY contains
 the training images(in Tortilla input format)  corresponding to these models.
 Select the model from the dropdown menu.
