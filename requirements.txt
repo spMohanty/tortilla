@@ -56,4 +56,3 @@ visdom==0.1.7
 Werkzeug==0.14.1
 bokeh
 flask
-pickle
