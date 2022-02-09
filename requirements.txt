@@ -43,7 +43,7 @@ six==1.11.0
 sklearn==0.0
 tensorboard==1.7.0
 tensorboardX==1.1
-tensorflow==1.7.0
+tensorflow==2.5.3
 termcolor==1.1.0
 tfplot==0.2.0.dev0
 torch==0.4.0
